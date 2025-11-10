@@ -17,7 +17,7 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
+export function ThemeProvider({ children }: React.PropsWithChildren) {
   const [theme, setTheme] = useState<Theme>('light');
   const [accessibility, setAccessibility] = useState<AccessibilitySettings>({
     fontSize: 'normal',

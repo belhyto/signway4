@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ThemeProvider } from './components/ThemeProvider';
 import { LanguageProvider } from './components/LanguageProvider';
 import { SplashScreen } from './components/SplashScreen';

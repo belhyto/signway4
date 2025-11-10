@@ -41,7 +41,7 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
+export function LanguageProvider({ children }: React.PropsWithChildren) {
   const [language, setLanguage] = useState<Language>('en');
   const [bhashiniEnabled, setBhashiniEnabled] = useState(false);
 
