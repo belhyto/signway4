@@ -1,0 +1,56 @@
+{
+    "name": "Signway - Learn Indian Sign Language",
+    "short_name": "Signway",
+    "description": "Master Indian Sign Language with AI-powered tools for workplace, school, and home environments",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#10b981",
+    "orientation": "portrait-primary",
+    "scope": "/",
+    "icons": [
+        {
+            "src": "/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": [
+        "education",
+        "accessibility"
+    ],
+    "screenshots": [],
+    "shortcuts": [
+        {
+            "name": "Lessons",
+            "short_name": "Lessons",
+            "description": "Start learning ISL lessons",
+            "url": "/?page=lessons",
+            "icons": [
+                {
+                    "src": "/icon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        },
+        {
+            "name": "Practice",
+            "short_name": "Practice",
+            "description": "Practice your ISL skills",
+            "url": "/?page=practice",
+            "icons": [
+                {
+                    "src": "/icon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        }
+    ]
+}

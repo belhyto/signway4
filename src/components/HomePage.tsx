@@ -21,19 +21,19 @@ export function HomePage({ onStartLearning }: HomePageProps) {
         <div className="bg-gradient-to-br from-orange-500 to-orange-600 dark:from-orange-600 dark:to-orange-700 rounded-2xl p-4 text-white shadow-lg bg-[rgba(84,69,167,0)]">
           <div className="flex items-center gap-2 mb-1">
             <Flame className="h-5 w-5" />
-            <span className="text-sm opacity-90 font-[Poppins]">Streak</span>
+            <span className="text-sm opacity-90">{t('home.streak')}</span>
           </div>
           <div className="text-3xl">0</div>
-          <div className="text-xs opacity-75">days</div>
+          <div className="text-xs opacity-75">{t('home.days')}</div>
         </div>
 
         <div className="bg-gradient-to-br from-primary to-green-600 dark:from-primary dark:to-green-700 rounded-2xl p-4 text-white shadow-lg">
           <div className="flex items-center gap-2 mb-1">
             <Zap className="h-5 w-5" />
-            <span className="text-sm opacity-90 font-[Poppins]">Total XP</span>
+            <span className="text-sm opacity-90">{t('home.totalXP')}</span>
           </div>
           <div className="text-3xl">0</div>
-          <div className="text-xs opacity-75">points</div>
+          <div className="text-xs opacity-75">{t('home.points')}</div>
         </div>
       </div>
 
@@ -43,8 +43,8 @@ export function HomePage({ onStartLearning }: HomePageProps) {
           <CollapsibleTrigger className="w-full group cursor-pointer">
             <div className="flex items-center justify-between mb-3">
               <div className="text-left">
-                <h3 className="text-lg font-[Poppins] group-hover:text-primary transition-colors">Daily Goal</h3>
-                <p className="text-sm text-muted-foreground">0/20 XP earned today</p>
+                <h3 className="text-lg group-hover:text-primary transition-colors">{t('home.dailyGoal')}</h3>
+                <p className="text-sm text-muted-foreground">{t('home.xpEarnedToday').replace('{xp}', '0')}</p>
               </div>
               <div className="flex items-center gap-2">
                 <Trophy className="h-8 w-8 text-accent group-hover:scale-110 transition-transform" />
@@ -57,7 +57,7 @@ export function HomePage({ onStartLearning }: HomePageProps) {
             </div>
           </CollapsibleTrigger>
           <Progress value={0} className="h-3 mb-3" />
-          
+
           <CollapsibleContent>
             <div className="mt-4 pt-4 border-t border-border">
               <ChallengeCalendar />
@@ -69,18 +69,18 @@ export function HomePage({ onStartLearning }: HomePageProps) {
       {/* Quick Start CTA */}
       <div className="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl p-6 text-center space-y-4 border-2 border-primary/20">
         <div className="text-6xl mb-2">🤟</div>
-        <h2 className="text-2xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-[rgba(0,56,29,0.51)] text-[36px] font-[Poppins]">
-          Welcome to Signway!
+        <h2 className="text-2xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-[rgba(0,56,29,0.51)] text-[36px]">
+          {t('home.welcomeTitle')}
         </h2>
-        <p className="text-muted-foreground font-[Poppins]">
-          Master Indian Sign Language with AI-powered tools
+        <p className="text-muted-foreground">
+          {t('home.welcomeSubtitle')}
         </p>
-        <Button 
-          size="lg" 
+        <Button
+          size="lg"
           onClick={onStartLearning}
-          className="w-full rounded-xl h-14 text-lg shadow-lg hover:shadow-xl transition-shadow bg-gradient-to-r from-primary to-secondary font-[Poppins]"
+          className="w-full rounded-xl h-14 text-lg shadow-lg hover:shadow-xl transition-shadow bg-gradient-to-r from-primary to-secondary"
         >
-          Continue Learning
+          {t('home.continueLearning')}
         </Button>
       </div>
 
@@ -89,47 +89,24 @@ export function HomePage({ onStartLearning }: HomePageProps) {
         <div className="bg-card rounded-2xl p-4 text-center shadow-sm border border-border">
           <div className="text-2xl mb-1">🎯</div>
           <div className="text-2xl">0</div>
-          <div className="text-xs text-muted-foreground mt-1 font-[Poppins]">Lessons</div>
+          <div className="text-xs text-muted-foreground mt-1">{t('home.stats.lessons')}</div>
         </div>
 
         <div className="bg-card rounded-2xl p-4 text-center shadow-sm border border-border">
           <div className="text-2xl mb-1">✋</div>
           <div className="text-2xl">0</div>
-          <div className="text-xs text-muted-foreground mt-1 font-[Poppins]">Signs</div>
+          <div className="text-xs text-muted-foreground mt-1">{t('home.stats.signs')}</div>
         </div>
 
         <div className="bg-card rounded-2xl p-4 text-center shadow-sm border border-border">
           <div className="text-2xl mb-1">⭐</div>
           <div className="text-2xl">0</div>
-          <div className="text-xs text-muted-foreground mt-1 font-[Poppins]">Stars</div>
+          <div className="text-xs text-muted-foreground mt-1">{t('home.stats.stars')}</div>
         </div>
       </div>
 
       {/* Features Highlight */}
-      <div className="bg-card rounded-2xl p-5 shadow-sm border border-border space-y-4">
-        <h3 className="text-lg flex items-center gap-2">
-          <Star className="h-5 w-5 text-accent" />
-          Powered by AI
-        </h3>
-        <ul className="space-y-3 text-sm">
-          <li className="flex gap-3">
-            <span className="text-primary shrink-0">📱</span>
-            <span><strong>AR Learning:</strong> Virtual instructor teaches you in 3D</span>
-          </li>
-          <li className="flex gap-3">
-            <span className="text-secondary shrink-0">🤖</span>
-            <span><strong>Signy AI:</strong> Practice conversations with AI buddy</span>
-          </li>
-          <li className="flex gap-3">
-            <span className="text-accent shrink-0">📚</span>
-            <span><strong>Structured Lessons:</strong> Learn workplace-specific signs</span>
-          </li>
-          <li className="flex gap-3">
-            <span className="text-primary shrink-0">🎯</span>
-            <span><strong>Smart Practice:</strong> Adaptive quizzes track progress</span>
-          </li>
-        </ul>
-      </div>
+
     </div>
   );
 }

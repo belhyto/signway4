@@ -1,0 +1,1 @@
+const I="ykajukaaqyjrofbfjyqw",c="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlrYWp1a2FhcXlqcm9mYmZqeXF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkzODUwMTEsImV4cCI6MjA3NDk2MTAxMX0.eUjoE0elNh55WM6q-R6uT4j6L8OPBbUA20k12X3Ivgk";export{I as projectId,c as publicAnonKey};

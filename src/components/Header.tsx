@@ -1,4 +1,5 @@
-import { Settings } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Settings, Download } from 'lucide-react';
 import { Button } from './ui/button';
 import { useLanguage } from './LanguageProvider';
 import { LanguageSelector } from './LanguageSelector';
@@ -12,8 +13,94 @@ interface HeaderProps {
   onEnvironmentChange?: (environment: 'school' | 'work' | 'home') => void;
 }
 
+// Extend Window interface for beforeinstallprompt
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
+}
+
+// Declare global window property
+declare global {
+  interface Window {
+    deferredPrompt?: BeforeInstallPromptEvent;
+  }
+}
+
 export function Header({ onSettingsClick, title, environment, onEnvironmentChange }: HeaderProps) {
   const { t } = useLanguage();
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [showInstallButton, setShowInstallButton] = useState(false);
+
+  useEffect(() => {
+    // Check if already installed
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+    const isInWebAppiOS = (window.navigator as any).standalone === true;
+
+    if (isStandalone || isInWebAppiOS) {
+      console.log('App is already installed');
+      setShowInstallButton(false);
+      return;
+    }
+
+    // Handler for beforeinstallprompt event
+    const handler = (e: Event) => {
+      console.log('beforeinstallprompt event fired');
+      // Prevent the mini-infobar from appearing on mobile
+      e.preventDefault();
+      // Stash the event so it can be triggered later
+      const promptEvent = e as BeforeInstallPromptEvent;
+      setDeferredPrompt(promptEvent);
+      window.deferredPrompt = promptEvent;
+      setShowInstallButton(true);
+    };
+
+    // Listen for the beforeinstallprompt event
+    window.addEventListener('beforeinstallprompt', handler);
+
+    // Check if the event was already fired before component mounted
+    if (window.deferredPrompt) {
+      console.log('Using existing deferredPrompt');
+      setDeferredPrompt(window.deferredPrompt);
+      setShowInstallButton(true);
+    }
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handler);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) {
+      console.log('No deferred prompt available');
+      return;
+    }
+
+    console.log('Showing install prompt');
+
+    try {
+      // Show the install prompt
+      await deferredPrompt.prompt();
+
+      // Wait for the user to respond to the prompt
+      const { outcome } = await deferredPrompt.userChoice;
+
+      console.log(`User response to install prompt: ${outcome}`);
+
+      if (outcome === 'accepted') {
+        console.log('User accepted the install prompt');
+      } else {
+        console.log('User dismissed the install prompt');
+      }
+    } catch (error) {
+      console.error('Error showing install prompt:', error);
+    }
+
+    // Clear the deferredPrompt
+    setDeferredPrompt(null);
+    window.deferredPrompt = undefined;
+    setShowInstallButton(false);
+  };
 
   return (
     <header className="sticky top-0 z-40 w-full bg-card/95 backdrop-blur-lg border-b border-border shadow-sm">
@@ -25,15 +112,37 @@ export function Header({ onSettingsClick, title, environment, onEnvironmentChang
           {title ? (
             <h1 className="text-lg sm:text-2xl truncate">{title}</h1>
           ) : (
-            <h1 className="text-lg sm:text-2xl leading-tight truncate font-normal font-[Poppins]">
+            <h1 className="text-lg sm:text-2xl leading-tight truncate font-normal">
               Signway
             </h1>
           )}
         </div>
 
         <div className="flex items-center gap-1 sm:gap-2">
+          {showInstallButton && (
+            <Button
+              variant="default"
+              size="sm"
+              onClick={handleInstallClick}
+              className="bg-primary hover:bg-primary/90 text-white hidden sm:flex"
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Install App
+            </Button>
+          )}
+          {showInstallButton && (
+            <Button
+              variant="default"
+              size="icon"
+              onClick={handleInstallClick}
+              className="bg-primary hover:bg-primary/90 text-white sm:hidden rounded-full h-9 w-9"
+              aria-label="Install App"
+            >
+              <Download className="h-4 w-4" />
+            </Button>
+          )}
           {environment && onEnvironmentChange && (
-            <EnvironmentSwitcher 
+            <EnvironmentSwitcher
               currentEnvironment={environment}
               onEnvironmentChange={onEnvironmentChange}
             />

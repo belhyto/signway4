@@ -8,13 +8,13 @@ export default {
   'theme.dark': 'डार्क मोड',
   'theme.highContrast': 'उच्च कंट्रास्ट',
   'settings.accessibility': 'पहुँच सेटिंग्स खोलें',
-  
+
   // Navigation
   'nav.home': 'होम',
   'nav.lessons': 'पाठ',
   'nav.dictionary': 'शब्दकोश',
   'nav.practice': 'अभ्यास',
-  
+
   // Home Page
   'home.welcome': 'ISL सीखें में आपका स्वागत है',
   'home.description': 'कार्यस्थल संचार के लिए भारतीय सांकेतिक भाषा (ISL) सीखें। चाहे आप बधिर हों, मूक हों, या सक्षम कर्मचारी, यह प्लेटफ़ॉर्म आपको अपने सहकर्मियों के साथ प्रभावी ढंग से संवाद करने में मदद करता है।',
@@ -26,7 +26,7 @@ export default {
   'home.progress.lessonsCompleted': 'पाठ पूर्ण',
   'home.progress.signsLearned': 'संकेत सीखे',
   'home.progress.practiceSessions': 'अभ्यास सत्र',
-  
+
   // Features
   'features.lessons.title': 'संरचित पाठ',
   'features.lessons.description': 'अभिवादन, बैठकें, सामान्य वाक्यांश और पेशेवर शब्दावली को कवर करने वाले संगठित पाठों के माध्यम से कार्यस्थल-विशिष्ट ISL संकेत सीखें।',
@@ -36,7 +36,7 @@ export default {
   'features.inclusive.description': 'पहुँच को ध्यान में रखकर बनाया गया। उच्च कंट्रास्ट मोड, समायोज्य टेक्स्ट आकार, स्क्रीन रीडर समर्थन और कीबोर्ड नेविगेशन की सुविधा।',
   'features.tracking.title': 'प्रगति ट्रैक करें',
   'features.tracking.description': 'विस्तृत प्रगति ट्रैकिंग के साथ अपनी सीखने की यात्रा की निगरानी करें। नए संकेतों में महारत हासिल करने और पाठ पूरा करने पर उपलब्धियाँ अर्जित करें।',
-  
+
   // Lessons Page
   'lessons.title': 'पाठ',
   'lessons.description': 'संरचित कार्यस्थल पाठों के माध्यम से भारतीय सांकेतिक भाषा में महारत हासिल करें',
@@ -46,12 +46,12 @@ export default {
   'lessons.viewSigns': 'संकेत देखें',
   'lessons.signs': 'संकेत',
   'lessons.completed': 'पूर्ण',
-  
+
   // Lesson Categories
   'category.basics': 'मूल बातें',
   'category.professional': 'पेशेवर',
   'category.workplace': 'कार्यस्थल',
-  
+
   // Lesson Titles
   'lesson.greetings.title': 'बुनियादी अभिवादन',
   'lesson.greetings.description': 'कार्यस्थल के लिए आवश्यक अभिवादन सीखें',
@@ -65,7 +65,7 @@ export default {
   'lesson.office.description': 'कार्यालय स्थानों और उपकरणों से संबंधित संकेत',
   'lesson.time.title': 'समय और शेड्यूलिंग',
   'lesson.time.description': 'समय और शेड्यूल के बारे में संवाद करें',
-  
+
   // Dictionary Page
   'dictionary.title': 'ISL शब्दकोश',
   'dictionary.description': 'कार्यस्थल संचार के लिए भारतीय सांकेतिक भाषा संकेत ब्राउज़ करें और खोजें',
@@ -78,7 +78,7 @@ export default {
   'dictionary.category.professional': 'पेशेवर',
   'dictionary.category.office': 'कार्यालय',
   'dictionary.category.time': 'समय',
-  
+
   // Practice Page
   'practice.title': 'अभ्यास प्रश्नोत्तरी',
   'practice.description': 'भारतीय सांकेतिक भाषा के अपने ज्ञान का परीक्षण करें',
@@ -90,16 +90,10 @@ export default {
   'practice.viewResults': 'परिणाम देखें',
   'practice.correct': '✓ सही! बहुत बढ़िया।',
   'practice.incorrect': '✗ गलत। सही उत्तर है:',
-  'practice.complete.title': 'अभ्यास पूर्ण!',
-  'practice.complete.description': 'यहाँ आपका प्रदर्शन है',
-  'practice.complete.correctAnswers': 'सही उत्तर',
-  'practice.complete.percentage': 'स्कोर',
-  'practice.complete.correct': 'सही',
-  'practice.complete.incorrect': 'गलत',
   'practice.again': 'फिर से अभ्यास करें',
   'practice.questionPrompt': 'संकेत करने का सही तरीका क्या है:',
   'practice.selectCorrect': 'नीचे सही विवरण चुनें',
-  
+
   // Accessibility Settings
   'accessibility.title': 'पहुँच सेटिंग्स',
   'accessibility.description': 'अपनी आवश्यकताओं के अनुसार ऐप को अनुकूलित करें',
@@ -117,7 +111,7 @@ export default {
   'accessibility.feature.highContrast': 'उच्च कंट्रास्ट मोड उपलब्ध',
   'accessibility.feature.captions': 'सभी वीडियो सामग्री के लिए कैप्शन',
   'accessibility.feature.compatible': 'स्क्रीन रीडर के साथ संगत',
-  
+
   // Language Settings
   'language.title': 'भाषा / Language',
   'language.description': 'अपनी पसंदीदा भाषा चुनें',
@@ -125,16 +119,16 @@ export default {
   'language.bhashini.description': 'भाषिणी API का उपयोग करके AI-संचालित अनुवाद सक्षम करें',
   'language.bhashini.setup': 'भाषिणी सेटअप करें',
   'language.bhashini.configured': 'भाषिणी API कॉन्फ़िगर किया गया',
-  
+
   // Common
   'common.skipToMain': 'मुख्य सामग्री पर जाएं',
-  
+
   // Environment
   'environment.school': 'स्कूल',
   'environment.work': 'कार्यालय',
   'environment.home': 'घर',
   'environment.switch': 'सीखने का वातावरण बदलें',
-  
+
   // Learning Paths
   'learningPath.school.title': 'स्कूल सीखने का मार्ग',
   'learningPath.school.subtitle': 'शैक्षणिक वातावरण के लिए ISL में महारत हासिल करें',
@@ -142,7 +136,7 @@ export default {
   'learningPath.work.subtitle': 'कार्यस्थल की सफलता के लिए पेशेवर ISL',
   'learningPath.home.title': 'घर सीखने का मार्ग',
   'learningPath.home.subtitle': 'ISL के माध्यम से परिवार से जुड़ें',
-  
+
   'learningPath.overallProgress': 'कुल प्रगति',
   'learningPath.totalLessons': 'कुल पाठ',
   'learningPath.completed': 'पूर्ण',
@@ -152,7 +146,7 @@ export default {
   'learningPath.review': 'समीक्षा',
   'learningPath.continue': 'जारी रखें',
   'learningPath.startLesson': 'पाठ शुरू करें',
-  
+
   // School Lessons
   'lesson.school.classroomBasics': 'कक्षा की मूल बातें',
   'lesson.school.classroomBasics.desc': 'कक्षा संचार के लिए आवश्यक संकेत',
@@ -166,7 +160,7 @@ export default {
   'lesson.school.homework.desc': 'शैक्षणिक शब्दावली और वाक्यांश',
   'lesson.school.events': 'स्कूल कार्यक्रम',
   'lesson.school.events.desc': 'वार्षिक दिवस, परीक्षा, अभिभावक बैठकें',
-  
+
   // Work Lessons
   'lesson.work.greetings': 'कार्यालय अभिवादन और परिचय',
   'lesson.work.greetings.desc': 'स्वयं को बधाई देने और पेश करने के पेशेवर तरीके',
@@ -180,7 +174,7 @@ export default {
   'lesson.work.presentations.desc': 'पेशेवर प्रस्तुति शब्दावली',
   'lesson.work.social': 'ब्रेक रूम और सामाजिक',
   'lesson.work.social.desc': 'आकस्मिक कार्यस्थल वार्तालाप',
-  
+
   // Home Lessons
   'lesson.home.family': 'परिवार के सदस्य',
   'lesson.home.family.desc': 'रिश्तेदारों और पारिवारिक संबंधों के संकेत',
@@ -194,25 +188,25 @@ export default {
   'lesson.home.entertainment.desc': 'टीवी, खेल, शौक, और आराम',
   'lesson.home.occasions': 'विशेष अवसर',
   'lesson.home.occasions.desc': 'त्योहार, जन्मदिन, और उत्सव',
-  
+
   // Learning Tips
   'tips.school.title': 'स्कूल सीखने के टिप्स',
   'tips.school.1': 'आत्मविश्वास बनाने के लिए सहपाठियों के साथ अभ्यास करें',
   'tips.school.2': 'पहले विषय-विशिष्ट शब्दावली पर ध्यान केंद्रित करें',
   'tips.school.3': 'प्रस्तुतियों और समूह कार्य के दौरान संकेतों का उपयोग करें',
-  
+
   'tips.work.title': 'पेशेवर टिप्स',
   'tips.work.1': 'सहकर्मियों के साथ बैठक परिदृश्यों का अभ्यास करें',
   'tips.work.2': 'अपने क्षेत्र के लिए उद्योग-विशिष्ट शब्दावली सीखें',
   'tips.work.3': 'बुनियादी अभिवादन के साथ शुरू करें और आत्मविश्वास बनाएं',
   'tips.work.4': 'संचार को सामान्य बनाने के लिए टीम बैठकों के दौरान ISL का उपयोग करें',
-  
+
   'tips.home.title': 'पारिवारिक सीखने क�� टिप्स',
   'tips.home.1': 'पारिवारिक भोजन और सभाओं के दौरान अभ्यास करें',
   'tips.home.2': 'सभी को सीखने में शामिल करें - इसे मजेदार बनाएं!',
   'tips.home.3': 'सरल दैनिक बातचीत के साथ शुरू करें',
   'tips.home.4': 'एक संकेत-अनुकूल घर का वातावरण बनाएं',
-  
+
   // Profile
   'profile.title': 'प्रोफ़ाइल',
   'profile.name': 'नाम',
@@ -237,7 +231,7 @@ export default {
   'profile.selectEmoji': 'इमोजी चुनें',
   'profile.selectColor': 'पृष्ठभूमि रंग चुनें',
   'profile.saveAvatar': 'अवतार सहेजें',
-  
+
   // Badges
   'badge.firstLesson': 'पहले कदम',
   'badge.firstLesson.desc': 'अपना पहला पाठ पूरा करें',

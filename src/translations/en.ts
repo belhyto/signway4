@@ -8,13 +8,13 @@ export default {
   'theme.dark': 'Dark Mode',
   'theme.highContrast': 'High Contrast',
   'settings.accessibility': 'Open accessibility settings',
-  
+
   // Navigation
   'nav.home': 'Home',
   'nav.lessons': 'Lessons',
   'nav.dictionary': 'Dictionary',
   'nav.practice': 'Practice',
-  
+
   // Home Page
   'home.welcome': 'Welcome to ISL Learn',
   'home.description': 'Learn Indian Sign Language (ISL) for workplace communication. Whether you\'re deaf, mute, or an abled employee, this platform helps you communicate effectively with your colleagues.',
@@ -26,7 +26,28 @@ export default {
   'home.progress.lessonsCompleted': 'Lessons Completed',
   'home.progress.signsLearned': 'Signs Learned',
   'home.progress.practiceSessions': 'Practice Sessions',
-  
+  'home.streak': 'Streak',
+  'home.days': 'days',
+  'home.totalXP': 'Total XP',
+  'home.points': 'points',
+  'home.dailyGoal': 'Daily Goal',
+  'home.xpEarnedToday': '{xp}/20 XP earned today',
+  'home.welcomeTitle': 'Welcome to Signway!',
+  'home.welcomeSubtitle': 'Master Indian Sign Language with AI-powered tools',
+  'home.continueLearning': 'Continue Learning',
+  'home.stats.lessons': 'Lessons',
+  'home.stats.signs': 'Signs',
+  'home.stats.stars': 'Stars',
+  'home.poweredByAI': 'Powered by AI',
+  'home.features.ar': 'AR Learning:',
+  'home.features.arDesc': 'Virtual instructor teaches you in 3D',
+  'home.features.signy': 'Signy AI:',
+  'home.features.signyDesc': 'Practice conversations with AI buddy',
+  'home.features.structured': 'Structured Lessons:',
+  'home.features.structuredDesc': 'Learn workplace-specific signs',
+  'home.features.practice': 'Smart Practice:',
+  'home.features.practiceDesc': 'Adaptive quizzes track progress',
+
   // Features
   'features.lessons.title': 'Structured Lessons',
   'features.lessons.description': 'Learn workplace-specific ISL signs through organized lessons covering greetings, meetings, common phrases, and professional vocabulary.',
@@ -36,7 +57,7 @@ export default {
   'features.inclusive.description': 'Built with accessibility in mind. Features high contrast mode, adjustable text sizes, screen reader support, and keyboard navigation.',
   'features.tracking.title': 'Track Progress',
   'features.tracking.description': 'Monitor your learning journey with detailed progress tracking. Earn achievements as you master new signs and complete lessons.',
-  
+
   // Lessons Page
   'lessons.title': 'Lessons',
   'lessons.description': 'Master Indian Sign Language through structured workplace lessons',
@@ -46,12 +67,12 @@ export default {
   'lessons.viewSigns': 'View Signs',
   'lessons.signs': 'signs',
   'lessons.completed': 'Completed',
-  
+
   // Lesson Categories
   'category.basics': 'Basics',
   'category.professional': 'Professional',
   'category.workplace': 'Workplace',
-  
+
   // Lesson Titles
   'lesson.greetings.title': 'Basic Greetings',
   'lesson.greetings.description': 'Learn essential greetings for the workplace',
@@ -65,7 +86,7 @@ export default {
   'lesson.office.description': 'Signs related to office spaces and equipment',
   'lesson.time.title': 'Time & Scheduling',
   'lesson.time.description': 'Communicate about time and schedules',
-  
+
   // Dictionary Page
   'dictionary.title': 'ISL Dictionary',
   'dictionary.description': 'Browse and search Indian Sign Language signs for workplace communication',
@@ -78,7 +99,7 @@ export default {
   'dictionary.category.professional': 'Professional',
   'dictionary.category.office': 'Office',
   'dictionary.category.time': 'Time',
-  
+
   // Practice Page
   'practice.title': 'Practice Quiz',
   'practice.description': 'Test your knowledge of Indian Sign Language',
@@ -99,7 +120,7 @@ export default {
   'practice.again': 'Practice Again',
   'practice.questionPrompt': 'What is the correct way to sign:',
   'practice.selectCorrect': 'Select the correct description below',
-  
+
   // Accessibility Settings
   'accessibility.title': 'Accessibility Settings',
   'accessibility.description': 'Customize the app to suit your needs',
@@ -117,7 +138,7 @@ export default {
   'accessibility.feature.highContrast': 'High contrast mode available',
   'accessibility.feature.captions': 'Captions for all video content',
   'accessibility.feature.compatible': 'Compatible with screen readers',
-  
+
   // Language Settings
   'language.title': 'Language / भाषा',
   'language.description': 'Select your preferred language',
@@ -125,16 +146,34 @@ export default {
   'language.bhashini.description': 'Enable AI-powered translation using Bhashini API',
   'language.bhashini.setup': 'Setup Bhashini',
   'language.bhashini.configured': 'Bhashini API Configured',
-  
+
   // Common
   'common.skipToMain': 'Skip to main content',
-  
+  'common.back': 'Back',
+  'common.continue': 'Continue',
+
+  // Welcome Screen
+  'welcome.title': 'Welcome to Signway',
+  'welcome.subtitle': 'Your Path to Indian Sign Language Fluency',
+  'welcome.getStarted': 'Get Started',
+  'welcome.signIn': 'Already Have an Account',
+  'welcome.description': 'Learn ISL for workplace, school, or home environments',
+  'welcome.chooseLanguage': 'Choose Your Language',
+  'welcome.languageDescription': 'Select your preferred language for the app',
+  'welcome.chooseEnvironment': 'Choose Your Environment',
+  'welcome.environmentDescription': 'Where will you be using ISL most?',
+  'welcome.school': 'School',
+  'welcome.schoolDesc': 'For students and educators',
+  'welcome.work': 'Work',
+  'welcome.workDesc': 'For workplace communication',
+  'welcome.home': 'Home',
+  'welcome.homeDesc': 'For family and friends',
   // Environment
   'environment.school': 'School',
   'environment.work': 'Work',
   'environment.home': 'Home',
   'environment.switch': 'Switch learning environment',
-  
+
   // Learning Paths
   'learningPath.school.title': 'School Learning Path',
   'learningPath.school.subtitle': 'Master ISL for academic environments',
@@ -142,7 +181,7 @@ export default {
   'learningPath.work.subtitle': 'Professional ISL for workplace success',
   'learningPath.home.title': 'Home Learning Path',
   'learningPath.home.subtitle': 'Connect with family through ISL',
-  
+
   'learningPath.overallProgress': 'Overall Progress',
   'learningPath.totalLessons': 'Total Lessons',
   'learningPath.completed': 'Completed',
@@ -152,7 +191,7 @@ export default {
   'learningPath.review': 'Review',
   'learningPath.continue': 'Continue',
   'learningPath.startLesson': 'Start Lesson',
-  
+
   // School Lessons
   'lesson.school.classroomBasics': 'Classroom Basics',
   'lesson.school.classroomBasics.desc': 'Essential signs for classroom communication',
@@ -166,7 +205,7 @@ export default {
   'lesson.school.homework.desc': 'Academic vocabulary and phrases',
   'lesson.school.events': 'School Events',
   'lesson.school.events.desc': 'Annual day, exams, parent meetings',
-  
+
   // Work Lessons
   'lesson.work.greetings': 'Office Greetings & Introductions',
   'lesson.work.greetings.desc': 'Professional ways to greet and introduce yourself',
@@ -180,7 +219,7 @@ export default {
   'lesson.work.presentations.desc': 'Professional presentation vocabulary',
   'lesson.work.social': 'Break Room & Social',
   'lesson.work.social.desc': 'Casual workplace conversations',
-  
+
   // Home Lessons
   'lesson.home.family': 'Family Members',
   'lesson.home.family.desc': 'Signs for relatives and family relationships',
@@ -194,25 +233,25 @@ export default {
   'lesson.home.entertainment.desc': 'TV, games, hobbies, and relaxation',
   'lesson.home.occasions': 'Special Occasions',
   'lesson.home.occasions.desc': 'Festivals, birthdays, and celebrations',
-  
+
   // Learning Tips
   'tips.school.title': 'School Learning Tips',
   'tips.school.1': 'Practice with classmates to build confidence',
   'tips.school.2': 'Focus on subject-specific vocabulary first',
   'tips.school.3': 'Use signs during presentations and group work',
-  
+
   'tips.work.title': 'Professional Tips',
   'tips.work.1': 'Practice meeting scenarios with colleagues',
   'tips.work.2': 'Learn industry-specific vocabulary for your field',
   'tips.work.3': 'Start with basic greetings and build confidence',
   'tips.work.4': 'Use ISL during team meetings to normalize communication',
-  
+
   'tips.home.title': 'Family Learning Tips',
   'tips.home.1': 'Practice during family meals and gatherings',
   'tips.home.2': 'Involve everyone in learning - make it fun!',
   'tips.home.3': 'Start with simple daily conversations',
   'tips.home.4': 'Create a sign-friendly home environment',
-  
+
   // Profile
   'profile.title': 'Profile',
   'profile.name': 'Name',
@@ -238,7 +277,7 @@ export default {
   'profile.selectEmoji': 'Select Emoji',
   'profile.selectColor': 'Select Background Color',
   'profile.saveAvatar': 'Save Avatar',
-  
+
   // Badges
   'badge.firstLesson': 'First Steps',
   'badge.firstLesson.desc': 'Complete your first lesson',
@@ -252,7 +291,7 @@ export default {
   'badge.perfectScore.desc': 'Score 100% on 5 practice quizzes',
   'badge.monthStreak': 'Dedication Champion',
   'badge.monthStreak.desc': 'Maintain a 30-day learning streak',
-  
+
   // Daily Challenges
   'challenges.title': 'Daily Challenges',
   'challenges.subtitle': 'Complete today\'s quests to earn XP and maintain your streak!',
@@ -268,7 +307,7 @@ export default {
   'challenges.earned': 'Earned',
   'challenges.allCompleted.title': '🎉 All Challenges Completed!',
   'challenges.allCompleted.description': 'Fantastic work! You\'ve completed all of today\'s challenges. Keep up the great work!',
-  
+
   // Challenge Types
   'challenges.learnNewSigns.title': 'Learn 3 New Signs',
   'challenges.learnNewSigns.description': 'Learn three new workplace signs today',
@@ -276,12 +315,12 @@ export default {
   'challenges.practiceSession.description': 'Complete at least one practice quiz',
   'challenges.perfectScore.title': 'Perfect Practice',
   'challenges.perfectScore.description': 'Score 100% on any practice quiz',
-  
+
   // Challenge Difficulty
   'challenges.difficulty.easy': 'Easy',
   'challenges.difficulty.medium': 'Medium',
   'challenges.difficulty.hard': 'Hard',
-  
+
   // Challenge Calendar
   'challenges.calendar.title': 'Challenge Calendar',
   'challenges.calendar.currentStreak': 'Current Streak',

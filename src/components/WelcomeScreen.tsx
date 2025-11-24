@@ -4,6 +4,19 @@ import { Briefcase, Home, School, Globe, ArrowRight, LogIn } from 'lucide-react'
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Language, languageNames } from './LanguageProvider';
+import enTranslations from '../translations/en';
+import hiTranslations from '../translations/hi';
+import mrTranslations from '../translations/mr';
+import bnTranslations from '../translations/bn';
+import taTranslations from '../translations/ta';
+import paTranslations from '../translations/pa';
+import guTranslations from '../translations/gu';
+import mlTranslations from '../translations/ml';
+import knTranslations from '../translations/kn';
+import teTranslations from '../translations/te';
+import orTranslations from '../translations/or';
+import asTranslations from '../translations/as';
+import urTranslations from '../translations/ur';
 import logoImage from 'figma:asset/0bac470229d92a29f0f448217f41b3da35bc5c28.png';
 
 interface WelcomeScreenProps {
@@ -14,6 +27,31 @@ interface WelcomeScreenProps {
 export function WelcomeScreen({ onComplete, onSignIn }: WelcomeScreenProps) {
   const [step, setStep] = useState<'welcome' | 'language' | 'environment'>('welcome');
   const [selectedLanguage, setSelectedLanguage] = useState<Language>('en');
+
+  // Create a simple translation function for the welcome screen
+  const getTranslations = (lang: Language) => {
+    const translations = {
+      en: enTranslations,
+      hi: hiTranslations,
+      mr: mrTranslations,
+      bn: bnTranslations,
+      ta: taTranslations,
+      pa: paTranslations,
+      gu: guTranslations,
+      ml: mlTranslations,
+      kn: knTranslations,
+      te: teTranslations,
+      or: orTranslations,
+      as: asTranslations,
+      ur: urTranslations,
+    };
+    return translations[lang] || translations.en;
+  };
+
+  const t = (key: string) => {
+    const translations = getTranslations(selectedLanguage);
+    return translations[key] || key;
+  };
 
   const allLanguages: Language[] = ['en', 'hi', 'mr', 'bn', 'ta', 'pa', 'gu', 'ml', 'kn', 'te', 'or', 'as', 'ur'];
 
@@ -47,7 +85,7 @@ export function WelcomeScreen({ onComplete, onSignIn }: WelcomeScreenProps) {
                   transition={{ delay: 0.3 }}
                   className="text-3xl sm:text-6xl mb-3 sm:mb-4"
                 >
-                  Welcome to Signway
+                  {t('welcome.title')}
                 </motion.h1>
                 <motion.p
                   initial={{ opacity: 0 }}
@@ -55,7 +93,7 @@ export function WelcomeScreen({ onComplete, onSignIn }: WelcomeScreenProps) {
                   transition={{ delay: 0.4 }}
                   className="text-base sm:text-2xl text-muted-foreground px-2"
                 >
-                  Your Path to Indian Sign Language Fluency
+                  {t('welcome.subtitle')}
                 </motion.p>
               </div>
 
@@ -68,10 +106,10 @@ export function WelcomeScreen({ onComplete, onSignIn }: WelcomeScreenProps) {
                 <Button
                   onClick={() => setStep('language')}
                   size="lg"
-                  className="h-12 sm:h-16 text-base sm:text-xl rounded-2xl shadow-lg hover:shadow-xl transition-all font-[Poppins] px-6 sm:px-8"
+                  className="h-12 sm:h-16 text-base sm:text-xl rounded-2xl shadow-lg hover:shadow-xl transition-all px-6 sm:px-8"
                 >
                   <ArrowRight className="mr-2 h-4 w-4 sm:h-6 sm:w-6" />
-                  Get Started
+                  {t('welcome.getStarted')}
                 </Button>
 
                 <Button
@@ -81,7 +119,7 @@ export function WelcomeScreen({ onComplete, onSignIn }: WelcomeScreenProps) {
                   className="h-12 sm:h-16 text-base sm:text-xl rounded-2xl border-2 hover:bg-accent/50 transition-all px-6 sm:px-8"
                 >
                   <LogIn className="mr-2 h-4 w-4 sm:h-6 sm:w-6" />
-                  <span className="truncate font-[Poppins]">Already Have an Account</span>
+                  <span className="truncate">{t('welcome.signIn')}</span>
                 </Button>
               </motion.div>
 
@@ -91,7 +129,7 @@ export function WelcomeScreen({ onComplete, onSignIn }: WelcomeScreenProps) {
                 transition={{ delay: 0.6 }}
                 className="text-center text-sm sm:text-base text-muted-foreground mt-6 sm:mt-8"
               >
-                Learn ISL for workplace, school, or home environments
+                {t('welcome.description')}
               </motion.p>
             </CardContent>
           </Card>
@@ -113,9 +151,9 @@ export function WelcomeScreen({ onComplete, onSignIn }: WelcomeScreenProps) {
             <CardContent className="p-6 sm:p-12">
               <div className="text-center mb-6 sm:mb-8">
                 <Globe className="h-12 w-12 sm:h-16 sm:w-16 mx-auto mb-3 sm:mb-4 text-primary" />
-                <h2 className="text-2xl sm:text-5xl mb-2 font-[Poppins]">Choose Your Language</h2>
-                <p className="text-sm sm:text-xl text-muted-foreground font-[Poppins]">
-                  Select your preferred language for the app
+                <h2 className="text-2xl sm:text-5xl mb-2">{t('welcome.chooseLanguage')}</h2>
+                <p className="text-sm sm:text-xl text-muted-foreground">
+                  {t('welcome.languageDescription')}
                 </p>
               </div>
 
@@ -126,15 +164,14 @@ export function WelcomeScreen({ onComplete, onSignIn }: WelcomeScreenProps) {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setSelectedLanguage(lang)}
-                    className={`p-4 sm:p-6 rounded-2xl border-2 transition-all ${
-                      selectedLanguage === lang
+                    className={`p-4 sm:p-6 rounded-2xl border-2 transition-all ${selectedLanguage === lang
                         ? 'border-primary bg-primary/10 shadow-lg'
                         : 'border-border hover:border-primary/50 bg-background'
-                    }`}
+                      }`}
                   >
                     <div className="text-center">
-                      <div className="text-lg sm:text-2xl mb-1 sm:mb-2 truncate font-[Poppins]">{languageNames[lang].native}</div>
-                      <div className="text-xs sm:text-sm text-muted-foreground truncate font-[Poppins]">
+                      <div className="text-lg sm:text-2xl mb-1 sm:mb-2 truncate">{languageNames[lang].native}</div>
+                      <div className="text-xs sm:text-sm text-muted-foreground truncate">
                         {languageNames[lang].english}
                       </div>
                     </div>
@@ -147,16 +184,16 @@ export function WelcomeScreen({ onComplete, onSignIn }: WelcomeScreenProps) {
                   onClick={() => setStep('welcome')}
                   variant="outline"
                   size="lg"
-                  className="h-12 sm:h-14 text-base sm:text-lg rounded-2xl px-6 sm:px-8 font-[Poppins]"
+                  className="h-12 sm:h-14 text-base sm:text-lg rounded-2xl px-6 sm:px-8"
                 >
-                  Back
+                  {t('common.back')}
                 </Button>
                 <Button
                   onClick={() => setStep('environment')}
                   size="lg"
-                  className="h-12 sm:h-14 text-base sm:text-lg rounded-2xl shadow-lg px-6 sm:px-8 font-[Poppins]"
+                  className="h-12 sm:h-14 text-base sm:text-lg rounded-2xl shadow-lg px-6 sm:px-8"
                 >
-                  Continue
+                  {t('common.continue')}
                   <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
               </div>
@@ -179,9 +216,9 @@ export function WelcomeScreen({ onComplete, onSignIn }: WelcomeScreenProps) {
         <Card className="bg-white/95 backdrop-blur-sm shadow-2xl border-0">
           <CardContent className="p-6 sm:p-12">
             <div className="text-center mb-8 sm:mb-12">
-              <h2 className="text-2xl sm:text-5xl mb-2 sm:mb-4">Choose Your Environment</h2>
+              <h2 className="text-2xl sm:text-5xl mb-2 sm:mb-4">{t('welcome.chooseEnvironment')}</h2>
               <p className="text-sm sm:text-xl text-muted-foreground">
-                Where will you be using ISL most?
+                {t('welcome.environmentDescription')}
               </p>
             </div>
 
@@ -195,9 +232,9 @@ export function WelcomeScreen({ onComplete, onSignIn }: WelcomeScreenProps) {
                 <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                 <div className="relative z-10">
                   <School className="h-12 w-12 sm:h-20 sm:w-20 mx-auto mb-3 sm:mb-4" />
-                  <h3 className="text-xl sm:text-3xl mb-1 sm:mb-2">School</h3>
+                  <h3 className="text-xl sm:text-3xl mb-1 sm:mb-2">{t('welcome.school')}</h3>
                   <p className="text-sm sm:text-base text-white/90">
-                    For students and educators
+                    {t('welcome.schoolDesc')}
                   </p>
                 </div>
               </motion.button>
@@ -211,9 +248,9 @@ export function WelcomeScreen({ onComplete, onSignIn }: WelcomeScreenProps) {
                 <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                 <div className="relative z-10">
                   <Briefcase className="h-12 w-12 sm:h-20 sm:w-20 mx-auto mb-3 sm:mb-4" />
-                  <h3 className="text-xl sm:text-3xl mb-1 sm:mb-2">Work</h3>
+                  <h3 className="text-xl sm:text-3xl mb-1 sm:mb-2">{t('welcome.work')}</h3>
                   <p className="text-sm sm:text-base text-white/90">
-                    For workplace communication
+                    {t('welcome.workDesc')}
                   </p>
                 </div>
               </motion.button>
@@ -227,9 +264,9 @@ export function WelcomeScreen({ onComplete, onSignIn }: WelcomeScreenProps) {
                 <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                 <div className="relative z-10">
                   <Home className="h-12 w-12 sm:h-20 sm:w-20 mx-auto mb-3 sm:mb-4" />
-                  <h3 className="text-xl sm:text-3xl mb-1 sm:mb-2">Home</h3>
+                  <h3 className="text-xl sm:text-3xl mb-1 sm:mb-2">{t('welcome.home')}</h3>
                   <p className="text-sm sm:text-base text-white/90">
-                    For family and friends
+                    {t('welcome.homeDesc')}
                   </p>
                 </div>
               </motion.button>
@@ -242,7 +279,7 @@ export function WelcomeScreen({ onComplete, onSignIn }: WelcomeScreenProps) {
                 size="lg"
                 className="h-12 sm:h-14 text-base sm:text-lg rounded-2xl px-6 sm:px-8"
               >
-                Back
+                {t('common.back')}
               </Button>
             </div>
           </CardContent>

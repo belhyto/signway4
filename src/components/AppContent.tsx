@@ -37,7 +37,7 @@ export function AppContent({ environment, onEnvironmentChange }: AppContentProps
     const checkDailyChallenges = () => {
       const today = new Date().toDateString();
       const lastShown = localStorage.getItem('lastChallengeModalShown');
-      
+
       // Show challenges if it's a new day and user hasn't seen them today
       if (lastShown !== today) {
         // Delay showing the modal slightly to let the app load
@@ -66,6 +66,8 @@ export function AppContent({ environment, onEnvironmentChange }: AppContentProps
         }
         // Fallback to generic lessons page
         return <LessonsPage />;
+      case 'practice':
+        return <PracticePage />;
       case 'ar':
         return <ARLearningPage />;
       case 'signy':
@@ -79,12 +81,12 @@ export function AppContent({ environment, onEnvironmentChange }: AppContentProps
 
   return (
     <div className="h-screen flex flex-col bg-background overflow-hidden">
-      <Header 
-        onSettingsClick={() => setSettingsOpen(true)} 
+      <Header
+        onSettingsClick={() => setSettingsOpen(true)}
         environment={environment}
         onEnvironmentChange={onEnvironmentChange}
       />
-      
+
       {/* Main content area - fills remaining space */}
       <main className="flex-1 overflow-auto pb-14 sm:pb-16" id="main-content">
         <div className="h-full max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
@@ -106,7 +108,7 @@ export function AppContent({ environment, onEnvironmentChange }: AppContentProps
 
       <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
 
-      <AccessibilitySettings 
+      <AccessibilitySettings
         open={settingsOpen}
         onClose={() => setSettingsOpen(false)}
       />

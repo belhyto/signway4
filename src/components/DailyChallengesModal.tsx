@@ -5,11 +5,9 @@ import {
   Target,
   BookOpen,
   Zap,
-  Calendar,
   Flame,
   Star,
   CheckCircle2,
-  X,
   ArrowRight
 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
@@ -34,15 +32,15 @@ interface Challenge {
 interface DailyChallengesModalProps {
   open: boolean;
   onClose: () => void;
-  environment: 'school' | 'work' | 'home' | null;
+  environment: 'school' | 'work' | 'home' | null | undefined;
   onChallengeComplete?: (challengeId: string) => void;
 }
 
-export function DailyChallengesModal({ 
-  open, 
-  onClose, 
+export function DailyChallengesModal({
+  open,
+  onClose,
   environment,
-  onChallengeComplete 
+  onChallengeComplete
 }: DailyChallengesModalProps) {
   const { t } = useLanguage();
   const [challenges, setChallenges] = useState<Challenge[]>([]);
@@ -54,7 +52,7 @@ export function DailyChallengesModal({
     const loadChallenges = () => {
       const today = new Date().toDateString();
       const storedData = localStorage.getItem('dailyChallenges');
-      
+
       if (storedData) {
         const data = JSON.parse(storedData);
         if (data.date === today) {
@@ -63,11 +61,11 @@ export function DailyChallengesModal({
           return;
         }
       }
-      
+
       // Generate new daily challenges
       const newChallenges = generateDailyChallenges(environment);
       setChallenges(newChallenges);
-      
+
       // Save to localStorage
       localStorage.setItem('dailyChallenges', JSON.stringify({
         date: today,
@@ -83,7 +81,7 @@ export function DailyChallengesModal({
         const data = JSON.parse(streakData);
         const today = new Date().toDateString();
         const yesterday = new Date(Date.now() - 86400000).toDateString();
-        
+
         if (data.lastCompletionDate === yesterday || data.lastCompletionDate === today) {
           setStreak(data.streak || 0);
         } else {
@@ -98,9 +96,9 @@ export function DailyChallengesModal({
     }
   }, [open, environment]);
 
-  const generateDailyChallenges = (env: 'school' | 'work' | 'home' | null): Challenge[] => {
+  const generateDailyChallenges = (env: 'school' | 'work' | 'home' | null | undefined): Challenge[] => {
     const baseId = Date.now();
-    
+
     return [
       {
         id: `challenge-${baseId}-1`,
@@ -153,7 +151,7 @@ export function DailyChallengesModal({
       localStorage.setItem('dailyChallenges', JSON.stringify({
         date: today,
         challenges: updated,
-        totalXP: totalXP + updated.find(c => c.id === challengeId)?.xpReward || 0
+        totalXP: totalXP + (updated.find(c => c.id === challengeId)?.xpReward ?? 0)
       }));
 
       // Check if all challenges completed to update streak
@@ -172,34 +170,34 @@ export function DailyChallengesModal({
   const updateStreak = () => {
     const today = new Date().toDateString();
     const streakData = localStorage.getItem('challengeStreak');
-    
+
     let newStreak = 1;
     if (streakData) {
       const data = JSON.parse(streakData);
       const yesterday = new Date(Date.now() - 86400000).toDateString();
-      
+
       if (data.lastCompletionDate === yesterday) {
         newStreak = (data.streak || 0) + 1;
       }
     }
-    
+
     localStorage.setItem('challengeStreak', JSON.stringify({
       streak: newStreak,
       lastCompletionDate: today
     }));
-    
+
     setStreak(newStreak);
   };
 
   const saveChallengeCompletion = () => {
     const today = new Date().toISOString().split('T')[0];
     const completionHistory = localStorage.getItem('challengeCompletionHistory');
-    
+
     let history: { [key: string]: boolean } = {};
     if (completionHistory) {
       history = JSON.parse(completionHistory);
     }
-    
+
     history[today] = true;
     localStorage.setItem('challengeCompletionHistory', JSON.stringify(history));
   };
@@ -236,7 +234,7 @@ export function DailyChallengesModal({
   const allCompleted = challenges.length > 0 && completedCount === challenges.length;
 
   return (
-    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
+    <Dialog open={open} onOpenChange={(isOpen: boolean) => !isOpen && onClose()}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <div className="flex items-center justify-between">
@@ -302,7 +300,7 @@ export function DailyChallengesModal({
           <AnimatePresence mode="popLayout">
             {challenges.map((challenge, index) => {
               const Icon = getChallengeIcon(challenge.type);
-              
+
               return (
                 <motion.div
                   key={challenge.id}
@@ -314,9 +312,8 @@ export function DailyChallengesModal({
                   <Card className={challenge.completed ? 'border-green-500 bg-green-500/5' : ''}>
                     <CardContent className="p-4">
                       <div className="flex items-start gap-4">
-                        <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                          challenge.completed ? 'bg-green-500' : 'bg-primary/10'
-                        }`}>
+                        <div className={`w-12 h-12 rounded-full flex items-center justify-center ${challenge.completed ? 'bg-green-500' : 'bg-primary/10'
+                          }`}>
                           {challenge.completed ? (
                             <CheckCircle2 className="h-6 w-6 text-white" />
                           ) : (
@@ -333,7 +330,7 @@ export function DailyChallengesModal({
                               {t(`challenges.difficulty.${challenge.difficulty}`)}
                             </Badge>
                           </div>
-                          
+
                           <p className="text-sm text-muted-foreground mb-3">
                             {challenge.description}
                           </p>
