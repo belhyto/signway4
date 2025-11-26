@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'motion/react';
 
 interface Question {
   sign: string;
+  videoPath: string;
   correctAnswer: string;
   options: string[];
 }
@@ -13,6 +14,7 @@ interface Question {
 const practiceQuestions: Question[] = [
   {
     sign: 'Hello',
+    videoPath: '/src/assets/s_hello_ai.mp4',
     correctAnswer: 'Wave your hand in a greeting motion',
     options: [
       'Wave your hand in a greeting motion',
@@ -23,6 +25,7 @@ const practiceQuestions: Question[] = [
   },
   {
     sign: 'Thank You',
+    videoPath: '/src/assets/s_thankyou_ai.mp4',
     correctAnswer: 'Touch your chin and move hand forward',
     options: [
       'Wave your hand in a greeting motion',
@@ -33,6 +36,7 @@ const practiceQuestions: Question[] = [
   },
   {
     sign: 'Help',
+    videoPath: '',
     correctAnswer: 'One fist on open palm, lift together',
     options: [
       'Point to yourself',
@@ -43,6 +47,7 @@ const practiceQuestions: Question[] = [
   },
   {
     sign: 'Meeting',
+    videoPath: '',
     correctAnswer: 'Bring fingertips of both hands together',
     options: [
       'Bring fingertips of both hands together',
@@ -53,6 +58,7 @@ const practiceQuestions: Question[] = [
   },
   {
     sign: 'Work',
+    videoPath: '',
     correctAnswer: 'Tap fists together at wrists',
     options: [
       'Type motion with fingers',
@@ -105,7 +111,7 @@ export function PracticePage() {
     const isGood = percentage >= 70;
 
     return (
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         className="px-4 py-6 space-y-6"
@@ -120,13 +126,13 @@ export function PracticePage() {
           <p className="text-muted-foreground">
             {isPerfect ? 'You aced this practice!' : isGood ? 'You did really well!' : 'You\'re improving!'}
           </p>
-          
+
           <div className="text-6xl my-6">
             {score} / {practiceQuestions.length}
           </div>
-          
+
           <Progress value={percentage} className="h-4" />
-          
+
           <div className="grid grid-cols-3 gap-3 pt-4">
             <div className="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl p-4">
               <div className="text-3xl mb-1">{percentage.toFixed(0)}%</div>
@@ -142,8 +148,8 @@ export function PracticePage() {
             </div>
           </div>
 
-          <Button 
-            onClick={handleRestart} 
+          <Button
+            onClick={handleRestart}
             className="w-full rounded-xl h-14 shadow-md"
             size="lg"
           >
@@ -156,7 +162,7 @@ export function PracticePage() {
   }
 
   return (
-    <div className="px-4 py-6 space-y-6">
+    <div className="px-4 py-6 space-y-4">
       {/* Header */}
       <div className="flex items-center gap-3">
         <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-accent to-orange-500 flex items-center justify-center">
@@ -186,16 +192,42 @@ export function PracticePage() {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -20 }}
-          className="bg-card rounded-3xl p-6 shadow-lg border border-border space-y-6"
+          className="space-y-4"
         >
-          {/* Sign Visualization */}
-          <div className="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl p-8 text-center">
-            <span className="text-7xl block mb-3" aria-hidden="true">🤟</span>
-            <h3 className="text-2xl">{question.sign}</h3>
+          {/* Video Display - YouTube Shorts Style */}
+          <div className="relative w-full aspect-[9/16] max-h-[65vh] mx-auto bg-black rounded-3xl overflow-hidden shadow-2xl">
+            {question.videoPath ? (
+              <video
+                key={question.videoPath}
+                className="w-full h-full object-cover"
+                autoPlay
+                loop
+                muted
+                playsInline
+              >
+                <source src={question.videoPath} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                <div className="text-center text-white">
+                  <span className="text-7xl block mb-3" aria-hidden="true">🤟</span>
+                  <h3 className="text-2xl">{question.sign}</h3>
+                </div>
+              </div>
+            )}
+
+            {/* Sign Label Overlay */}
+            <div className="absolute bottom-4 left-4 right-4">
+              <div className="bg-black/60 backdrop-blur-md rounded-2xl px-4 py-2">
+                <h3 className="text-white text-xl font-semibold">{question.sign}</h3>
+              </div>
+            </div>
           </div>
 
-          <div>
-            <p className="text-sm text-muted-foreground mb-4">
+          {/* Question and Options */}
+          <div className="bg-card rounded-3xl p-6 shadow-lg border border-border space-y-4">
+            <p className="text-sm text-muted-foreground">
               Select the correct description:
             </p>
 
@@ -211,23 +243,21 @@ export function PracticePage() {
                     key={idx}
                     onClick={() => !showResult && setSelectedAnswer(option)}
                     disabled={showResult}
-                    className={`w-full text-left p-4 rounded-2xl border-2 transition-all ${
-                      isAnswer
-                        ? 'border-primary bg-primary/10'
-                        : isWrong
+                    className={`w-full text-left p-4 rounded-2xl border-2 transition-all ${isAnswer
+                      ? 'border-primary bg-primary/10'
+                      : isWrong
                         ? 'border-destructive bg-destructive/10'
                         : isSelected
-                        ? 'border-primary bg-primary/5'
-                        : 'border-border hover:border-primary/50'
-                    }`}
+                          ? 'border-primary bg-primary/5'
+                          : 'border-border hover:border-primary/50'
+                      }`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className={`shrink-0 h-6 w-6 rounded-full border-2 flex items-center justify-center ${
-                        isAnswer ? 'bg-primary border-primary' :
+                      <div className={`shrink-0 h-6 w-6 rounded-full border-2 flex items-center justify-center ${isAnswer ? 'bg-primary border-primary' :
                         isWrong ? 'bg-destructive border-destructive' :
-                        isSelected ? 'bg-primary border-primary' :
-                        'border-muted-foreground'
-                      }`}>
+                          isSelected ? 'bg-primary border-primary' :
+                            'border-muted-foreground'
+                        }`}>
                         {(isSelected || isAnswer) && (
                           <div className="h-3 w-3 rounded-full bg-white" />
                         )}
@@ -240,48 +270,47 @@ export function PracticePage() {
                 );
               })}
             </div>
-          </div>
 
-          {/* Feedback */}
-          {showResult && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`p-4 rounded-2xl ${
-                isCorrect 
-                  ? 'bg-primary/10 border-2 border-primary/30' 
+            {/* Feedback */}
+            {showResult && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`p-4 rounded-2xl ${isCorrect
+                  ? 'bg-primary/10 border-2 border-primary/30'
                   : 'bg-destructive/10 border-2 border-destructive/30'
-              }`}
-            >
-              <p className="text-center">
-                {isCorrect ? (
-                  <span className="text-[rgba(0,219,0,1)]">✓ Correct! +10 XP</span>
-                ) : (
-                  <span className="text-destructive">✗ Not quite right. Keep practicing!</span>
-                )}
-              </p>
-            </motion.div>
-          )}
+                  }`}
+              >
+                <p className="text-center">
+                  {isCorrect ? (
+                    <span className="text-[rgba(0,219,0,1)]">✓ Correct! +10 XP</span>
+                  ) : (
+                    <span className="text-destructive">✗ Not quite right. Keep practicing!</span>
+                  )}
+                </p>
+              </motion.div>
+            )}
 
-          {/* Action Button */}
-          {!showResult ? (
-            <Button
-              onClick={handleSubmit}
-              disabled={!selectedAnswer}
-              className="w-full rounded-xl h-14 shadow-md"
-              size="lg"
-            >
-              Check Answer
-            </Button>
-          ) : (
-            <Button 
-              onClick={handleNext} 
-              className="w-full rounded-xl h-14 shadow-md" 
-              size="lg"
-            >
-              {currentQuestion < practiceQuestions.length - 1 ? 'Next Question →' : 'View Results'}
-            </Button>
-          )}
+            {/* Action Button */}
+            {!showResult ? (
+              <Button
+                onClick={handleSubmit}
+                disabled={!selectedAnswer}
+                className="w-full rounded-xl h-14 shadow-md"
+                size="lg"
+              >
+                Check Answer
+              </Button>
+            ) : (
+              <Button
+                onClick={handleNext}
+                className="w-full rounded-xl h-14 shadow-md"
+                size="lg"
+              >
+                {currentQuestion < practiceQuestions.length - 1 ? 'Next Question →' : 'View Results'}
+              </Button>
+            )}
+          </div>
         </motion.div>
       </AnimatePresence>
     </div>

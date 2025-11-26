@@ -30,6 +30,7 @@ export function AppContent({ environment, onEnvironmentChange }: AppContentProps
   const [activeTab, setActiveTab] = useState('home');
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [showDailyChallenges, setShowDailyChallenges] = useState(false);
+  const [isARActive, setIsARActive] = useState(false);
   const { t } = useLanguage();
 
   useEffect(() => {
@@ -69,7 +70,7 @@ export function AppContent({ environment, onEnvironmentChange }: AppContentProps
       case 'practice':
         return <PracticePage />;
       case 'ar':
-        return <ARLearningPage autoStart={true} />;
+        return <ARLearningPage autoStart={true} onARStateChange={setIsARActive} onExitAR={() => setActiveTab('lessons')} />;
       case 'signy':
         return <SignyPage />;
       case 'profile':
@@ -106,7 +107,7 @@ export function AppContent({ environment, onEnvironmentChange }: AppContentProps
         </div>
       </main>
 
-      <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
+      {!isARActive && <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />}
 
       <AccessibilitySettings
         open={settingsOpen}

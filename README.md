@@ -1,7 +1,13 @@
 
-  # Sign Language Learning App
+  # Signway4
 
-  This is a code bundle for Sign Language Learning App. The original project is available at https://www.figma.com/design/SxaZ04bEx5DtV4wTE0YQbV/Sign-Language-Learning-App.
+  The ulimate Indian Sign Language Learning Web App. 
+
+  Developement is still ongoing
+
+# Live
+
+https://signway4.netlify.app/
 
   ## Running the code
 

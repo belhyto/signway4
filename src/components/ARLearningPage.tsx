@@ -10,32 +10,35 @@ import {
   SelectTrigger,
   SelectValue,
 } from './ui/select';
+import { useLanguage } from './LanguageProvider';
 
-const arLessons = [
-  {
-    id: 1,
-    title: 'Basic Greetings',
-    signs: ['Hello', 'Thank You', 'Please', 'Welcome'],
-    duration: '5 min',
-    difficulty: 'Beginner'
-  },
-  {
-    id: 2,
-    title: 'Introduction Phrases',
-    signs: ['My Name Is', 'Nice to Meet You', 'How Are You'],
-    duration: '7 min',
-    difficulty: 'Beginner'
-  },
-  {
-    id: 3,
-    title: 'Workplace Basics',
-    signs: ['Meeting', 'Email', 'Help', 'Question'],
-    duration: '10 min',
-    difficulty: 'Intermediate'
-  },
-];
+export function ARLearningPage({ autoStart = false, onARStateChange, onExitAR }: { autoStart?: boolean; onARStateChange?: (isActive: boolean) => void; onExitAR?: () => void } = {}) {
+  const { t } = useLanguage();
 
-export function ARLearningPage({ autoStart = false }: { autoStart?: boolean } = {}) {
+  const arLessons = [
+    {
+      id: 1,
+      title: t('ar.lesson.basicGreetings'),
+      signs: ['Hello', 'Thank You', 'Please', 'Welcome'],
+      duration: t('ar.lesson.basicGreetings.duration'),
+      difficulty: t('ar.difficulty.beginner')
+    },
+    {
+      id: 2,
+      title: t('ar.lesson.introductionPhrases'),
+      signs: ['My Name Is', 'Nice to Meet You', 'How Are You'],
+      duration: t('ar.lesson.introductionPhrases.duration'),
+      difficulty: t('ar.difficulty.beginner')
+    },
+    {
+      id: 3,
+      title: t('ar.lesson.workplaceBasics'),
+      signs: ['Meeting', 'Email', 'Help', 'Question'],
+      duration: t('ar.lesson.workplaceBasics.duration'),
+      difficulty: t('ar.difficulty.intermediate')
+    },
+  ];
+
   const [isARActive, setIsARActive] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState<number | null>(null);
   const [isCameraOn, setIsCameraOn] = useState(false);
@@ -52,6 +55,11 @@ export function ARLearningPage({ autoStart = false }: { autoStart?: boolean } = 
       handleStartAR(1); // Start first lesson automatically
     }
   }, [autoStart, isARActive]);
+
+  // Notify parent when AR state changes
+  useEffect(() => {
+    onARStateChange?.(isARActive);
+  }, [isARActive, onARStateChange]);
 
   // Get available cameras
   useEffect(() => {
@@ -152,6 +160,12 @@ export function ARLearningPage({ autoStart = false }: { autoStart?: boolean } = 
     setSelectedLesson(null);
     setIsCameraOn(false);
     setIsPlaying(false);
+
+    // Notify parent immediately that AR is no longer active
+    onARStateChange?.(false);
+
+    // Call parent callback to navigate back
+    onExitAR?.();
   };
 
   const currentLesson = arLessons.find(l => l.id === selectedLesson);
@@ -174,8 +188,8 @@ export function ARLearningPage({ autoStart = false }: { autoStart?: boolean } = 
             <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-secondary/20 flex items-center justify-center">
               <div className="text-center text-white/50">
                 <Camera className="h-16 w-16 mx-auto mb-4" />
-                <p>Camera Off</p>
-                <p className="text-sm mt-2">Turn on camera to see AR instructor</p>
+                <p>{t('ar.cameraOff')}</p>
+                <p className="text-sm mt-2">{t('ar.turnOnCamera')}</p>
               </div>
             </div>
           )}
@@ -201,7 +215,7 @@ export function ARLearningPage({ autoStart = false }: { autoStart?: boolean } = 
                   >
                     🤟
                   </motion.div>
-                  <p className="text-white text-sm mb-2">Virtual Instructor</p>
+                  <p className="text-white text-sm mb-2">{t('ar.virtualInstructor')}</p>
                   <Badge className="bg-white/20 text-white border-white/30">
                     {currentLesson.signs[currentSignIndex]}
                   </Badge>
@@ -217,14 +231,14 @@ export function ARLearningPage({ autoStart = false }: { autoStart?: boolean } = 
               variant="outline"
               className="bg-black/50 border-white/30 text-white hover:bg-black/70 rounded-2xl backdrop-blur-md"
             >
-              Exit AR
+              {t('ar.exitAR')}
             </Button>
             <div className="flex gap-2 flex-wrap items-center">
               {/* Camera Selection */}
               {availableCameras.length > 1 && (
                 <Select value={selectedCamera} onValueChange={handleCameraChange}>
                   <SelectTrigger className="w-[180px] bg-black/50 border-white/30 text-white hover:bg-black/70 rounded-2xl backdrop-blur-md">
-                    <SelectValue placeholder="Select camera" />
+                    <SelectValue placeholder={t('ar.selectCamera')} />
                   </SelectTrigger>
                   <SelectContent>
                     {availableCameras.map((camera, index) => (
@@ -261,7 +275,7 @@ export function ARLearningPage({ autoStart = false }: { autoStart?: boolean } = 
                 <div>
                   <h3 className="text-white text-lg">{currentLesson.title}</h3>
                   <p className="text-white/70 text-sm">
-                    Sign {currentSignIndex + 1} of {currentLesson.signs.length}
+                    {t('ar.sign')} {currentSignIndex + 1} {t('ar.of')} {currentLesson.signs.length}
                   </p>
                 </div>
                 <Button
@@ -289,7 +303,7 @@ export function ARLearningPage({ autoStart = false }: { autoStart?: boolean } = 
                   variant="outline"
                   className="flex-1 bg-white/10 border-white/30 text-white hover:bg-white/20 rounded-xl"
                 >
-                  Previous
+                  {t('ar.previous')}
                 </Button>
                 <Button
                   onClick={() => setCurrentSignIndex(0)}
@@ -304,7 +318,7 @@ export function ARLearningPage({ autoStart = false }: { autoStart?: boolean } = 
                   disabled={currentSignIndex === currentLesson.signs.length - 1}
                   className="flex-1 bg-primary hover:bg-primary/90 rounded-xl"
                 >
-                  Next
+                  {t('ar.next')}
                 </Button>
               </div>
             </div>
@@ -315,14 +329,14 @@ export function ARLearningPage({ autoStart = false }: { autoStart?: boolean } = 
   }
 
   return (
-    <div className="px-4 py-6 space-y-6">
+    <div className="px-4 py-6 pb-24 space-y-6">
       {/* Header */}
 
 
 
       {/* AR Lessons */}
       <div className="space-y-3">
-        <h3 className="text-lg">Available AR Lessons</h3>
+        <h3 className="text-lg">{t('ar.availableLessons')}</h3>
         {arLessons.map((lesson) => (
           <motion.div
             key={lesson.id}
@@ -340,7 +354,7 @@ export function ARLearningPage({ autoStart = false }: { autoStart?: boolean } = 
                     {lesson.difficulty}
                   </Badge>
                   <Badge className="bg-primary/10 text-primary border-primary/20 text-xs">
-                    {lesson.signs.length} signs
+                    {lesson.signs.length} {t('lessons.signs')}
                   </Badge>
                 </div>
               </div>
