@@ -1,8 +1,15 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Camera, CameraOff, Volume2, VolumeX, RotateCcw, Play, Pause, ChevronRight } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select';
 
 const arLessons = [
   {
@@ -28,22 +35,119 @@ const arLessons = [
   },
 ];
 
-export function ARLearningPage() {
+export function ARLearningPage({ autoStart = false }: { autoStart?: boolean } = {}) {
   const [isARActive, setIsARActive] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState<number | null>(null);
   const [isCameraOn, setIsCameraOn] = useState(false);
   const [isSoundOn, setIsSoundOn] = useState(true);
   const [currentSignIndex, setCurrentSignIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [availableCameras, setAvailableCameras] = useState<MediaDeviceInfo[]>([]);
+  const [selectedCamera, setSelectedCamera] = useState<string>('');
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Auto-start AR lesson if autoStart prop is true
+  useEffect(() => {
+    if (autoStart && !isARActive) {
+      handleStartAR(1); // Start first lesson automatically
+    }
+  }, [autoStart, isARActive]);
+
+  // Get available cameras
+  useEffect(() => {
+    const getCameras = async () => {
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const cameras = devices.filter(device => device.kind === 'videoinput');
+        setAvailableCameras(cameras);
+        if (cameras.length > 0 && !selectedCamera) {
+          setSelectedCamera(cameras[0].deviceId);
+        }
+      } catch (err) {
+        console.error('Error enumerating devices:', err);
+      }
+    };
+    getCameras();
+  }, []);
+
+  // Handle camera start/stop
+  const toggleCamera = async () => {
+    if (!isCameraOn) {
+      try {
+        const constraints: MediaStreamConstraints = {
+          video: selectedCamera ? { deviceId: { exact: selectedCamera } } : true
+        };
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          videoRef.current.play();
+        }
+        setIsCameraOn(true);
+      } catch (err) {
+        console.error('Error accessing camera:', err);
+        alert('Unable to access camera. Please check permissions.');
+      }
+    } else {
+      // Stop camera
+      if (videoRef.current && videoRef.current.srcObject) {
+        const stream = videoRef.current.srcObject as MediaStream;
+        stream.getTracks().forEach(track => track.stop());
+        videoRef.current.srcObject = null;
+      }
+      setIsCameraOn(false);
+    }
+  };
+
+  // Handle camera change
+  const handleCameraChange = async (deviceId: string) => {
+    setSelectedCamera(deviceId);
+
+    // If camera is already on, restart with new camera
+    if (isCameraOn && videoRef.current) {
+      // Stop current stream
+      if (videoRef.current.srcObject) {
+        const stream = videoRef.current.srcObject as MediaStream;
+        stream.getTracks().forEach(track => track.stop());
+      }
+
+      // Start new stream with selected camera
+      try {
+        const constraints: MediaStreamConstraints = {
+          video: { deviceId: { exact: deviceId } }
+        };
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        videoRef.current.srcObject = stream;
+        videoRef.current.play();
+      } catch (err) {
+        console.error('Error switching camera:', err);
+        alert('Unable to switch camera.');
+      }
+    }
+  };
+
+  // Cleanup camera on unmount
+  useEffect(() => {
+    return () => {
+      if (videoRef.current && videoRef.current.srcObject) {
+        const stream = videoRef.current.srcObject as MediaStream;
+        stream.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, []);
 
   const handleStartAR = (lessonId: number) => {
     setSelectedLesson(lessonId);
     setIsARActive(true);
-    setIsCameraOn(true);
     setCurrentSignIndex(0);
   };
 
   const handleExitAR = () => {
+    // Stop camera when exiting
+    if (videoRef.current && videoRef.current.srcObject) {
+      const stream = videoRef.current.srcObject as MediaStream;
+      stream.getTracks().forEach(track => track.stop());
+      videoRef.current.srcObject = null;
+    }
     setIsARActive(false);
     setSelectedLesson(null);
     setIsCameraOn(false);
@@ -57,22 +161,24 @@ export function ARLearningPage() {
       <div className="fixed inset-0 bg-black z-50">
         {/* AR Camera View */}
         <div className="relative h-full w-full">
-          {/* Simulated camera feed with gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-secondary/20">
-            {isCameraOn ? (
-              <div className="h-full w-full flex items-center justify-center text-white/50">
-                <div className="text-center">
-                  <Camera className="h-16 w-16 mx-auto mb-4 animate-pulse" />
-                  <p>Camera View Active</p>
-                  <p className="text-sm mt-2">Virtual instructor will appear here</p>
-                </div>
+          {/* Real camera feed */}
+          <video
+            ref={videoRef}
+            className={`absolute inset-0 w-full h-full object-cover ${isCameraOn ? 'opacity-100' : 'opacity-0'}`}
+            playsInline
+            muted
+          />
+
+          {/* Camera placeholder when off */}
+          {!isCameraOn && (
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-secondary/20 flex items-center justify-center">
+              <div className="text-center text-white/50">
+                <Camera className="h-16 w-16 mx-auto mb-4" />
+                <p>Camera Off</p>
+                <p className="text-sm mt-2">Turn on camera to see AR instructor</p>
               </div>
-            ) : (
-              <div className="h-full w-full flex items-center justify-center bg-gray-900">
-                <CameraOff className="h-16 w-16 text-white/50" />
-              </div>
-            )}
-          </div>
+            </div>
+          )}
 
           {/* Virtual Instructor Avatar (Simulated) */}
           {isCameraOn && (
@@ -105,7 +211,7 @@ export function ARLearningPage() {
           )}
 
           {/* Top Controls */}
-          <div className="absolute top-4 left-4 right-4 flex items-center justify-between">
+          <div className="absolute top-4 left-4 right-4 flex items-center justify-between gap-2">
             <Button
               onClick={handleExitAR}
               variant="outline"
@@ -113,9 +219,24 @@ export function ARLearningPage() {
             >
               Exit AR
             </Button>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap items-center">
+              {/* Camera Selection */}
+              {availableCameras.length > 1 && (
+                <Select value={selectedCamera} onValueChange={handleCameraChange}>
+                  <SelectTrigger className="w-[180px] bg-black/50 border-white/30 text-white hover:bg-black/70 rounded-2xl backdrop-blur-md">
+                    <SelectValue placeholder="Select camera" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableCameras.map((camera, index) => (
+                      <SelectItem key={camera.deviceId} value={camera.deviceId}>
+                        {camera.label || `Camera ${index + 1}`}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
               <Button
-                onClick={() => setIsCameraOn(!isCameraOn)}
+                onClick={toggleCamera}
                 variant="outline"
                 size="icon"
                 className="bg-black/50 border-white/30 text-white hover:bg-black/70 rounded-2xl backdrop-blur-md"
@@ -196,41 +317,8 @@ export function ARLearningPage() {
   return (
     <div className="px-4 py-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg">
-          <Camera className="h-6 w-6 text-white" />
-        </div>
-        <div>
-          <h2 className="text-xl">AR Learning</h2>
-          <p className="text-sm text-muted-foreground">
-            Learn with a virtual instructor
-          </p>
-        </div>
-      </div>
 
-      {/* Feature Explanation */}
-      <div className="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-3xl p-6 border-2 border-primary/20">
-        <div className="flex items-start gap-4">
-          <div className="text-4xl">🎯</div>
-          <div>
-            <h3 className="text-lg mb-2">How AR Learning Works</h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li className="flex gap-2">
-                <span className="text-primary">•</span>
-                <span>A virtual instructor appears next to you via your camera</span>
-              </li>
-              <li className="flex gap-2">
-                <span className="text-primary">•</span>
-                <span>Follow along as they demonstrate ISL gestures in 3D</span>
-              </li>
-              <li className="flex gap-2">
-                <span className="text-primary">•</span>
-                <span>Practice at your own pace with voice guidance</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
+
 
       {/* AR Lessons */}
       <div className="space-y-3">
@@ -276,11 +364,7 @@ export function ARLearningPage() {
       </div>
 
       {/* Requirements Notice */}
-      <div className="bg-accent/10 rounded-2xl p-4 border border-accent/20">
-        <p className="text-sm text-center">
-          <span className="text-accent">📱</span> Camera access required for AR features
-        </p>
-      </div>
+
     </div>
   );
 }

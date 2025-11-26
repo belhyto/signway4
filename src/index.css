@@ -106,8 +106,8 @@
     --color-blue-200: oklch(.882 .059 254.128);
     --color-blue-300: oklch(.809 .105 251.813);
     --color-blue-500: oklch(.623 .214 259.815);
-    --color-blue-600: oklch(.546 .245 262.881);
-    --color-blue-700: oklch(58.769% 0.12219 268.406);
+    --color-blue-600: oklch(70.037% 0.14334 154.428);
+    --color-blue-700: oklch(83.748% 0.04212 270.413);
     --color-indigo-500: oklch(.585 .233 277.117);
     --color-violet-500: oklch(.606 .25 292.717);
     --color-purple-50: oklch(.977 .014 308.299);

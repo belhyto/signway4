@@ -29,8 +29,6 @@ export function ARSignLearning({ lessonTitle, signs, onBack, onComplete }: ARSig
     const [cameraEnabled, setCameraEnabled] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
     const [isSignListOpen, setIsSignListOpen] = useState(false);
-    const [availableCameras, setAvailableCameras] = useState<MediaDeviceInfo[]>([]);
-    const [selectedCameraId, setSelectedCameraId] = useState<string>('');
     const videoRef = useRef<HTMLVideoElement>(null);
 
     const currentSign = signs[currentSignIndex];
@@ -38,44 +36,14 @@ export function ARSignLearning({ lessonTitle, signs, onBack, onComplete }: ARSig
     const isLastSign = currentSignIndex === signs.length - 1;
     const isFirstSign = currentSignIndex === 0;
 
-    // Get available cameras
-    useEffect(() => {
-        const getCameras = async () => {
-            try {
-                const devices = await navigator.mediaDevices.enumerateDevices();
-                const videoDevices = devices.filter(device => device.kind === 'videoinput');
-                setAvailableCameras(videoDevices);
-                if (videoDevices.length > 0 && !selectedCameraId) {
-                    setSelectedCameraId(videoDevices[0].deviceId);
-                }
-            } catch (err) {
-                console.error('Error enumerating devices:', err);
-            }
-        };
-        getCameras();
-    }, [selectedCameraId]);
-
     // Handle camera toggle
     const toggleCamera = async () => {
         if (!cameraEnabled) {
             try {
-                const constraints: MediaStreamConstraints = {
-                    video: selectedCameraId
-                        ? {
-                            deviceId: { exact: selectedCameraId },
-                            width: { ideal: 1280 },
-                            height: { ideal: 720 }
-                        }
-                        : {
-                            facingMode: 'user',
-                            width: { ideal: 1280 },
-                            height: { ideal: 720 }
-                        }
-                };
-
-                const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 if (videoRef.current) {
                     videoRef.current.srcObject = stream;
+                    videoRef.current.play();
                 }
                 setCameraEnabled(true);
                 setIsExpanded(true);
@@ -92,35 +60,6 @@ export function ARSignLearning({ lessonTitle, signs, onBack, onComplete }: ARSig
             }
             setCameraEnabled(false);
             setIsExpanded(false);
-        }
-    };
-
-    // Handle camera change
-    const handleCameraChange = async (deviceId: string) => {
-        setSelectedCameraId(deviceId);
-
-        // If camera is currently enabled, restart with new camera
-        if (cameraEnabled && videoRef.current) {
-            // Stop current stream
-            if (videoRef.current.srcObject) {
-                const stream = videoRef.current.srcObject as MediaStream;
-                stream.getTracks().forEach(track => track.stop());
-            }
-
-            // Start new stream with selected camera
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: {
-                        deviceId: { exact: deviceId },
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 }
-                    }
-                });
-                videoRef.current.srcObject = stream;
-            } catch (err) {
-                console.error('Error switching camera:', err);
-                alert('Unable to switch camera.');
-            }
         }
     };
 
@@ -188,7 +127,6 @@ export function ARSignLearning({ lessonTitle, signs, onBack, onComplete }: ARSig
                                 <video
                                     ref={videoRef}
                                     className={`absolute inset-0 w-full h-full object-cover ${cameraEnabled ? 'opacity-100' : 'opacity-0'}`}
-                                    autoPlay
                                     playsInline
                                     muted
                                 />
@@ -210,50 +148,17 @@ export function ARSignLearning({ lessonTitle, signs, onBack, onComplete }: ARSig
                                     </div>
                                 )}
 
-                                {/* AR Character Overlay - Positioned on Right Side */}
-                                <AnimatePresence mode="wait">
-                                    <motion.div
-                                        key={currentSign.id}
-                                        initial={{ opacity: 0, scale: 0.8, x: 50 }}
-                                        animate={{ opacity: 1, scale: 1, x: 0 }}
-                                        exit={{ opacity: 0, scale: 0.8, x: 50 }}
-                                        transition={{ duration: 0.3 }}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 z-10"
-                                    >
-                                        {/* AR Character - No blur, positioned right */}
-                                        <div className="bg-white/10 rounded-3xl p-6 border-2 border-white/20">
-                                            <div className={`mb-3 ${isExpanded ? 'text-8xl' : 'text-7xl'}`}>🧍</div>
-                                            <div className={`text-white font-semibold bg-black/30 px-4 py-2 rounded-full text-center ${isExpanded ? 'text-2xl' : 'text-xl'
-                                                }`}>
-                                                {currentSign.word}
-                                            </div>
-                                        </div>
-                                    </motion.div>
-                                </AnimatePresence>
+
 
                                 {/* Camera Controls */}
                                 {cameraEnabled && (
-                                    <div className="absolute top-4 left-4 right-4 flex items-center justify-between flex-wrap gap-2">
+                                    <div className="absolute top-4 left-4 right-4 flex items-center justify-between">
                                         <div className="flex items-center gap-2 bg-red-500 text-white px-3 py-1 rounded-full text-sm">
                                             <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
                                             <Video className="h-4 w-4" />
                                             Live
                                         </div>
-                                        <div className="flex gap-2 flex-wrap">
-                                            {/* Camera Selector */}
-                                            {availableCameras.length > 1 && (
-                                                <select
-                                                    value={selectedCameraId}
-                                                    onChange={(e) => handleCameraChange(e.target.value)}
-                                                    className="bg-black/70 hover:bg-black/80 text-white border border-white/20 rounded px-3 py-1.5 text-sm cursor-pointer"
-                                                >
-                                                    {availableCameras.map((camera, index) => (
-                                                        <option key={camera.deviceId} value={camera.deviceId}>
-                                                            {camera.label || `Camera ${index + 1}`}
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                            )}
+                                        <div className="flex gap-2">
                                             <Button
                                                 size="sm"
                                                 variant="secondary"

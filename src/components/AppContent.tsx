@@ -58,7 +58,7 @@ export function AppContent({ environment, onEnvironmentChange }: AppContentProps
       case 'lessons':
         // Show environment-specific learning path
         if (environment === 'school') {
-          return <SchoolLearningPath />;
+          return <SchoolLearningPath onLessonClick={() => setActiveTab('ar')} />;
         } else if (environment === 'work') {
           return <WorkLearningPath />;
         } else if (environment === 'home') {
@@ -69,7 +69,7 @@ export function AppContent({ environment, onEnvironmentChange }: AppContentProps
       case 'practice':
         return <PracticePage />;
       case 'ar':
-        return <ARLearningPage />;
+        return <ARLearningPage autoStart={true} />;
       case 'signy':
         return <SignyPage />;
       case 'profile':
