@@ -9,7 +9,8 @@ import {
   Trophy,
   Lock,
   CheckCircle2,
-  Play
+  Play,
+  ArrowLeft
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
@@ -30,9 +31,10 @@ interface Lesson {
 
 interface SchoolLearningPathProps {
   onLessonClick?: () => void;
+  onBackClick?: () => void;
 }
 
-export function SchoolLearningPath({ onLessonClick }: SchoolLearningPathProps = {}) {
+export function SchoolLearningPath({ onLessonClick, onBackClick }: SchoolLearningPathProps = {}) {
   const { t } = useLanguage();
   const [overallProgress] = useState(25);
 
@@ -107,6 +109,18 @@ export function SchoolLearningPath({ onLessonClick }: SchoolLearningPathProps = 
         animate={{ opacity: 1, y: 0 }}
         className="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-3xl p-8 mb-6"
       >
+        {/* Back Button */}
+        {onBackClick && (
+          <Button
+            onClick={onBackClick}
+            variant="ghost"
+            className="mb-4 text-white hover:bg-white/20 hover:text-white"
+          >
+            <ArrowLeft className="h-5 w-5 mr-2" />
+            Back to Home
+          </Button>
+        )}
+
         <div className="flex items-center gap-4 mb-4">
           <div className="bg-white/20 p-4 rounded-2xl backdrop-blur-sm">
             <GraduationCap className="h-12 w-12" />

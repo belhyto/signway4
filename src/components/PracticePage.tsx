@@ -35,7 +35,7 @@ const practiceQuestions: Question[] = [
     ]
   },
   {
-    sign: 'Help',
+    sign: 'Write',
     videoPath: '',
     correctAnswer: 'One fist on open palm, lift together',
     options: [
@@ -46,7 +46,7 @@ const practiceQuestions: Question[] = [
     ]
   },
   {
-    sign: 'Meeting',
+    sign: 'Teacher',
     videoPath: '',
     correctAnswer: 'Bring fingertips of both hands together',
     options: [
@@ -57,7 +57,7 @@ const practiceQuestions: Question[] = [
     ]
   },
   {
-    sign: 'Work',
+    sign: 'Study',
     videoPath: '',
     correctAnswer: 'Tap fists together at wrists',
     options: [

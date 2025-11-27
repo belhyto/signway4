@@ -59,7 +59,7 @@ export function AppContent({ environment, onEnvironmentChange }: AppContentProps
       case 'lessons':
         // Show environment-specific learning path
         if (environment === 'school') {
-          return <SchoolLearningPath onLessonClick={() => setActiveTab('ar')} />;
+          return <SchoolLearningPath onLessonClick={() => setActiveTab('ar')} onBackClick={() => setActiveTab('home')} />;
         } else if (environment === 'work') {
           return <WorkLearningPath />;
         } else if (environment === 'home') {
