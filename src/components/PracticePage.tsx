@@ -7,6 +7,10 @@ import { motion, AnimatePresence } from 'motion/react';
 // Import video assets
 import helloVideo from '../assets/s_hello_ai.mp4';
 import thankYouVideo from '../assets/s_thankyou_ai.mp4';
+import WriteVideo from '../assets/s_write_ai.mp4';
+import TeacherVideo from '../assets/s_teacher_ai.mp4';
+import StudyVideo from '../assets/s_study_ai.mp4';
+
 
 interface Question {
   sign: string;
@@ -40,7 +44,7 @@ const practiceQuestions: Question[] = [
   },
   {
     sign: 'Write',
-    videoPath: '',
+    videoPath: WriteVideo,
     correctAnswer: 'One fist on open palm, lift together',
     options: [
       'Point to yourself',
@@ -51,7 +55,7 @@ const practiceQuestions: Question[] = [
   },
   {
     sign: 'Teacher',
-    videoPath: '',
+    videoPath: TeacherVideo,
     correctAnswer: 'Bring fingertips of both hands together',
     options: [
       'Bring fingertips of both hands together',
@@ -62,7 +66,7 @@ const practiceQuestions: Question[] = [
   },
   {
     sign: 'Study',
-    videoPath: '',
+    videoPath: StudyVideo,
     correctAnswer: 'Tap fists together at wrists',
     options: [
       'Type motion with fingers',
@@ -166,7 +170,7 @@ export function PracticePage() {
   }
 
   return (
-    <div className="px-4 py-6 space-y-4">
+    <div className="px-4 py-6 pb-24 space-y-4">
       {/* Header */}
       <div className="flex items-center gap-3">
         <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-accent to-orange-500 flex items-center justify-center">
@@ -189,7 +193,7 @@ export function PracticePage() {
         <Progress value={progress} className="h-3" />
       </div>
 
-      {/* Question Card */}
+      {/* Question Card - Responsive Layout */}
       <AnimatePresence mode="wait">
         <motion.div
           key={currentQuestion}
@@ -198,122 +202,127 @@ export function PracticePage() {
           exit={{ opacity: 0, x: -20 }}
           className="space-y-4"
         >
-          {/* Video Display - YouTube Shorts Style */}
-          <div className="relative w-full aspect-[9/16] max-h-[65vh] mx-auto bg-black rounded-3xl overflow-hidden shadow-2xl">
-            {question.videoPath ? (
-              <video
-                key={question.videoPath}
-                className="w-full h-full object-cover"
-                autoPlay
-                loop
-                muted
-                playsInline
-              >
-                <source src={question.videoPath} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            ) : (
-              <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-                <div className="text-center text-white">
-                  <span className="text-7xl block mb-3" aria-hidden="true">🤟</span>
-                  <h3 className="text-2xl">{question.sign}</h3>
+          {/* Desktop: Side-by-side, Mobile: Stacked */}
+          <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
+            {/* Video Display */}
+            <div className="w-full lg:w-2/5 lg:max-w-md">
+              <div className="relative w-full aspect-[9/16] max-h-[65vh] lg:max-h-[35vh] mx-auto bg-black rounded-3xl overflow-hidden shadow-2xl">
+                {question.videoPath ? (
+                  <video
+                    key={question.videoPath}
+                    className="w-full h-full object-cover"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                  >
+                    <source src={question.videoPath} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                    <div className="text-center text-white">
+                      <span className="text-7xl block mb-3" aria-hidden="true">🤟</span>
+                      <h3 className="text-2xl">{question.sign}</h3>
+                    </div>
+                  </div>
+                )}
+
+                {/* Sign Label Overlay */}
+                <div className="absolute bottom-4 left-4 right-4">
+                  <div className="bg-black/60 backdrop-blur-md rounded-2xl px-4 py-2">
+                    <h3 className="text-white text-xl font-semibold">{question.sign}</h3>
+                  </div>
                 </div>
               </div>
-            )}
-
-            {/* Sign Label Overlay */}
-            <div className="absolute bottom-4 left-4 right-4">
-              <div className="bg-black/60 backdrop-blur-md rounded-2xl px-4 py-2">
-                <h3 className="text-white text-xl font-semibold">{question.sign}</h3>
-              </div>
             </div>
-          </div>
 
-          {/* Question and Options */}
-          <div className="bg-card rounded-3xl p-6 shadow-lg border border-border space-y-4">
-            <p className="text-sm text-muted-foreground">
-              Select the correct description:
-            </p>
+            {/* Question and Options */}
+            <div className="flex-1 bg-card rounded-3xl p-6 shadow-lg border border-border space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Select the correct description:
+              </p>
 
-            {/* Options */}
-            <div className="space-y-3">
-              {question.options.map((option, idx) => {
-                const isSelected = selectedAnswer === option;
-                const isAnswer = showResult && option === question.correctAnswer;
-                const isWrong = showResult && isSelected && !isAnswer;
+              {/* Options */}
+              <div className="space-y-3">
+                {question.options.map((option, idx) => {
+                  const isSelected = selectedAnswer === option;
+                  const isAnswer = showResult && option === question.correctAnswer;
+                  const isWrong = showResult && isSelected && !isAnswer;
 
-                return (
-                  <button
-                    key={idx}
-                    onClick={() => !showResult && setSelectedAnswer(option)}
-                    disabled={showResult}
-                    className={`w-full text-left p-4 rounded-2xl border-2 transition-all ${isAnswer
-                      ? 'border-primary bg-primary/10'
-                      : isWrong
-                        ? 'border-destructive bg-destructive/10'
-                        : isSelected
-                          ? 'border-primary bg-primary/5'
-                          : 'border-border hover:border-primary/50'
-                      }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={`shrink-0 h-6 w-6 rounded-full border-2 flex items-center justify-center ${isAnswer ? 'bg-primary border-primary' :
-                        isWrong ? 'bg-destructive border-destructive' :
-                          isSelected ? 'bg-primary border-primary' :
-                            'border-muted-foreground'
-                        }`}>
-                        {(isSelected || isAnswer) && (
-                          <div className="h-3 w-3 rounded-full bg-white" />
-                        )}
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => !showResult && setSelectedAnswer(option)}
+                      disabled={showResult}
+                      className={`w-full text-left p-4 rounded-2xl border-2 transition-all ${isAnswer
+                        ? 'border-primary bg-primary/10'
+                        : isWrong
+                          ? 'border-destructive bg-destructive/10'
+                          : isSelected
+                            ? 'border-primary bg-primary/5'
+                            : 'border-border hover:border-primary/50'
+                        }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className={`shrink-0 h-6 w-6 rounded-full border-2 flex items-center justify-center ${isAnswer ? 'bg-primary border-primary' :
+                          isWrong ? 'bg-destructive border-destructive' :
+                            isSelected ? 'bg-primary border-primary' :
+                              'border-muted-foreground'
+                          }`}>
+                          {(isSelected || isAnswer) && (
+                            <div className="h-3 w-3 rounded-full bg-white" />
+                          )}
+                        </div>
+                        <span className="flex-1">{option}</span>
+                        {isAnswer && <CheckCircle2 className="h-5 w-5 text-primary" />}
+                        {isWrong && <XCircle className="h-5 w-5 text-destructive" />}
                       </div>
-                      <span className="flex-1">{option}</span>
-                      {isAnswer && <CheckCircle2 className="h-5 w-5 text-primary" />}
-                      {isWrong && <XCircle className="h-5 w-5 text-destructive" />}
-                    </div>
-                  </button>
-                );
-              })}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Feedback */}
+              {showResult && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`p-4 rounded-2xl ${isCorrect
+                    ? 'bg-primary/10 border-2 border-primary/30'
+                    : 'bg-destructive/10 border-2 border-destructive/30'
+                    }`}
+                >
+                  <p className="text-center">
+                    {isCorrect ? (
+                      <span className="text-[rgba(0,219,0,1)]">✓ Correct! +10 XP</span>
+                    ) : (
+                      <span className="text-destructive">✗ Not quite right. Keep practicing!</span>
+                    )}
+                  </p>
+                </motion.div>
+              )}
+
+              {/* Action Button */}
+              {!showResult ? (
+                <Button
+                  onClick={handleSubmit}
+                  disabled={!selectedAnswer}
+                  className="w-full rounded-xl h-14 shadow-md"
+                  size="lg"
+                >
+                  Check Answer
+                </Button>
+              ) : (
+                <Button
+                  onClick={handleNext}
+                  className="w-full rounded-xl h-14 shadow-md"
+                  size="lg"
+                >
+                  {currentQuestion < practiceQuestions.length - 1 ? 'Next Question →' : 'View Results'}
+                </Button>
+              )}
             </div>
-
-            {/* Feedback */}
-            {showResult && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={`p-4 rounded-2xl ${isCorrect
-                  ? 'bg-primary/10 border-2 border-primary/30'
-                  : 'bg-destructive/10 border-2 border-destructive/30'
-                  }`}
-              >
-                <p className="text-center">
-                  {isCorrect ? (
-                    <span className="text-[rgba(0,219,0,1)]">✓ Correct! +10 XP</span>
-                  ) : (
-                    <span className="text-destructive">✗ Not quite right. Keep practicing!</span>
-                  )}
-                </p>
-              </motion.div>
-            )}
-
-            {/* Action Button */}
-            {!showResult ? (
-              <Button
-                onClick={handleSubmit}
-                disabled={!selectedAnswer}
-                className="w-full rounded-xl h-14 shadow-md"
-                size="lg"
-              >
-                Check Answer
-              </Button>
-            ) : (
-              <Button
-                onClick={handleNext}
-                className="w-full rounded-xl h-14 shadow-md"
-                size="lg"
-              >
-                {currentQuestion < practiceQuestions.length - 1 ? 'Next Question →' : 'View Results'}
-              </Button>
-            )}
           </div>
         </motion.div>
       </AnimatePresence>

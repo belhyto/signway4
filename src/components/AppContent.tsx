@@ -52,6 +52,13 @@ export function AppContent({ environment, onEnvironmentChange }: AppContentProps
     checkDailyChallenges();
   }, []);
 
+  // Reset AR state when navigating away from AR tab
+  useEffect(() => {
+    if (activeTab !== 'ar' && isARActive) {
+      setIsARActive(false);
+    }
+  }, [activeTab, isARActive]);
+
   const renderPage = () => {
     switch (activeTab) {
       case 'home':

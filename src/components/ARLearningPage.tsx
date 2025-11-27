@@ -12,6 +12,10 @@ import {
 } from './ui/select';
 import { useLanguage } from './LanguageProvider';
 
+// Import sign language videos
+import helloVideo from '../assets/s_hello_ai.mp4';
+import thankYouVideo from '../assets/s_thankyou_ai.mp4';
+
 export function ARLearningPage({ autoStart = false, onARStateChange, onExitAR }: { autoStart?: boolean; onARStateChange?: (isActive: boolean) => void; onExitAR?: () => void } = {}) {
   const { t } = useLanguage();
 
@@ -39,6 +43,13 @@ export function ARLearningPage({ autoStart = false, onARStateChange, onExitAR }:
     },
   ];
 
+  // Map sign names to video files
+  const signVideos: Record<string, string> = {
+    'Hello': helloVideo,
+    'Thank You': thankYouVideo,
+    // Add more mappings as you create more videos
+  };
+
   const [isARActive, setIsARActive] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState<number | null>(null);
   const [isCameraOn, setIsCameraOn] = useState(false);
@@ -48,6 +59,7 @@ export function ARLearningPage({ autoStart = false, onARStateChange, onExitAR }:
   const [availableCameras, setAvailableCameras] = useState<MediaDeviceInfo[]>([]);
   const [selectedCamera, setSelectedCamera] = useState<string>('');
   const videoRef = useRef<HTMLVideoElement>(null);
+  const instructorVideoRef = useRef<HTMLVideoElement>(null);
 
   // Auto-start AR lesson if autoStart prop is true
   useEffect(() => {
@@ -143,6 +155,17 @@ export function ARLearningPage({ autoStart = false, onARStateChange, onExitAR }:
     };
   }, []);
 
+  // Control instructor video playback
+  useEffect(() => {
+    if (instructorVideoRef.current) {
+      if (isPlaying) {
+        instructorVideoRef.current.play().catch(err => console.log('Video play error:', err));
+      } else {
+        instructorVideoRef.current.pause();
+      }
+    }
+  }, [isPlaying]);
+
   const handleStartAR = (lessonId: number) => {
     setSelectedLesson(lessonId);
     setIsARActive(true);
@@ -156,16 +179,24 @@ export function ARLearningPage({ autoStart = false, onARStateChange, onExitAR }:
       stream.getTracks().forEach(track => track.stop());
       videoRef.current.srcObject = null;
     }
+
+    // Reset all AR-related state
     setIsARActive(false);
     setSelectedLesson(null);
     setIsCameraOn(false);
     setIsPlaying(false);
 
-    // Notify parent immediately that AR is no longer active
-    onARStateChange?.(false);
+    // Notify parent that AR is no longer active BEFORE navigation
+    // This ensures the bottom nav will be visible when we navigate back
+    if (onARStateChange) {
+      onARStateChange(false);
+    }
 
-    // Call parent callback to navigate back
-    onExitAR?.();
+    // Use setTimeout to ensure state updates are processed before navigation
+    setTimeout(() => {
+      // Call parent callback to navigate back
+      onExitAR?.();
+    }, 0);
   };
 
   const currentLesson = arLessons.find(l => l.id === selectedLesson);
@@ -194,27 +225,48 @@ export function ARLearningPage({ autoStart = false, onARStateChange, onExitAR }:
             </div>
           )}
 
-          {/* Virtual Instructor Avatar (Simulated) */}
+          {/* Virtual Instructor Avatar with Video */}
           {isCameraOn && (
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="absolute right-8 bottom-32 w-48 h-64"
+              className="absolute right-8 bottom-32 w-64 h-80"
             >
-              <div className="bg-gradient-to-br from-primary/30 to-secondary/30 backdrop-blur-md rounded-3xl p-4 border-2 border-white/30 shadow-2xl">
+              <div className="bg-gradient-to-br from-primary/30 to-secondary/30 backdrop-blur-md rounded-3xl p-4 border-2 border-white/30 shadow-2xl h-full flex flex-col">
+                {/* Video Display */}
+                <div className="flex-1 relative rounded-2xl overflow-hidden bg-black/20 mb-3">
+                  {signVideos[currentLesson.signs[currentSignIndex]] ? (
+                    <video
+                      ref={instructorVideoRef}
+                      key={currentLesson.signs[currentSignIndex]}
+                      className="w-full h-full object-cover"
+                      autoPlay={isPlaying}
+                      loop
+                      muted={!isSoundOn}
+                      playsInline
+                    >
+                      <source src={signVideos[currentLesson.signs[currentSignIndex]]} type="video/mp4" />
+                    </video>
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <motion.div
+                        animate={{
+                          rotate: isPlaying ? [0, 10, -10, 0] : 0,
+                        }}
+                        transition={{
+                          repeat: isPlaying ? Infinity : 0,
+                          duration: 2,
+                        }}
+                        className="text-6xl"
+                      >
+                        🤟
+                      </motion.div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Instructor Info */}
                 <div className="text-center">
-                  <motion.div
-                    animate={{
-                      rotate: isPlaying ? [0, 10, -10, 0] : 0,
-                    }}
-                    transition={{
-                      repeat: isPlaying ? Infinity : 0,
-                      duration: 2,
-                    }}
-                    className="text-6xl mb-2"
-                  >
-                    🤟
-                  </motion.div>
                   <p className="text-white text-sm mb-2">{t('ar.virtualInstructor')}</p>
                   <Badge className="bg-white/20 text-white border-white/30">
                     {currentLesson.signs[currentSignIndex]}
