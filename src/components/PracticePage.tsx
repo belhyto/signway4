@@ -4,6 +4,10 @@ import { Progress } from './ui/progress';
 import { CheckCircle2, XCircle, RefreshCcw, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
+// Import video assets
+import helloVideo from '../assets/s_hello_ai.mp4';
+import thankYouVideo from '../assets/s_thankyou_ai.mp4';
+
 interface Question {
   sign: string;
   videoPath: string;
@@ -14,7 +18,7 @@ interface Question {
 const practiceQuestions: Question[] = [
   {
     sign: 'Hello',
-    videoPath: '/src/assets/s_hello_ai.mp4',
+    videoPath: helloVideo,
     correctAnswer: 'Wave your hand in a greeting motion',
     options: [
       'Wave your hand in a greeting motion',
@@ -25,7 +29,7 @@ const practiceQuestions: Question[] = [
   },
   {
     sign: 'Thank You',
-    videoPath: '/src/assets/s_thankyou_ai.mp4',
+    videoPath: thankYouVideo,
     correctAnswer: 'Touch your chin and move hand forward',
     options: [
       'Wave your hand in a greeting motion',
