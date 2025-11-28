@@ -165,8 +165,8 @@ export function WelcomeScreen({ onComplete, onSignIn }: WelcomeScreenProps) {
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setSelectedLanguage(lang)}
                     className={`p-4 sm:p-6 rounded-2xl border-2 transition-all ${selectedLanguage === lang
-                        ? 'border-primary bg-primary/10 shadow-lg'
-                        : 'border-border hover:border-primary/50 bg-background'
+                      ? 'border-primary bg-primary/10 shadow-lg'
+                      : 'border-border hover:border-primary/50 bg-background'
                       }`}
                   >
                     <div className="text-center">

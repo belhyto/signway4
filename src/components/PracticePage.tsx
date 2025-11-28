@@ -5,11 +5,11 @@ import { CheckCircle2, XCircle, RefreshCcw, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 // Import video assets
-import helloVideo from '../assets/s_hello_ai.mp4';
-import thankYouVideo from '../assets/s_thankyou_ai.mp4';
-import WriteVideo from '../assets/s_write_ai.mp4';
-import TeacherVideo from '../assets/s_teacher_ai.mp4';
-import StudyVideo from '../assets/s_study_ai.mp4';
+import helloVideo from '../assets/s_hello_2.mp4';
+import thankYouVideo from '../assets/s_thanku_2.mp4';
+import WriteVideo from '../assets/s_write_2.mp4';
+import TeacherVideo from '../assets/s_teacher_2.mp4';
+import StudyVideo from '../assets/s_study_2.mp4';
 
 
 interface Question {
@@ -205,8 +205,9 @@ export function PracticePage() {
           {/* Desktop: Side-by-side, Mobile: Stacked */}
           <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
             {/* Video Display */}
-            <div className="w-full lg:w-2/5 lg:max-w-md">
-              <div className="relative w-full aspect-[9/16] max-h-[65vh] lg:max-h-[35vh] mx-auto bg-black rounded-3xl overflow-hidden shadow-2xl">
+            <div className="w-full lg:w-1/4 lg:max-w-xs">
+              <div className="relative w-full aspect-[9/16] max-h-[65vh] lg:max-h-[25vh] mx-auto bg-black rounded-3xl overflow-hidden shadow-2xl">
+
                 {question.videoPath ? (
                   <video
                     key={question.videoPath}

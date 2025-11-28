@@ -5,6 +5,7 @@ import { Progress } from './ui/progress';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 import { useLanguage } from './LanguageProvider';
 import { ChallengeCalendar } from './ChallengeCalendar';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 interface HomePageProps {
   onStartLearning: () => void;
@@ -68,7 +69,13 @@ export function HomePage({ onStartLearning }: HomePageProps) {
 
       {/* Quick Start CTA */}
       <div className="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl p-6 text-center space-y-4 border-2 border-primary/20">
-        <div className="text-6xl mb-2">🤟</div>
+        <div className="w-30 h-30 mx-auto mb-2">
+          <DotLottieReact
+            src="https://lottie.host/bbcefa71-2c51-4f7d-9422-c34a0ebdcd0f/pRLFAMyQSs.lottie"
+            loop
+            autoplay
+          />
+        </div>
         <h2 className="text-2xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-[rgba(0,56,29,0.51)] text-[36px]">
           {t('home.welcomeTitle')}
         </h2>

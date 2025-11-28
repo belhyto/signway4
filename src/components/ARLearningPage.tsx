@@ -13,8 +13,11 @@ import {
 import { useLanguage } from './LanguageProvider';
 
 // Import sign language videos
-import helloVideo from '../assets/s_hello_ai.mp4';
-import thankYouVideo from '../assets/s_thankyou_ai.mp4';
+import helloVideo from '../assets/s_hello_2.mp4';
+import thankYouVideo from '../assets/s_thanku_2.mp4';
+import WriteVideo from '../assets/s_write_2.mp4';
+import TeacherVideo from '../assets/s_teacher_2.mp4';
+import StudyVideo from '../assets/s_study_2.mp4';
 
 export function ARLearningPage({ autoStart = false, onARStateChange, onExitAR }: { autoStart?: boolean; onARStateChange?: (isActive: boolean) => void; onExitAR?: () => void } = {}) {
   const { t } = useLanguage();
@@ -43,10 +46,12 @@ export function ARLearningPage({ autoStart = false, onARStateChange, onExitAR }:
     },
   ];
 
-  // Map sign names to video files
   const signVideos: Record<string, string> = {
     'Hello': helloVideo,
     'Thank You': thankYouVideo,
+    'Write': WriteVideo,
+    'Teacher': TeacherVideo,
+    'Study': StudyVideo,
     // Add more mappings as you create more videos
   };
 
@@ -234,7 +239,8 @@ export function ARLearningPage({ autoStart = false, onARStateChange, onExitAR }:
             >
               <div className="bg-gradient-to-br from-primary/30 to-secondary/30 backdrop-blur-md rounded-3xl p-4 border-2 border-white/30 shadow-2xl h-full flex flex-col">
                 {/* Video Display */}
-                <div className="flex-1 relative rounded-2xl overflow-hidden bg-black/20 mb-3">
+                <div className="h-[40px] relative rounded-2xl overflow-hidden bg-black/20 mb-3">
+
                   {signVideos[currentLesson.signs[currentSignIndex]] ? (
                     <video
                       ref={instructorVideoRef}
