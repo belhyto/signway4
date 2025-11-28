@@ -8,10 +8,9 @@ import logoImage from 'figma:asset/0bac470229d92a29f0f448217f41b3da35bc5c28.png'
 
 interface AuthPageProps {
   onAuthSuccess: () => void;
-  onAdminLogin?: () => void;
 }
 
-export function AuthPage({ onAuthSuccess, onAdminLogin }: AuthPageProps) {
+export function AuthPage({ onAuthSuccess }: AuthPageProps) {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -90,8 +89,8 @@ export function AuthPage({ onAuthSuccess, onAdminLogin }: AuthPageProps) {
             <button
               onClick={() => setIsLogin(true)}
               className={`flex-1 py-3 rounded-xl transition-all text-center ${isLogin
-                ? 'bg-white shadow-md text-primary'
-                : 'text-muted-foreground hover:text-foreground'
+                  ? 'bg-white shadow-md text-primary'
+                  : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
               Sign In
@@ -99,8 +98,8 @@ export function AuthPage({ onAuthSuccess, onAdminLogin }: AuthPageProps) {
             <button
               onClick={() => setIsLogin(false)}
               className={`flex-1 py-3 rounded-xl transition-all text-center ${!isLogin
-                ? 'bg-white shadow-md text-primary'
-                : 'text-muted-foreground hover:text-foreground'
+                  ? 'bg-white shadow-md text-primary'
+                  : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
               Sign Up
@@ -204,7 +203,7 @@ export function AuthPage({ onAuthSuccess, onAdminLogin }: AuthPageProps) {
           </div>
 
           {/* Social Login */}
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             <Button
               type="button"
               variant="outline"
@@ -227,15 +226,6 @@ export function AuthPage({ onAuthSuccess, onAdminLogin }: AuthPageProps) {
             >
               <span className="mr-2 text-xl">👤</span>
               Guest
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              className="h-12 rounded-xl bg-gradient-to-r from-purple-50 to-indigo-50 hover:from-purple-100 hover:to-indigo-100 border-purple-200"
-              onClick={onAdminLogin}
-            >
-              <span className="mr-2 text-xl">👨‍💼</span>
-              Admin
             </Button>
           </div>
         </div>

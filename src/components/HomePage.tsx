@@ -16,7 +16,7 @@ export function HomePage({ onStartLearning }: HomePageProps) {
   const [isDailyGoalExpanded, setIsDailyGoalExpanded] = useState(false);
 
   return (
-    <div className="px-4 py-6 space-y-6">
+    <div className="px-4 py-6 pb-24 space-y-6">
       {/* Streak and XP Banner */}
       <div className="grid grid-cols-2 gap-3">
         <div className="bg-gradient-to-br from-orange-500 to-orange-600 dark:from-orange-600 dark:to-orange-700 rounded-2xl p-4 text-white shadow-lg bg-[rgba(84,69,167,0)]">
@@ -92,23 +92,26 @@ export function HomePage({ onStartLearning }: HomePageProps) {
       </div>
 
       {/* Learning Stats */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-3 pb-4">
         <div className="bg-card rounded-2xl p-4 text-center shadow-sm border border-border">
+          <div className="text-xs text-muted-foreground mt-1">{t('home.stats.lessons')}</div>
           <div className="text-2xl mb-1">🎯</div>
           <div className="text-2xl">0</div>
-          <div className="text-xs text-muted-foreground mt-1">{t('home.stats.lessons')}</div>
+
         </div>
 
         <div className="bg-card rounded-2xl p-4 text-center shadow-sm border border-border">
+          <div className="text-xs text-muted-foreground mt-1">{t('home.stats.signs')}</div>
           <div className="text-2xl mb-1">✋</div>
           <div className="text-2xl">0</div>
-          <div className="text-xs text-muted-foreground mt-1">{t('home.stats.signs')}</div>
+
         </div>
 
         <div className="bg-card rounded-2xl p-4 text-center shadow-sm border border-border">
+          <div className="text-xs text-muted-foreground mt-1">{t('home.stats.stars')}</div>
           <div className="text-2xl mb-1">⭐</div>
           <div className="text-2xl">0</div>
-          <div className="text-xs text-muted-foreground mt-1">{t('home.stats.stars')}</div>
+
         </div>
       </div>
 

@@ -22,37 +22,37 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
         <motion.div
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
-          transition={{ 
-            type: "spring", 
-            stiffness: 260, 
+          transition={{
+            type: "spring",
+            stiffness: 260,
             damping: 20,
-            duration: 1 
+            duration: 1
           }}
           className="mb-8"
         >
           <div className="relative">
             {/* Outer glow circle */}
             <motion.div
-              animate={{ 
+              animate={{
                 scale: [1, 1.2, 1],
                 opacity: [0.5, 0.8, 0.5]
               }}
-              transition={{ 
-                repeat: Infinity, 
+              transition={{
+                repeat: Infinity,
                 duration: 2,
                 ease: "easeInOut"
               }}
               className="absolute inset-0 bg-white/30 rounded-full blur-xl"
             />
-            
+
             {/* Logo container */}
             <div className="relative bg-white rounded-3xl p-8 shadow-2xl">
               <motion.div
-                animate={{ 
+                animate={{
                   scale: [1, 1.1, 1],
                 }}
-                transition={{ 
-                  repeat: Infinity, 
+                transition={{
+                  repeat: Infinity,
                   duration: 2,
                   ease: "easeInOut"
                 }}
@@ -73,7 +73,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
           <h1 className="text-6xl mb-2 text-white drop-shadow-lg">
             Signway
           </h1>
-          <motion.p 
+          <motion.p
             className="text-xl text-white/90"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -84,7 +84,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
         </motion.div>
 
         {/* Loading dots */}
-        <motion.div 
+        <motion.div
           className="flex gap-2 justify-center mt-12"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

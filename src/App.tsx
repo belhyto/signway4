@@ -5,7 +5,6 @@ import { SplashScreen } from './components/SplashScreen';
 import { WelcomeScreen } from './components/WelcomeScreen';
 import { AuthPage } from './components/AuthPage';
 import { AppContent } from './components/AppContent';
-import { AdminDashboard } from './components/AdminDashboard';
 import type { Language } from './components/LanguageProvider';
 
 export default function App() {
@@ -13,7 +12,6 @@ export default function App() {
   const [showWelcome, setShowWelcome] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<Language>('en');
   const [userEnvironment, setUserEnvironment] = useState<'school' | 'work' | 'home' | null>(null);
 
@@ -69,22 +67,6 @@ export default function App() {
     localStorage.setItem('signway_environment', environment);
   };
 
-  const handleAdminLogin = () => {
-    localStorage.setItem('signway_authenticated', 'true');
-    localStorage.setItem('signway_is_admin', 'true');
-    setIsAuthenticated(true);
-    setIsAdmin(true);
-    setShowAuth(false);
-  };
-
-  const handleAdminLogout = () => {
-    localStorage.removeItem('signway_is_admin');
-    localStorage.removeItem('signway_authenticated');
-    setIsAuthenticated(false);
-    setIsAdmin(false);
-    setShowAuth(true);
-  };
-
   if (showSplash) {
     return <SplashScreen onComplete={() => setShowSplash(false)} />;
   }
@@ -94,18 +76,7 @@ export default function App() {
   }
 
   if (showAuth || !isAuthenticated) {
-    return <AuthPage onAuthSuccess={handleAuthSuccess} onAdminLogin={handleAdminLogin} />;
-  }
-
-  // Show admin dashboard if user is admin
-  if (isAdmin) {
-    return (
-      <LanguageProvider>
-        <ThemeProvider>
-          <AdminDashboard onLogout={handleAdminLogout} />
-        </ThemeProvider>
-      </LanguageProvider>
-    );
+    return <AuthPage onAuthSuccess={handleAuthSuccess} />;
   }
 
   return (

@@ -125,7 +125,7 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
                         <h3 className="text-3xl bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
                             Admin Dashboard
                         </h3>
-                        <h3 className="text-sm text-muted-foreground mt-1">Manage courses and sign language content</h3>
+                        <h3 className="text-xl mb-1">Manage courses and sign language content</h3>
                     </div>
                     <Button
                         onClick={onLogout}
