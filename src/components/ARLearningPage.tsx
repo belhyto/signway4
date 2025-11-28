@@ -239,7 +239,7 @@ export function ARLearningPage({ autoStart = false, onARStateChange, onExitAR }:
             >
               <div className="bg-gradient-to-br from-primary/30 to-secondary/30 backdrop-blur-md rounded-3xl p-4 border-2 border-white/30 shadow-2xl h-full flex flex-col">
                 {/* Video Display */}
-                <div className="h-[40px] relative rounded-2xl overflow-hidden bg-black/20 mb-3">
+                <div className="h-[20px] sm:h-[40px] md:h-[60px] relative rounded-2xl overflow-hidden bg-black/20 mb-3">
 
                   {signVideos[currentLesson.signs[currentSignIndex]] ? (
                     <video
