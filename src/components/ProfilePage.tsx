@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { 
-  User, 
-  Edit2, 
-  Camera, 
-  Mail, 
+import {
+  Edit2,
+  Camera,
+  Mail,
   Calendar as CalendarIcon,
   Award,
   Users,
@@ -16,9 +15,9 @@ import {
   CheckCircle2,
   UserPlus,
   Search,
-  X
+  LogOut
 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Card, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -26,7 +25,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Badge } from './ui/badge';
 import { Progress } from './ui/progress';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from './ui/dialog';
 import { ChallengeCalendar } from './ChallengeCalendar';
 import { useLanguage } from './LanguageProvider';
 
@@ -83,7 +82,11 @@ const avatarColors = [
   'bg-rose-500',
 ];
 
-export function ProfilePage() {
+interface ProfilePageProps {
+  onLogout?: () => void;
+}
+
+export function ProfilePage({ onLogout }: ProfilePageProps) {
   const { t } = useLanguage();
   const [editMode, setEditMode] = useState(false);
   const [showAvatarEditor, setShowAvatarEditor] = useState(false);
@@ -213,7 +216,7 @@ export function ProfilePage() {
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
               {/* Avatar */}
               <div className="relative shrink-0">
-                <div 
+                <div
                   className={`h-20 w-20 sm:h-24 sm:w-24 rounded-full ${userProfile.avatarBgColor} flex items-center justify-center text-4xl sm:text-5xl shadow-lg`}
                 >
                   {userProfile.avatar}
@@ -267,7 +270,7 @@ export function ProfilePage() {
                 )}
               </div>
 
-              {/* Edit Button */}
+              {/* Edit/Logout Buttons */}
               <div className="w-full sm:w-auto">
                 {editMode ? (
                   <div className="flex gap-2">
@@ -280,10 +283,20 @@ export function ProfilePage() {
                     </Button>
                   </div>
                 ) : (
-                  <Button variant="outline" onClick={() => setEditMode(true)} className="w-full sm:w-auto">
-                    <Edit2 className="h-4 w-4 mr-2" />
-                    {t('profile.editProfile')}
-                  </Button>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <Button variant="outline" onClick={() => setEditMode(true)} className="w-full sm:w-auto">
+                      <Edit2 className="h-4 w-4 mr-2" />
+                      {t('profile.editProfile')}
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      onClick={onLogout}
+                      className="w-full sm:w-auto bg-red-500 hover:bg-red-600 text-white"
+                    >
+                      <LogOut className="h-4 w-4 mr-2" />
+                      {t('profile.logout')}
+                    </Button>
+                  </div>
                 )}
               </div>
             </div>
@@ -423,9 +436,8 @@ export function ProfilePage() {
                         <div className={`h-12 w-12 sm:h-14 sm:w-14 rounded-full ${friend.avatarBgColor} flex items-center justify-center text-2xl sm:text-3xl`}>
                           {friend.avatar}
                         </div>
-                        <div className={`absolute bottom-0 right-0 h-3 w-3 sm:h-4 sm:w-4 rounded-full border-2 border-card ${
-                          friend.status === 'online' ? 'bg-green-500' : 'bg-gray-400'
-                        }`} />
+                        <div className={`absolute bottom-0 right-0 h-3 w-3 sm:h-4 sm:w-4 rounded-full border-2 border-card ${friend.status === 'online' ? 'bg-green-500' : 'bg-gray-400'
+                          }`} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="text-base sm:text-lg mb-1 truncate">{friend.name}</h3>
@@ -468,9 +480,8 @@ export function ProfilePage() {
                   <button
                     key={index}
                     onClick={() => setUserProfile({ ...userProfile, avatar: emoji })}
-                    className={`h-10 w-10 text-2xl hover:scale-110 transition-transform rounded-lg ${
-                      userProfile.avatar === emoji ? 'bg-accent ring-2 ring-primary' : 'hover:bg-accent'
-                    }`}
+                    className={`h-10 w-10 text-2xl hover:scale-110 transition-transform rounded-lg ${userProfile.avatar === emoji ? 'bg-accent ring-2 ring-primary' : 'hover:bg-accent'
+                      }`}
                   >
                     {emoji}
                   </button>
@@ -484,9 +495,8 @@ export function ProfilePage() {
                   <button
                     key={index}
                     onClick={() => setUserProfile({ ...userProfile, avatarBgColor: color })}
-                    className={`h-10 w-10 rounded-full ${color} hover:scale-110 transition-transform ${
-                      userProfile.avatarBgColor === color ? 'ring-4 ring-primary ring-offset-2' : ''
-                    }`}
+                    className={`h-10 w-10 rounded-full ${color} hover:scale-110 transition-transform ${userProfile.avatarBgColor === color ? 'ring-4 ring-primary ring-offset-2' : ''
+                      }`}
                   />
                 ))}
               </div>
@@ -496,8 +506,8 @@ export function ProfilePage() {
                 {userProfile.avatar}
               </div>
             </div>
-            <Button 
-              onClick={() => setShowAvatarEditor(false)} 
+            <Button
+              onClick={() => setShowAvatarEditor(false)}
               className="w-full"
             >
               {t('profile.saveAvatar')}

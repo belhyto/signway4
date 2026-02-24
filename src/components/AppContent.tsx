@@ -24,9 +24,10 @@ const pageVariants = {
 interface AppContentProps {
   environment?: 'school' | 'work' | 'home' | null;
   onEnvironmentChange?: (environment: 'school' | 'work' | 'home') => void;
+  onLogout?: () => void;
 }
 
-export function AppContent({ environment, onEnvironmentChange }: AppContentProps) {
+export function AppContent({ environment, onEnvironmentChange, onLogout }: AppContentProps) {
   const [activeTab, setActiveTab] = useState('home');
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [showDailyChallenges, setShowDailyChallenges] = useState(false);
@@ -81,7 +82,7 @@ export function AppContent({ environment, onEnvironmentChange }: AppContentProps
       case 'signy':
         return <SignyPage />;
       case 'profile':
-        return <ProfilePage />;
+        return <ProfilePage onLogout={onLogout} />;
       default:
         return <HomePage onStartLearning={() => setActiveTab('lessons')} />;
     }

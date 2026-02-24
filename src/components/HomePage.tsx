@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Flame, Zap, Trophy, Star, ChevronDown, ChevronUp } from 'lucide-react';
+import { Flame, Zap, Trophy, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from './ui/button';
 import { Progress } from './ui/progress';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
@@ -67,56 +67,64 @@ export function HomePage({ onStartLearning }: HomePageProps) {
         </div>
       </Collapsible>
 
-      {/* Quick Start CTA */}
-      <div className="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl p-6 text-center space-y-4 border-2 border-primary/20">
-        <div className="w-30 h-30 mx-auto mb-2">
-          <DotLottieReact
-            src="https://lottie.host/bbcefa71-2c51-4f7d-9422-c34a0ebdcd0f/pRLFAMyQSs.lottie"
-            loop
-            autoplay
-          />
+      {/* Quick Start CTA / Welcome Section */}
+      <div className="bg-[#e6fcf5] lg:bg-[#e2f3f0] rounded-2xl lg:rounded-[40px] p-6 lg:p-12 text-center lg:text-left border lg:border-none shadow-sm lg:grid lg:grid-cols-2 lg:items-center lg:gap-12 relative overflow-hidden">
+        {/* Left Content (Frog + Text) */}
+        <div className="flex flex-col items-center lg:items-center space-y-4 lg:space-y-6">
+          <div className="w-40 h-40 lg:w-80 lg:h-80 relative">
+            <DotLottieReact
+              src="https://lottie.host/bbcefa71-2c51-4f7d-9422-c34a0ebdcd0f/pRLFAMyQSs.lottie"
+              loop
+              autoplay
+            />
+          </div>
+          <div className="space-y-2 lg:space-y-3 text-center">
+            <h2 className="text-2xl lg:text-5xl font-bold text-[#00381d]/80">
+              {t('home.welcomeTitle')}
+            </h2>
+            <p className="text-muted-foreground lg:text-xl lg:font-medium">
+              {t('home.welcomeSubtitle')}
+            </p>
+          </div>
         </div>
-        <h2 className="text-2xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-[rgba(0,56,29,0.51)] text-[36px]">
-          {t('home.welcomeTitle')}
-        </h2>
-        <p className="text-muted-foreground">
-          {t('home.welcomeSubtitle')}
-        </p>
-        <Button
-          size="lg"
-          onClick={onStartLearning}
-          className="w-full rounded-xl h-14 text-lg shadow-lg hover:shadow-xl transition-shadow bg-gradient-to-r from-primary to-secondary"
-        >
-          {t('home.continueLearning')}
-        </Button>
+
+        {/* Right Content (Button) */}
+        <div className="mt-6 lg:mt-0 flex justify-center lg:justify-center">
+          <Button
+            size="lg"
+            onClick={onStartLearning}
+            className="w-full rounded-xl h-14 text-lg shadow-lg hover:shadow-xl transition-shadow bg-gradient-to-r from-primary to-secondary"
+          >
+            {t('home.continueLearning')}
+          </Button>
+        </div>
+
+        {/* Decorative elements for desktop */}
+        <div className="hidden lg:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-20 pointer-events-none">
+          <div className="w-10 h-10 border-2 border-primary/20 rounded-full" />
+        </div>
       </div>
 
       {/* Learning Stats */}
-      <div className="grid grid-cols-3 gap-3 pb-4">
-        <div className="bg-card rounded-2xl p-4 text-center shadow-sm border border-border">
-          <div className="text-xs text-muted-foreground mt-1">{t('home.stats.lessons')}</div>
-          <div className="text-2xl mb-1">🎯</div>
-          <div className="text-2xl">0</div>
-
+      <div className="grid grid-cols-3 gap-3 lg:gap-10 pb-4">
+        <div className="bg-white rounded-2xl lg:rounded-[24px] p-4 lg:p-10 text-center shadow-sm border border-border/60 hover:shadow-md transition-all duration-300">
+          <div className="text-xs lg:text-lg font-semibold text-muted-foreground lg:mb-3">{t('home.stats.lessons')}</div>
+          <div className="text-2xl lg:text-5xl mb-1 lg:mb-4">🎯</div>
+          <div className="text-xl lg:text-4xl font-bold text-[#00381d]/80">0</div>
         </div>
 
-        <div className="bg-card rounded-2xl p-4 text-center shadow-sm border border-border">
-          <div className="text-xs text-muted-foreground mt-1">{t('home.stats.signs')}</div>
-          <div className="text-2xl mb-1">✋</div>
-          <div className="text-2xl">0</div>
-
+        <div className="bg-white rounded-2xl lg:rounded-[24px] p-4 lg:p-10 text-center shadow-sm border border-border/60 hover:shadow-md transition-all duration-300">
+          <div className="text-xs lg:text-lg font-semibold text-muted-foreground lg:mb-3">{t('home.stats.signs')}</div>
+          <div className="text-2xl lg:text-5xl mb-1 lg:mb-4">✋</div>
+          <div className="text-xl lg:text-4xl font-bold text-[#00381d]/80">0</div>
         </div>
 
-        <div className="bg-card rounded-2xl p-4 text-center shadow-sm border border-border">
-          <div className="text-xs text-muted-foreground mt-1">{t('home.stats.stars')}</div>
-          <div className="text-2xl mb-1">⭐</div>
-          <div className="text-2xl">0</div>
-
+        <div className="bg-white rounded-2xl lg:rounded-[24px] p-4 lg:p-10 text-center shadow-sm border border-border/60 hover:shadow-md transition-all duration-300">
+          <div className="text-xs lg:text-lg font-semibold text-muted-foreground lg:mb-3">{t('home.stats.stars')}</div>
+          <div className="text-2xl lg:text-5xl mb-1 lg:mb-4">⭐</div>
+          <div className="text-xl lg:text-4xl font-bold text-[#00381d]/80">0</div>
         </div>
       </div>
-
-      {/* Features Highlight */}
-
     </div>
   );
 }

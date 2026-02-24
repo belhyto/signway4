@@ -277,6 +277,7 @@ export default {
   'profile.selectEmoji': 'Select Emoji',
   'profile.selectColor': 'Select Background Color',
   'profile.saveAvatar': 'Save Avatar',
+  'profile.logout': 'Log Out',
 
   // Badges
   'badge.firstLesson': 'First Steps',

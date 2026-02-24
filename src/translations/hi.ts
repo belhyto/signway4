@@ -231,6 +231,7 @@ export default {
   'profile.selectEmoji': 'इमोजी चुनें',
   'profile.selectColor': 'पृष्ठभूमि रंग चुनें',
   'profile.saveAvatar': 'अवतार सहेजें',
+  'profile.logout': 'लॉग आउट',
 
   // Badges
   'badge.firstLesson': 'पहले कदम',

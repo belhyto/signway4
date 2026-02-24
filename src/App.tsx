@@ -79,6 +79,12 @@ export default function App() {
     setShowAuth(true);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('signway_authenticated');
+    setIsAuthenticated(false);
+    setShowAuth(true);
+  };
+
   if (showSplash) {
     return <SplashScreen onComplete={() => setShowSplash(false)} />;
   }
@@ -108,6 +114,7 @@ export default function App() {
         <AppContent
           environment={userEnvironment}
           onEnvironmentChange={handleEnvironmentChange}
+          onLogout={handleLogout}
         />
       </ThemeProvider>
     </LanguageProvider>
