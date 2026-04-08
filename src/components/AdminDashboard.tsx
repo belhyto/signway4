@@ -15,7 +15,11 @@ import {
     BookOpen,
     Video,
     LogOut,
-    Upload
+    Upload,
+    Cpu,
+    UploadCloud,
+    CheckCircle,
+    Clock
 } from 'lucide-react';
 
 interface Sign {
@@ -64,6 +68,15 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
     const [newCourse, setNewCourse] = useState<Partial<Course>>({});
     const [newSign, setNewSign] = useState<Partial<Sign>>({});
 
+    // Pipeline State
+    const [pipelineJob, setPipelineJob] = useState<{ id: string, status: string, progress: number } | null>(null);
+    const [pipelineForm, setPipelineForm] = useState({
+        file: null as File | null,
+        sign_name: '',
+        category: '',
+        region: ''
+    });
+
     // Course Management Functions
     const handleAddCourse = () => {
         if (newCourse.title && newCourse.description) {
@@ -89,6 +102,47 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
 
     const handleDeleteCourse = (id: string) => {
         setCourses(courses.filter(c => c.id !== id));
+    };
+
+    // Pipeline Functions
+    const handlePipelineUpload = (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        if (!pipelineForm.file || !pipelineForm.sign_name) {
+            alert('Please provide a file and sign name.');
+            return;
+        }
+
+        // Simulate file validation (e.g., checking size/type)
+        if (pipelineForm.file.size > 500 * 1024 * 1024) {
+            alert('File must be under 500 MB.');
+            return;
+        }
+
+        // Simulate API call to POST /api/v1/upload/video
+        const jobId = Math.random().toString(36).substring(7);
+        setPipelineJob({ id: jobId, status: 'queued', progress: 0 });
+
+        // Simulate pipeline progress
+        let currentProgress = 0;
+        const interval = setInterval(() => {
+            currentProgress += 10;
+            if (currentProgress >= 100) {
+                clearInterval(interval);
+                setPipelineJob({ id: jobId, status: 'completed', progress: 100 });
+                // Automatically add the fully processed sign to the catalog
+                setSigns((prev) => [...prev, {
+                    id: jobId,
+                    name: pipelineForm.sign_name,
+                    videoUrl: `/assets/generated_${pipelineForm.sign_name.toLowerCase()}.glb`,
+                    category: pipelineForm.category || 'General'
+                }]);
+            } else {
+                setPipelineJob(prev => prev ? { ...prev, progress: currentProgress, status: 'processing' } : null);
+            }
+        }, 1000);
+
+        setPipelineForm({ file: null, sign_name: '', category: '', region: '' });
     };
 
     // Sign Management Functions
@@ -141,7 +195,7 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
             {/* Main Content */}
             <div className="max-w-7xl mx-auto px-4 py-8">
                 <Tabs defaultValue="courses" className="space-y-6">
-                    <TabsList className="grid w-full max-w-md grid-cols-2 h-12 rounded-2xl">
+                    <TabsList className="grid w-full max-w-3xl grid-cols-3 h-12 rounded-2xl">
                         <TabsTrigger value="courses" className="rounded-xl">
                             <BookOpen className="h-4 w-4 mr-2" />
                             Courses
@@ -149,6 +203,10 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
                         <TabsTrigger value="signs" className="rounded-xl">
                             <Video className="h-4 w-4 mr-2" />
                             Signs Catalog
+                        </TabsTrigger>
+                        <TabsTrigger value="pipeline" className="rounded-xl bg-gradient-to-r data-[state=active]:from-indigo-100 data-[state=active]:to-purple-100">
+                            <Cpu className="h-4 w-4 mr-2 text-indigo-600" />
+                            Video → 3D Pipeline
                         </TabsTrigger>
                     </TabsList>
 
@@ -469,6 +527,125 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
                                     </CardContent>
                                 </Card>
                             </div>
+                        )}
+                    </TabsContent>
+
+                    {/* Pipeline Tab */}
+                    <TabsContent value="pipeline" className="space-y-6">
+                        <Card className="border-2 border-dashed border-purple-200 bg-white/50 backdrop-blur-sm">
+                            <CardHeader>
+                                <CardTitle className="flex items-center justify-between">
+                                    <div className="flex items-center text-indigo-700">
+                                        <Cpu className="h-6 w-6 mr-2" />
+                                        Autonomous ISL Video-to-3D Pipeline
+                                    </div>
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <form onSubmit={handlePipelineUpload} className="space-y-6">
+                                    <div className="grid md:grid-cols-2 gap-6">
+                                        {/* File Upload Zone */}
+                                        <div className="border-2 border-dashed border-indigo-200 rounded-2xl p-6 flex flex-col items-center justify-center text-center bg-indigo-50/30 hover:bg-indigo-50/50 transition-colors">
+                                            <UploadCloud className="h-10 w-10 text-indigo-400 mb-2" />
+                                            <p className="text-sm font-medium text-indigo-900 mb-1">
+                                                {pipelineForm.file ? pipelineForm.file.name : "Upload raw sign video"}
+                                            </p>
+                                            <p className="text-xs text-indigo-500 mb-4">
+                                                MP4 | WebM | MOV (max 500 MB)
+                                            </p>
+                                            <Label htmlFor="pipeline-file" className="cursor-pointer bg-white border border-indigo-200 text-indigo-700 px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-50 transition-colors">
+                                                Select File
+                                            </Label>
+                                            <Input 
+                                                id="pipeline-file" 
+                                                type="file" 
+                                                className="hidden" 
+                                                accept="video/mp4,video/webm,video/quicktime"
+                                                onChange={(e) => setPipelineForm({...pipelineForm, file: e.target.files?.[0] || null})}
+                                            />
+                                        </div>
+
+                                        {/* Form Fields */}
+                                        <div className="space-y-4">
+                                            <div>
+                                                <Label>Sign Name (e.g., 'NAMASTE')</Label>
+                                                <Input 
+                                                    required
+                                                    value={pipelineForm.sign_name}
+                                                    onChange={(e) => setPipelineForm({...pipelineForm, sign_name: e.target.value})}
+                                                    className="mt-1 rounded-xl"
+                                                />
+                                            </div>
+                                            <div>
+                                                <Label>Category (e.g., 'greeting')</Label>
+                                                <Input 
+                                                    value={pipelineForm.category}
+                                                    onChange={(e) => setPipelineForm({...pipelineForm, category: e.target.value})}
+                                                    className="mt-1 rounded-xl"
+                                                />
+                                            </div>
+                                            <div>
+                                                <Label>Region (e.g., 'Delhi')</Label>
+                                                <Input 
+                                                    value={pipelineForm.region}
+                                                    onChange={(e) => setPipelineForm({...pipelineForm, region: e.target.value})}
+                                                    className="mt-1 rounded-xl"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex justify-end p-4 bg-indigo-50/50 rounded-2xl border border-indigo-100">
+                                        <Button type="submit" className="rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 shadow-lg hover:shadow-xl transition-all">
+                                            <Cpu className="h-4 w-4 mr-2" />
+                                            Trigger Processing Pipeline
+                                        </Button>
+                                    </div>
+                                </form>
+                            </CardContent>
+                        </Card>
+
+                        {/* Pipeline Status Widget */}
+                        {pipelineJob && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                            >
+                                <Card className="border border-indigo-100 overflow-hidden relative">
+                                    {pipelineJob.status === 'processing' && (
+                                        <div 
+                                            className="absolute top-0 left-0 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-1000 ease-linear"
+                                            style={{ width: `${pipelineJob.progress}%` }}
+                                        />
+                                    )}
+                                    <div className="p-4 flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <div className={`p-2 rounded-lg ${
+                                                pipelineJob.status === 'queued' ? 'bg-yellow-100 text-yellow-700' :
+                                                pipelineJob.status === 'processing' ? 'bg-blue-100 text-blue-700' :
+                                                'bg-green-100 text-green-700'
+                                            }`}>
+                                                {pipelineJob.status === 'queued' ? <Clock className="h-5 w-5" /> :
+                                                 pipelineJob.status === 'processing' ? <Cpu className="h-5 w-5 animate-pulse" /> :
+                                                 <CheckCircle className="h-5 w-5" />}
+                                            </div>
+                                            <div>
+                                                <h4 className="font-semibold text-gray-900">
+                                                    Job ID: {pipelineJob.id}
+                                                </h4>
+                                                <p className="text-sm text-gray-500 capitalize">
+                                                    Status: {pipelineJob.status} {pipelineJob.status === 'processing' && `(${pipelineJob.progress}%)`}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="text-sm text-gray-500">
+                                            {pipelineJob.status === 'completed' 
+                                                ? 'Exported to AR Library' 
+                                                : 'Running pose estimation & GLB generation...'}
+                                        </div>
+                                    </div>
+                                </Card>
+                            </motion.div>
                         )}
                     </TabsContent>
                 </Tabs>
