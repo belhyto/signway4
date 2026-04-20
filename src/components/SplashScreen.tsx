@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { motion } from 'motion/react';
 import logoImage from 'figma:asset/0bac470229d92a29f0f448217f41b3da35bc5c28.png';
+import frogImage from '../assets/frog_3.png';
 
 interface SplashScreenProps {
   onComplete: () => void;
@@ -10,103 +11,103 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
   useEffect(() => {
     const timer = setTimeout(() => {
       onComplete();
-    }, 3000);
+    }, 4000);
 
     return () => clearTimeout(timer);
   }, [onComplete]);
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center z-50">
-      <div className="text-center">
-        {/* Animated Logo */}
-        <motion.div
-          initial={{ scale: 0, rotate: -180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{
-            type: "spring",
-            stiffness: 260,
-            damping: 20,
-            duration: 1
-          }}
-          className="mb-8"
-        >
-          <div className="relative">
-            {/* Outer glow circle */}
-            <motion.div
-              animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.5, 0.8, 0.5]
-              }}
-              transition={{
-                repeat: Infinity,
-                duration: 2,
-                ease: "easeInOut"
-              }}
-              className="absolute inset-0 bg-white/30 rounded-full blur-xl"
-            />
+    <div className="splash-screen-container">
+      {/* Floating Bubbles/Circles from design */}
+      <motion.div 
+        className="splash-bubble splash-bubble--small"
+        animate={{ y: [-10, 10, -10], opacity: [0.4, 0.7, 0.4] }}
+        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div 
+        className="splash-bubble splash-bubble--medium"
+        animate={{ y: [10, -10, 10], opacity: [0.3, 0.6, 0.3] }}
+        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+      />
+      <motion.div 
+        className="splash-bubble splash-bubble--large"
+        animate={{ y: [-15, 15, -15], opacity: [0.2, 0.5, 0.2] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+      />
 
-            {/* Logo container */}
-            <div className="relative bg-white rounded-3xl p-8 shadow-2xl">
-              <motion.div
-                animate={{
-                  scale: [1, 1.1, 1],
-                }}
-                transition={{
-                  repeat: Infinity,
-                  duration: 2,
-                  ease: "easeInOut"
-                }}
-                className="w-32 h-32"
-              >
-                <img src={logoImage} alt="Signway Logo" className="w-full h-full object-contain" />
-              </motion.div>
-            </div>
-          </div>
+      <div className="splash-content">
+        {/* Logo Card */}
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="splash-logo-card"
+        >
+          <motion.img 
+            src={logoImage} 
+            alt="Signway Logo" 
+            className="splash-logo-image"
+            animate={{ scale: [1, 1.05, 1] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          />
         </motion.div>
 
         {/* App Name */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.8 }}
+        <motion.h1 
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+          className="splash-title"
         >
-          <h1 className="text-6xl mb-2 text-white drop-shadow-lg">
-            Signway
-          </h1>
-          <motion.p
-            className="text-xl text-white/90"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 0.8 }}
-          >
-            Your Path to ISL Fluency
-          </motion.p>
-        </motion.div>
+          Signway
+        </motion.h1>
 
-        {/* Loading dots */}
-        <motion.div
-          className="flex gap-2 justify-center mt-12"
+        {/* Tagline */}
+        <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.5 }}
+          transition={{ delay: 0.8, duration: 0.6 }}
+          className="splash-tagline"
         >
-          {[0, 1, 2].map((i) => (
-            <motion.div
-              key={i}
-              className="w-3 h-3 bg-white rounded-full"
-              animate={{
-                scale: [1, 1.5, 1],
-                opacity: [1, 0.5, 1]
-              }}
-              transition={{
-                repeat: Infinity,
-                duration: 1,
-                delay: i * 0.2
-              }}
-            />
-          ))}
-        </motion.div>
+          Making ISL Fun!
+        </motion.p>
       </div>
+
+      {/* Frog Character at Bottom */}
+      <motion.div
+        initial={{ y: 200 }}
+        animate={{ y: 0 }}
+        transition={{ 
+          type: "spring", 
+          damping: 15, 
+          stiffness: 100, 
+          delay: 0.5 
+        }}
+        className="splash-frog-container"
+      >
+        <div className="splash-frog-wrapper">
+           {/* Decorative background shape behind frog */}
+           <div className="splash-frog-glow" />
+           
+           <img 
+            src={frogImage} 
+            alt="Frog Character" 
+            className="splash-frog-image"
+          />
+          
+          {/* Animated bubbles near frog */}
+          <motion.div 
+            className="splash-frog-bubble splash-frog-bubble--1"
+            animate={{ scale: [1, 1.2, 1], opacity: [0.4, 0.8, 0.4] }}
+            transition={{ duration: 3, repeat: Infinity }}
+          />
+          <motion.div 
+            className="splash-frog-bubble splash-frog-bubble--2"
+            animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.7, 0.3] }}
+            transition={{ duration: 2.5, repeat: Infinity, delay: 0.5 }}
+          />
+        </div>
+      </motion.div>
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { Progress } from './ui/progress';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 import { useLanguage } from './LanguageProvider';
 import { ChallengeCalendar } from './ChallengeCalendar';
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import frogImage from '../assets/frog_3.png';
 
 interface HomePageProps {
   onStartLearning: () => void;
@@ -71,11 +71,11 @@ export function HomePage({ onStartLearning }: HomePageProps) {
       <div className="bg-[#e6fcf5] lg:bg-[#e2f3f0] rounded-2xl lg:rounded-[40px] p-6 lg:p-12 text-center lg:text-left border lg:border-none shadow-sm lg:grid lg:grid-cols-2 lg:items-center lg:gap-12 relative overflow-hidden">
         {/* Left Content (Frog + Text) */}
         <div className="flex flex-col items-center lg:items-center space-y-4 lg:space-y-6">
-          <div className="w-40 h-40 lg:w-80 lg:h-80 relative">
-            <DotLottieReact
-              src="https://lottie.host/bbcefa71-2c51-4f7d-9422-c34a0ebdcd0f/pRLFAMyQSs.lottie"
-              loop
-              autoplay
+          <div className="w-40 h-40 lg:w-80 lg:h-80 relative flex items-center justify-center">
+            <img 
+              src={frogImage} 
+              alt="Frog Character" 
+              className="w-full h-full object-contain drop-shadow-lg"
             />
           </div>
           <div className="space-y-2 lg:space-y-3 text-center">
