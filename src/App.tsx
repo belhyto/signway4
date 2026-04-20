@@ -93,7 +93,7 @@ export default function App() {
     return <WelcomeScreen onComplete={handleWelcomeComplete} onSignIn={handleShowAuth} />;
   }
 
-  if (showAuth || !isAuthenticated) {
+  if (showAuth || (!isAuthenticated && !isAdmin)) {
     return <AuthPage onAuthSuccess={handleAuthSuccess} onAdminLogin={handleAdminLogin} />;
   }
 

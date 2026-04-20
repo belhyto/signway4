@@ -228,14 +228,6 @@ export function AuthPage({ onAuthSuccess, onAdminLogin }: AuthPageProps) {
               <span className="mr-2 text-xl">👤</span>
               Guest
             </Button>
-             <Button
-              type="button"
-              variant="outline"
-              className="h-12 rounded-xl"
-              onClick={onAuthSuccess}
-            >
-             Admin
-            </Button>
           </div>
 
           {/* Admin Dashboard Button */}
