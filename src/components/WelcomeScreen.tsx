@@ -17,7 +17,7 @@ import teTranslations from '../translations/te';
 import orTranslations from '../translations/or';
 import asTranslations from '../translations/as';
 import urTranslations from '../translations/ur';
-import logoImage from 'figma:asset/0bac470229d92a29f0f448217f41b3da35bc5c28.png';
+import logoImage from 'figma:asset/logo.png';
 
 interface WelcomeScreenProps {
   onComplete: (language: Language, environment?: 'school' | 'work' | 'home') => void;

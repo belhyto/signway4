@@ -19,7 +19,7 @@ export default defineConfig({
       'next-themes@0.4.6': 'next-themes',
       'lucide-react@0.487.0': 'lucide-react',
       'input-otp@1.4.2': 'input-otp',
-      'figma:asset/0bac470229d92a29f0f448217f41b3da35bc5c28.png': path.resolve(__dirname, './src/assets/0bac470229d92a29f0f448217f41b3da35bc5c28.png'),
+      'figma:asset/logo.png': path.resolve(__dirname, './src/assets/logo.png'),
       'embla-carousel-react@8.6.0': 'embla-carousel-react',
       'cmdk@1.1.1': 'cmdk',
       'class-variance-authority@0.7.1': 'class-variance-authority',

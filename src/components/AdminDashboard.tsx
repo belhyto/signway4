@@ -969,6 +969,280 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
                         </>
                     )}
 
+                    {activeTab === 'users' && (
+                        <div className="user-profile-page">
+                            {/* Header Section */}
+                            <div className="user-profile-header">
+                                <div className="user-profile-title-section">
+                                    <h1 className="user-profile-title">User Profile</h1>
+                                    <p className="user-profile-subtitle">
+                                        Manage administrative users and granular access permissions.
+                                    </p>
+                                </div>
+                                <div className="user-profile-header-actions">
+                                    <div className="user-search-input-wrapper">
+                                        <Search className="user-search-icon" size={18} />
+                                        <input 
+                                            type="text" 
+                                            placeholder="Search users..." 
+                                            className="user-search-input"
+                                        />
+                                    </div>
+                                    <button className="user-add-btn">
+                                        <Users size={18} />
+                                        Add New User
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Two Column Layout */}
+                            <div className="user-profile-layout">
+                                {/* Profile Settings Card */}
+                                <div className="profile-settings-card">
+                                    <h2 className="profile-settings-title">
+                                        <Users className="profile-settings-icon" size={20} />
+                                        Profile Settings
+                                    </h2>
+
+                                    <div className="profile-avatar-section">
+                                        <div className="profile-avatar-wrapper">
+                                            <img 
+                                                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
+                                                alt="Profile" 
+                                                className="profile-avatar"
+                                            />
+                                            <div className="profile-avatar-upload-btn">
+                                                <Plus size={16} />
+                                            </div>
+                                        </div>
+                                        <p className="profile-avatar-hint">
+                                            Recommended: Square JPG or PNG, max 2MB
+                                        </p>
+                                    </div>
+
+                                    <div className="profile-form-group">
+                                        <label className="profile-form-label">Full Name</label>
+                                        <input 
+                                            type="text" 
+                                            value="Alex Rivera" 
+                                            className="profile-form-input"
+                                        />
+                                    </div>
+
+                                    <div className="profile-form-group">
+                                        <label className="profile-form-label">Email Address</label>
+                                        <input 
+                                            type="email" 
+                                            value="alex.admin@signway.com" 
+                                            className="profile-form-input"
+                                        />
+                                    </div>
+
+                                    <div className="profile-form-group">
+                                        <label className="profile-form-label">Current Password</label>
+                                        <input 
+                                            type="password" 
+                                            value="********" 
+                                            className="profile-form-input"
+                                        />
+                                    </div>
+
+                                    <button className="profile-save-btn">
+                                        Save Profile Changes
+                                    </button>
+                                </div>
+
+                                {/* Administrative Users Table */}
+                                <div className="admin-users-card">
+                                    <div className="admin-users-header">
+                                        <Users className="admin-users-header-icon" size={20} />
+                                        <h2>Administrative Users</h2>
+                                    </div>
+
+                                    <div className="admin-users-table-wrapper">
+                                        <table className="admin-users-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>USER</th>
+                                                    <th>STATUS</th>
+                                                    <th>ROLE</th>
+                                                    <th>ACTIONS</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <div className="user-cell">
+                                                            <img 
+                                                                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
+                                                                alt="Sarah" 
+                                                                className="user-cell-avatar"
+                                                            />
+                                                            <div className="user-cell-info">
+                                                                <span className="user-cell-name">Sarah Jenkins</span>
+                                                                <span className="user-cell-email">sarah.j@signway.edu</span>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span className="user-status-badge user-status-badge--active">
+                                                            <span className="user-status-dot"></span>
+                                                            Active
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span className="user-role-badge user-role-badge--dhh">DHH Expert</span>
+                                                    </td>
+                                                    <td>
+                                                        <div className="user-actions">
+                                                            <button className="user-action-btn">
+                                                                <Edit size={16} />
+                                                            </button>
+                                                            <button className="user-action-btn">
+                                                                <Trash2 size={16} />
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div className="user-cell">
+                                                            <img 
+                                                                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
+                                                                alt="Marcus" 
+                                                                className="user-cell-avatar"
+                                                            />
+                                                            <div className="user-cell-info">
+                                                                <span className="user-cell-name">Marcus Wright</span>
+                                                                <span className="user-cell-email">m.wright@globalcorp.com</span>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span className="user-status-badge user-status-badge--active">
+                                                            <span className="user-status-dot"></span>
+                                                            Active
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span className="user-role-badge user-role-badge--employer">Employer Admin</span>
+                                                    </td>
+                                                    <td>
+                                                        <div className="user-actions">
+                                                            <button className="user-action-btn">
+                                                                <Edit size={16} />
+                                                            </button>
+                                                            <button className="user-action-btn">
+                                                                <Trash2 size={16} />
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div className="user-cell">
+                                                            <img 
+                                                                src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
+                                                                alt="Elena" 
+                                                                className="user-cell-avatar"
+                                                            />
+                                                            <div className="user-cell-info">
+                                                                <span className="user-cell-name">Elena Gomez</span>
+                                                                <span className="user-cell-email">elena.g@signway.com</span>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span className="user-status-badge user-status-badge--active">
+                                                            <span className="user-status-dot"></span>
+                                                            Active
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span className="user-role-badge user-role-badge--super">Super Admin</span>
+                                                    </td>
+                                                    <td>
+                                                        <div className="user-actions">
+                                                            <button className="user-action-btn">
+                                                                <Edit size={16} />
+                                                            </button>
+                                                            <button className="user-action-btn">
+                                                                <Trash2 size={16} />
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div className="user-cell">
+                                                            <img 
+                                                                src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
+                                                                alt="Professor" 
+                                                                className="user-cell-avatar"
+                                                            />
+                                                            <div className="user-cell-info">
+                                                                <span className="user-cell-name">Professor Thompson</span>
+                                                                <span className="user-cell-email">thompson@edu.org</span>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span className="user-status-badge user-status-badge--inactive">
+                                                            <span className="user-status-dot"></span>
+                                                            Inactive
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span className="user-role-badge user-role-badge--teacher">Teacher</span>
+                                                    </td>
+                                                    <td>
+                                                        <div className="user-actions">
+                                                            <button className="user-action-btn">
+                                                                <Edit size={16} />
+                                                            </button>
+                                                            <button className="user-action-btn">
+                                                                <Trash2 size={16} />
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div className="admin-users-footer">
+                                        <span className="admin-users-footer-info">Showing 4 of 24 administrators</span>
+                                        <div className="admin-users-pagination">
+                                            <button className="admin-users-page-btn">Previous</button>
+                                            <button className="admin-users-page-btn">Next</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Access Level Footer */}
+                            <div className="user-access-footer">
+                                <div className="user-access-levels">
+                                    <div className="user-access-level">
+                                        <span className="user-access-dot user-access-dot--full"></span>
+                                        Full System Access
+                                    </div>
+                                    <div className="user-access-level">
+                                        <span className="user-access-dot user-access-dot--verify"></span>
+                                        Verification Access
+                                    </div>
+                                    <div className="user-access-level">
+                                        <span className="user-access-dot user-access-dot--org"></span>
+                                        Organization Management
+                                    </div>
+                                </div>
+                                <div className="user-security-text">
+                                    <span>SECURED BY SIGNWAY RBAC</span>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     {activeTab === 'courses' && (
                         <div className="space-y-6">
                             <h2 className="text-3xl font-bold mb-6">Courses Management</h2>

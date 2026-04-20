@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { motion } from 'motion/react';
-import logoImage from 'figma:asset/0bac470229d92a29f0f448217f41b3da35bc5c28.png';
+import logoImage from 'figma:asset/logo.png';
 import frogImage from '../assets/frog_3.png';
 
 interface SplashScreenProps {

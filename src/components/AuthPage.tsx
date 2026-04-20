@@ -4,7 +4,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
-import logoImage from 'figma:asset/0bac470229d92a29f0f448217f41b3da35bc5c28.png';
+import logoImage from 'figma:asset/logo.png';
 
 interface AuthPageProps {
   onAuthSuccess: () => void;

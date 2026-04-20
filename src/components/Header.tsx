@@ -4,7 +4,7 @@ import { Button } from './ui/button';
 import { useLanguage } from './LanguageProvider';
 import { LanguageSelector } from './LanguageSelector';
 import { EnvironmentSwitcher } from './EnvironmentSwitcher';
-import logoImage from 'figma:asset/0bac470229d92a29f0f448217f41b3da35bc5c28.png';
+import logoImage from 'figma:asset/logo.png';
 
 interface HeaderProps {
   onSettingsClick: () => void;
