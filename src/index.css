@@ -6661,3 +6661,677 @@ html {
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
+
+/* ============================================
+   SIGN CONVERTER PAGE STYLES
+   ============================================ */
+
+.sign-converter-page {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  font-family: "Montserrat", sans-serif;
+}
+
+.sign-converter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.sign-converter-title {
+  font-size: 32px;
+  font-weight: 600;
+  color: #1e3a8a;
+  margin: 0;
+}
+
+.sign-converter-title span {
+  color: #069e8e;
+  font-weight: 400;
+}
+
+.sign-converter-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.sign-converter-back-btn:hover {
+  color: #1e293b;
+}
+
+/* Main Layout Grid */
+.sign-converter-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+}
+
+@media (min-width: 1024px) {
+  .sign-converter-layout {
+    grid-template-columns: 1fr 380px;
+  }
+}
+
+/* Left Column - Video Cards */
+.sign-converter-main {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Video Comparison Grid */
+.sign-converter-video-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .sign-converter-video-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* 3D Version Card */
+.sign-converter-3d-card {
+  background-color: #1e293b;
+  border-radius: 32px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.sign-converter-3d-header {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 10;
+}
+
+.sign-converter-3d-title {
+  color: white;
+  font-size: 14px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin: 0;
+}
+
+.sign-converter-3d-badge {
+  width: 40px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  position: relative;
+}
+
+.sign-converter-3d-badge span {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.sign-converter-3d-content {
+  aspect-ratio: 3/4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+}
+
+.sign-converter-3d-bg {
+  position: absolute;
+  inset: 0;
+  background: url('https://images.unsplash.com/photo-1544717297-fa95b3ee51f3?auto=format&fit=crop&q=80&w=800') center/cover;
+  opacity: 0.3;
+  filter: grayscale(100%);
+}
+
+.sign-converter-3d-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, #1e293b, transparent);
+  opacity: 0.6;
+}
+
+.sign-converter-play-btn {
+  width: 80px;
+  height: 80px;
+  background-color: #00ffca;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1e3a8a;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 20px 40px rgba(0, 255, 202, 0.3);
+  transition: transform 0.2s ease;
+  z-index: 10;
+}
+
+.sign-converter-play-btn:hover {
+  transform: scale(1.1);
+}
+
+.sign-converter-progress {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  right: 24px;
+  z-index: 10;
+}
+
+.sign-converter-progress-bar {
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.sign-converter-progress-fill {
+  height: 100%;
+  background-color: #00ffca;
+  width: 33%;
+}
+
+/* Original Video Card */
+.sign-converter-original-card {
+  background-color: #069e8e;
+  border-radius: 32px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.sign-converter-original-header {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 10;
+}
+
+.sign-converter-original-title {
+  color: white;
+  font-size: 14px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin: 0;
+}
+
+.sign-converter-reference-badge {
+  background-color: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 10px;
+  font-weight: 800;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.sign-converter-synced-badge {
+  position: absolute;
+  top: 70px;
+  left: 16px;
+  background-color: rgba(0, 255, 202, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 255, 202, 0.3);
+  border-radius: 9999px;
+  padding: 6px 14px;
+  font-size: 10px;
+  font-weight: 800;
+  color: #00ffca;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  z-index: 10;
+}
+
+.sign-converter-original-content {
+  aspect-ratio: 3/4;
+  position: relative;
+  background-color: #069e8e;
+}
+
+.sign-converter-original-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sign-converter-original-play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sign-converter-original-play-btn {
+  width: 72px;
+  height: 72px;
+  background-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.sign-converter-original-play-btn:hover {
+  transform: scale(1.1);
+}
+
+.sign-converter-spoken-text {
+  background-color: #a5f3fc;
+  padding: 20px 24px;
+}
+
+.sign-converter-spoken-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.sign-converter-spoken-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+.sign-converter-read-aloud-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #e0fcf4;
+  color: #069e8e;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.sign-converter-read-aloud-btn:hover {
+  background-color: #d1fae5;
+}
+
+.sign-converter-spoken-quote {
+  font-size: 20px;
+  font-weight: 700;
+  color: #069e8e;
+  margin: 0;
+  font-style: italic;
+}
+
+/* Feedback Buttons Section */
+.sign-converter-feedback-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+}
+
+@media (min-width: 768px) {
+  .sign-converter-feedback-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.sign-converter-feedback-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sign-converter-feedback-label {
+  font-size: 12px;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin: 0;
+}
+
+.sign-converter-feedback-buttons {
+  display: flex;
+  gap: 16px;
+}
+
+.sign-converter-feedback-btn {
+  flex: 1;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.sign-converter-feedback-btn--correct {
+  color: #10b981;
+}
+
+.sign-converter-feedback-btn--correct:hover {
+  background-color: #ecfdf5;
+  border-color: #10b981;
+}
+
+.sign-converter-feedback-btn--wrong {
+  color: #f97316;
+}
+
+.sign-converter-feedback-btn--wrong:hover {
+  background-color: #fff5f0;
+  border-color: #f97316;
+}
+
+.sign-converter-feedback-btn--good {
+  color: #10b981;
+}
+
+.sign-converter-feedback-btn--good:hover {
+  background-color: #ecfdf5;
+  border-color: #10b981;
+}
+
+.sign-converter-feedback-btn--bad {
+  color: #f97316;
+}
+
+.sign-converter-feedback-btn--bad:hover {
+  background-color: #fff5f0;
+  border-color: #f97316;
+}
+
+/* Right Sidebar - Word Details */
+.sign-converter-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.sign-converter-details-card {
+  background-color: white;
+  border-radius: 32px;
+  border: 1px solid #e2e8f0;
+  padding: 32px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.sign-converter-details-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1e293b;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0 0 24px 0;
+}
+
+.sign-converter-details-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.sign-converter-details-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.sign-converter-select-wrapper {
+  position: relative;
+}
+
+.sign-converter-select {
+  width: 100%;
+  padding: 16px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #069e8e;
+  appearance: none;
+  cursor: pointer;
+  outline: none;
+}
+
+.sign-converter-select-icon {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+/* Tags */
+.sign-converter-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.sign-converter-tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #e0fcf4;
+  color: #069e8e;
+  padding: 8px 14px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sign-converter-tag-close {
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.sign-converter-tag-close:hover {
+  opacity: 0.7;
+}
+
+.sign-converter-add-tag-wrapper {
+  position: relative;
+}
+
+.sign-converter-add-tag-input {
+  width: 100%;
+  padding: 16px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+  outline: none;
+}
+
+.sign-converter-add-tag-input::placeholder {
+  color: #94a3b8;
+}
+
+.sign-converter-add-tag-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  background-color: #069e8e;
+  border: none;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s ease;
+}
+
+.sign-converter-add-tag-btn:hover {
+  background-color: #0d9488;
+}
+
+/* Speed Slider */
+.sign-converter-speed-section {
+  margin-top: 8px;
+}
+
+.sign-converter-speed-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.sign-converter-slider {
+  height: 6px;
+  width: 100%;
+  background-color: #e0fcf4;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.sign-converter-slider-fill {
+  height: 100%;
+  background-color: #a5f3fc;
+  width: 75%;
+}
+
+.sign-converter-slider-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 8px;
+}
+
+/* Feedback Section */
+.sign-converter-feedback-section-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #1e293b;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 24px 0 16px 0;
+  padding-top: 24px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.sign-converter-feedback-textarea {
+  width: 100%;
+  padding: 20px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1e293b;
+  resize: none;
+  min-height: 120px;
+  outline: none;
+  font-family: "Montserrat", sans-serif;
+}
+
+.sign-converter-feedback-textarea::placeholder {
+  color: #94a3b8;
+}
+
+.sign-converter-checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  cursor: pointer;
+}
+
+.sign-converter-checkbox {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #e2e8f0;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s ease;
+}
+
+.sign-converter-checkbox-wrapper:hover .sign-converter-checkbox {
+  border-color: #069e8e;
+}
+
+.sign-converter-checkbox-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  transition: color 0.2s ease;
+}
+
+.sign-converter-checkbox-wrapper:hover .sign-converter-checkbox-label {
+  color: #1e293b;
+}

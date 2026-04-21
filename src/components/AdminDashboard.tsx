@@ -36,6 +36,8 @@ import {
   Layout,
   MoreHorizontal,
   ArrowLeft,
+  Play,
+  XCircle,
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
@@ -648,163 +650,165 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
                     )}
 
                     {activeTab === 'converter' && (
-                        <div className="space-y-8">
-                            <div className="flex items-center justify-between">
-                                <h2 className="text-3xl font-bold text-[#1e3a8a]">
-                                    Sign Converter: <span className="text-[#069e8e]">ISL_Sentence_092</span>
+                        <div className="sign-converter-page">
+                            {/* Header */}
+                            <div className="sign-converter-header">
+                                <h2 className="sign-converter-title">
+                                    Sign Converter: <span>ISL_Sentence_092</span>
                                 </h2>
-                                <Button variant="ghost" className="text-[#94a3b8] hover:text-[#1e293b] gap-2 font-bold uppercase text-xs tracking-widest">
+                                <button className="sign-converter-back-btn">
                                     <ArrowLeft size={18} /> Back to Library
-                                </Button>
+                                </button>
                             </div>
 
-                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                                <div className="lg:col-span-8 space-y-8">
-                                    {/* Video Comparison Grid */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        {/* 3D Version */}
-                                        <Card className="bg-[#1e293b] rounded-[40px] overflow-hidden relative shadow-xl">
-                                            <div className="absolute top-6 left-8 right-8 flex items-center justify-between z-10">
-                                                <h3 className="text-white font-black uppercase tracking-[0.2em] text-xs">3D Version</h3>
-                                                <div className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center text-white">
-                                                    <div className="relative">
-                                                        <Activity size={20} />
-                                                        <span className="absolute -top-1 -right-1 text-[8px] font-bold">3D</span>
-                                                    </div>
+                            {/* Main Layout */}
+                            <div className="sign-converter-layout">
+                                {/* Left Column */}
+                                <div className="sign-converter-main">
+                                    {/* Video Cards Grid */}
+                                    <div className="sign-converter-video-grid">
+                                        {/* 3D Version Card */}
+                                        <div className="sign-converter-3d-card">
+                                            <div className="sign-converter-3d-header">
+                                                <h3 className="sign-converter-3d-title">3D Version</h3>
+                                                <div className="sign-converter-3d-badge">
+                                                    <Activity size={20} />
+                                                    <span>3D</span>
                                                 </div>
                                             </div>
-                                            <div className="aspect-[3/4] flex items-center justify-center relative bg-slate-800">
-                                                <div className="absolute inset-0 bg-gradient-to-t from-[#1e293b] to-transparent opacity-60"></div>
-                                                <img src="https://images.unsplash.com/photo-1544717297-fa95b3ee51f3?auto=format&fit=crop&q=80&w=800" className="w-full h-full object-cover opacity-40 grayscale" alt="3D Avatar" />
-                                                <button className="w-24 h-24 bg-[#00ffca] rounded-full flex items-center justify-center text-[#1e3a8a] shadow-2xl transform transition-transform hover:scale-110 z-10">
-                                                    <ArrowRight className="ml-1" size={40} />
+                                            <div className="sign-converter-3d-content">
+                                                <div className="sign-converter-3d-bg"></div>
+                                                <div className="sign-converter-3d-overlay"></div>
+                                                <button className="sign-converter-play-btn">
+                                                    <Play size={32} fill="currentColor" />
                                                 </button>
-                                                <div className="absolute bottom-10 left-8 right-8 z-10">
-                                                    <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
-                                                        <div className="h-full bg-[#00ffca] w-1/3"></div>
+                                                <div className="sign-converter-progress">
+                                                    <div className="sign-converter-progress-bar">
+                                                        <div className="sign-converter-progress-fill"></div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </Card>
-
-                                        {/* Original Reference */}
-                                        <Card className="bg-[#069e8e] rounded-[40px] overflow-hidden relative shadow-xl">
-                                            <div className="absolute top-6 left-8 right-8 flex items-center justify-between z-10">
-                                                <h3 className="text-white font-black uppercase tracking-[0.2em] text-xs">Original</h3>
-                                                <div className="bg-white/10 backdrop-blur-md rounded-lg px-3 py-1 text-[8px] font-black text-white uppercase tracking-widest border border-white/20">Reference Video</div>
-                                            </div>
-                                            <div className="aspect-[3/4] flex flex-col relative bg-[#069e8e]">
-                                                <div className="absolute top-20 left-4 z-10">
-                                                    <div className="bg-[#00ffca]/20 backdrop-blur-md text-[#00ffca] text-[9px] font-black uppercase px-3 py-1 rounded-full border border-[#00ffca]/30">Synced View</div>
-                                                </div>
-                                                <img src="https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&q=80&w=800" className="w-full h-full object-cover" alt="Reference" />
-                                                <div className="absolute inset-0 flex items-center justify-center">
-                                                    <button className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full border border-white/30 flex items-center justify-center text-white transform transition-transform hover:scale-110">
-                                                        <ArrowRight className="ml-1" size={32} />
-                                                    </button>
-                                                </div>
-                                                <div className="bg-white p-8">
-                                                    <div className="flex items-center justify-between mb-4">
-                                                        <h4 className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.2em]">Spoken Text:</h4>
-                                                        <Button variant="ghost" className="h-8 rounded-lg bg-[#e0fcf4] text-[#069e8e] font-black text-[9px] uppercase tracking-widest gap-1.5">
-                                                            <Mic size={14} /> Read Aloud
-                                                        </Button>
-                                                    </div>
-                                                    <p className="text-2xl font-extrabold text-[#069e8e]">"It's time for a break"</p>
-                                                </div>
-                                            </div>
-                                        </Card>
-                                    </div>
-
-                                    {/* Action Buttons */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                        <div className="space-y-4">
-                                            <h4 className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.2em] px-2">Sign Accuracy</h4>
-                                            <div className="flex gap-4">
-                                                <Button className="flex-1 h-16 rounded-[20px] bg-white border border-[#e2e8f0] text-[#069e8e] hover:bg-[#e0fcf4] font-black text-sm uppercase gap-3 shadow-sm">
-                                                    <CheckCircle2 size={24} /> Correct
-                                                </Button>
-                                                <Button className="flex-1 h-16 rounded-[20px] bg-white border border-[#e2e8f0] text-[#f97316] hover:bg-[#fff5f0] font-black text-sm uppercase gap-3 shadow-sm">
-                                                    <X size={24} /> Wrong
-                                                </Button>
                                             </div>
                                         </div>
-                                        <div className="space-y-4">
-                                            <h4 className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.2em] px-2">Movement Look</h4>
-                                            <div className="flex gap-4">
-                                                <Button className="flex-1 h-16 rounded-[20px] bg-white border border-[#e2e8f0] text-[#069e8e] hover:bg-[#e0fcf4] font-black text-sm uppercase gap-3 shadow-sm">
-                                                    <ThumbsUp size={24} /> Good
-                                                </Button>
-                                                <Button className="flex-1 h-16 rounded-[20px] bg-white border border-[#e2e8f0] text-[#f97316] hover:bg-[#fff5f0] font-black text-sm uppercase gap-3 shadow-sm">
-                                                    <ThumbsDown size={24} /> Bad
-                                                </Button>
+
+                                        {/* Original Video Card */}
+                                        <div className="sign-converter-original-card">
+                                            <div className="sign-converter-original-header">
+                                                <h3 className="sign-converter-original-title">Original</h3>
+                                                <span className="sign-converter-reference-badge">Reference Video</span>
+                                            </div>
+                                            <div className="sign-converter-synced-badge">Synced View</div>
+                                            <div className="sign-converter-original-content">
+                                                <img 
+                                                    src="https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&q=80&w=800" 
+                                                    alt="Reference" 
+                                                    className="sign-converter-original-video"
+                                                />
+                                                <div className="sign-converter-original-play">
+                                                    <button className="sign-converter-original-play-btn">
+                                                        <Play size={28} fill="currentColor" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div className="sign-converter-spoken-text">
+                                                <div className="sign-converter-spoken-header">
+                                                    <span className="sign-converter-spoken-label">Spoken Text:</span>
+                                                    <button className="sign-converter-read-aloud-btn">
+                                                        <Mic size={14} /> Read Aloud
+                                                    </button>
+                                                </div>
+                                                <p className="sign-converter-spoken-quote">"It's time for a break"</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Feedback Buttons */}
+                                    <div className="sign-converter-feedback-grid">
+                                        <div className="sign-converter-feedback-section">
+                                            <h4 className="sign-converter-feedback-label">Sign Accuracy</h4>
+                                            <div className="sign-converter-feedback-buttons">
+                                                <button className="sign-converter-feedback-btn sign-converter-feedback-btn--correct">
+                                                    <CheckCircle2 size={22} /> Correct
+                                                </button>
+                                                <button className="sign-converter-feedback-btn sign-converter-feedback-btn--wrong">
+                                                    <XCircle size={22} /> Wrong
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="sign-converter-feedback-section">
+                                            <h4 className="sign-converter-feedback-label">Movement Look</h4>
+                                            <div className="sign-converter-feedback-buttons">
+                                                <button className="sign-converter-feedback-btn sign-converter-feedback-btn--good">
+                                                    <ThumbsUp size={22} /> Good
+                                                </button>
+                                                <button className="sign-converter-feedback-btn sign-converter-feedback-btn--bad">
+                                                    <ThumbsDown size={22} /> Bad
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="lg:col-span-4 space-y-8">
-                                    {/* Word Details */}
-                                    <Card className="bg-white rounded-[40px] border-none shadow-sm p-10 space-y-8">
-                                        <div>
-                                            <h3 className="text-xl font-extrabold text-[#1e293b] uppercase tracking-wide mb-6">Word Details</h3>
-                                            <div className="space-y-4">
-                                                <div className="space-y-2">
-                                                    <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-widest">Language Type</label>
-                                                    <div className="relative">
-                                                        <select className="w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-4 font-extrabold text-[#069e8e] focus:outline-none appearance-none">
-                                                            <option>Standard Indian Sign Language</option>
-                                                        </select>
-                                                        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-[#94a3b8]" size={20} />
-                                                    </div>
-                                                </div>
-                                                <div className="space-y-2">
-                                                    <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-widest">Groups</label>
-                                                    <div className="flex flex-wrap gap-2 mb-4">
-                                                        {['Greetings', 'Navigation'].map(tag => (
-                                                            <div key={tag} className="flex items-center gap-1.5 bg-[#e0fcf4] text-[#069e8e] px-3 py-1.5 rounded-xl font-black text-[9px] uppercase tracking-wider">
-                                                                {tag} <X size={12} className="cursor-pointer" />
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                    <div className="relative">
-                                                        <input className="w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-2xl p-4 font-bold text-[#1e293b] placeholder:text-[#cbd5e1] focus:outline-none" placeholder="Add..." />
-                                                        <button className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-[#069e8e] rounded-xl flex items-center justify-center text-white shadow-lg">
-                                                            <Plus size={24} />
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                                <div className="space-y-4 pt-4">
-                                                    <div className="flex justify-between items-center">
-                                                        <label className="text-[10px] font-black text-[#94a3b8] uppercase tracking-widest">Speed</label>
-                                                    </div>
-                                                    <div className="h-2 w-full bg-[#e0fcf4] rounded-full overflow-hidden">
-                                                        <div className="h-full bg-[#00ffca] w-3/4"></div>
-                                                    </div>
-                                                    <div className="flex justify-between text-[9px] font-black text-[#cbd5e1] uppercase tracking-widest">
-                                                        <span>Slow</span>
-                                                        <span>Fast</span>
-                                                    </div>
-                                                </div>
+                                {/* Right Sidebar */}
+                                <div className="sign-converter-sidebar">
+                                    <div className="sign-converter-details-card">
+                                        <h3 className="sign-converter-details-title">Word Details</h3>
+
+                                        {/* Language Type */}
+                                        <div className="sign-converter-details-section">
+                                            <label className="sign-converter-details-label">Language Type</label>
+                                            <div className="sign-converter-select-wrapper">
+                                                <select className="sign-converter-select">
+                                                    <option>Standard Indian Sign Language</option>
+                                                </select>
+                                                <ChevronDown className="sign-converter-select-icon" size={20} />
                                             </div>
                                         </div>
 
-                                        <div className="pt-8 border-t border-[#f1f5f9]">
-                                            <h3 className="text-xl font-extrabold text-[#1e293b] uppercase tracking-wide mb-6">Your Feedback</h3>
-                                            <div className="space-y-6">
-                                                <textarea 
-                                                    className="w-full bg-[#f8fafc] border border-[#e2e8f0] rounded-[24px] p-6 font-bold text-[#1e293b] placeholder:text-[#cbd5e1] focus:outline-none resize-none min-h-[160px]"
-                                                    placeholder="Write your notes here..."
-                                                />
-                                                <label className="flex items-center gap-3 group cursor-pointer">
-                                                    <div className="w-6 h-6 border-2 border-[#e2e8f0] rounded-lg flex items-center justify-center transition-colors group-hover:border-[#069e8e]">
-                                                        {/* custom checkbox icon could go here */}
+                                        {/* Groups */}
+                                        <div className="sign-converter-details-section">
+                                            <label className="sign-converter-details-label">Groups</label>
+                                            <div className="sign-converter-tags">
+                                                {['Greetings', 'Navigation'].map(tag => (
+                                                    <div key={tag} className="sign-converter-tag">
+                                                        {tag} <X size={14} className="sign-converter-tag-close" />
                                                     </div>
-                                                    <span className="text-[11px] font-black text-[#64748b] uppercase tracking-widest group-hover:text-[#1e293b]">Flag for a second look</span>
-                                                </label>
+                                                ))}
+                                            </div>
+                                            <div className="sign-converter-add-tag-wrapper">
+                                                <input 
+                                                    type="text" 
+                                                    placeholder="Add..." 
+                                                    className="sign-converter-add-tag-input"
+                                                />
+                                                <button className="sign-converter-add-tag-btn">
+                                                    <Plus size={20} />
+                                                </button>
                                             </div>
                                         </div>
-                                    </Card>
+
+                                        {/* Speed */}
+                                        <div className="sign-converter-speed-section">
+                                            <label className="sign-converter-details-label">Speed</label>
+                                            <div className="sign-converter-slider">
+                                                <div className="sign-converter-slider-fill"></div>
+                                            </div>
+                                            <div className="sign-converter-slider-labels">
+                                                <span>Slow</span>
+                                                <span>Fast</span>
+                                            </div>
+                                        </div>
+
+                                        {/* Your Feedback */}
+                                        <h4 className="sign-converter-feedback-section-title">Your Feedback</h4>
+                                        <textarea 
+                                            className="sign-converter-feedback-textarea"
+                                            placeholder="Write your notes here..."
+                                        />
+                                        <label className="sign-converter-checkbox-wrapper">
+                                            <div className="sign-converter-checkbox"></div>
+                                            <span className="sign-converter-checkbox-label">Flag for a second look</span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
