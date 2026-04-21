@@ -38,6 +38,11 @@ import {
   ArrowLeft,
   Play,
   XCircle,
+  Globe,
+  Lightbulb,
+  FileArchive,
+  LayoutGrid,
+  ChevronRight,
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
@@ -69,6 +74,8 @@ interface Job {
   status: 'processing' | 'queued' | 'ready';
   progress: number;
   checkStatus: string;
+  category?: string;
+  region?: string;
 }
 
 interface AdminDashboardProps {
@@ -222,61 +229,66 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
                 <div 
                     className={`sidebar-icon-container ${activeTab === 'stats' ? 'active' : ''}`}
                     onClick={() => setActiveTab('stats')}
-                    title="Dashboard Stats"
                 >
                     <Home size={24} />
+                    <span className="sidebar-tooltip">Dashboard</span>
                 </div>
                 <div 
                     className={`sidebar-icon-container ${activeTab === 'pipeline' ? 'active' : ''}`}
                     onClick={() => setActiveTab('pipeline')}
-                    title="Create 3D Sign"
                 >
                     <Plus size={24} />
+                    <span className="sidebar-tooltip">Create 3D Sign</span>
                 </div>
                 <div 
                     className={`sidebar-icon-container ${activeTab === 'text-to-sign' ? 'active' : ''}`}
                     onClick={() => setActiveTab('text-to-sign')}
-                    title="Text to Sign"
                 >
                     <MessageSquare size={24} />
+                    <span className="sidebar-tooltip">Text to Sign</span>
                 </div>
                 <div 
                     className={`sidebar-icon-container ${activeTab === 'converter' ? 'active' : ''}`}
                     onClick={() => setActiveTab('converter')}
-                    title="Sign Converter"
                 >
                     <Sparkles size={24} />
+                    <span className="sidebar-tooltip">Sign Converter</span>
                 </div>
                 <div 
                     className={`sidebar-icon-container ${activeTab === 'verify' ? 'active' : ''}`}
                     onClick={() => setActiveTab('verify')}
-                    title="Verify"
                 >
                     <CheckCircle2 size={24} />
+                    <span className="sidebar-tooltip">Verify</span>
                 </div>
                 <div 
                     className={`sidebar-icon-container ${activeTab === 'signs' ? 'active' : ''}`}
                     onClick={() => setActiveTab('signs')}
                 >
                     <Database size={24} />
+                    <span className="sidebar-tooltip">Signs Library</span>
                 </div>
                 <div 
                     className={`sidebar-icon-container ${activeTab === 'users' ? 'active' : ''}`}
                     onClick={() => setActiveTab('users')}
                 >
                     <Users size={24} />
+                    <span className="sidebar-tooltip">User Profile</span>
                 </div>
                 <div 
                     className={`sidebar-icon-container ${activeTab === 'courses' ? 'active' : ''}`}
                     onClick={() => setActiveTab('courses')}
                 >
                     <List size={24} />
+                    <span className="sidebar-tooltip">Courses</span>
                 </div>
-                <div className="mt-auto sidebar-icon-container" title="Logout" onClick={onLogout}>
+                <div className="mt-auto sidebar-icon-container" onClick={onLogout}>
                     <LogOut size={24} />
+                    <span className="sidebar-tooltip">Logout</span>
                 </div>
                 <div className="sidebar-icon-container">
                     <HelpCircle size={24} />
+                    <span className="sidebar-tooltip">Help</span>
                 </div>
             </aside>
 
@@ -285,7 +297,7 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
                 {/* Top Bar */}
                 <header className="pipeline-topbar">
                     <div className="topbar-logo">
-                        <img src="https://raw.githubusercontent.com/belhyto/signway4/main/public/assets/signy_maskot.png" alt="Signway" />
+                        <img src="/src/assets/logo.png" alt="Signway" />
                         <div>
                             <span>Signway</span>
                             <div className="admin-tag">ADMIN</div>
@@ -464,186 +476,193 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
                     )}
 
                     {activeTab === 'text-to-sign' && (
-                        <div className="space-y-8">
-                            <h2 className="text-4xl font-extrabold text-[#069e8e]">Simple Text-to-Sign Tool</h2>
+                        <div className="text-to-sign-page">
+                            <h2 className="text-to-sign-title">Simple Text-to-Sign Tool</h2>
                             
-                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                                <div className="lg:col-span-7 space-y-6">
+                            <div className="text-to-sign-layout">
+                                {/* Left Column */}
+                                <div>
                                     {/* Step 1 */}
-                                    <Card className="bg-white rounded-[40px] border-none shadow-sm p-10 relative">
-                                        <div className="flex items-start gap-4 mb-8">
-                                            <div className="w-10 h-10 bg-[#e0fcf4] rounded-xl flex items-center justify-center text-[#069e8e]">
-                                                <List size={24} />
+                                    <div className="text-to-sign-card">
+                                        <div className="text-to-sign-card-header">
+                                            <div className="text-to-sign-card-icon">
+                                                <List size={22} />
                                             </div>
-                                            <div className="flex-1">
-                                                <div className="flex items-center justify-between w-full">
-                                                    <h3 className="text-xl font-extrabold text-[#1e293b] uppercase tracking-wide">Step 1: Enter your text</h3>
-                                                    <span className="text-[10px] font-bold text-[#94a3b8] bg-[#f8fafc] px-3 py-1 rounded-full uppercase">42 / 500 chars</span>
+                                            <div className="text-to-sign-card-title-section">
+                                                <div className="text-to-sign-card-title-row">
+                                                    <h3 className="text-to-sign-card-title">Step 1: Enter your text</h3>
+                                                    <span className="text-to-sign-char-count">42 / 500 chars</span>
                                                 </div>
-                                                <p className="text-[#64748b] font-medium mt-1">Type or speak the message you want to turn into sign language below.</p>
+                                                <p className="text-to-sign-card-subtitle">Type or speak the message you want to turn into sign language.</p>
                                             </div>
                                         </div>
                                         
-                                        <div className="bg-[#f8fafc] rounded-3xl p-8 mb-6">
+                                        <div className="text-to-sign-input-area">
                                             <textarea 
-                                                className="w-full bg-transparent border-none focus:outline-none text-xl font-bold text-[#1e293b] placeholder:text-[#cbd5e1] resize-none min-h-[120px]"
+                                                className="text-to-sign-textarea"
                                                 placeholder="Enter text here..."
                                                 defaultValue="Please wear your safety helmet in the logistics warehouse zone."
                                             />
-                                            <div className="flex justify-end gap-3 mt-4">
-                                                <Button className="bg-[#00ffca] hover:bg-[#00e6b8] text-[#1e3a8a] rounded-2xl px-6 h-12 font-extrabold gap-2">
+                                            <div className="text-to-sign-input-actions">
+                                                <button className="text-to-sign-voice-btn">
                                                     <Mic size={18} /> Voice Input
-                                                </Button>
-                                                <Button variant="outline" className="rounded-2xl border-[#e2e8f0] w-12 h-12 p-0 flex items-center justify-center">
-                                                    <UploadCloud size={20} className="text-[#069e8e]" />
-                                                </Button>
+                                                </button>
+                                                <button className="text-to-sign-upload-btn">
+                                                    <UploadCloud size={20} />
+                                                </button>
                                             </div>
                                         </div>
-                                    </Card>
+                                    </div>
 
                                     {/* Step 2 */}
-                                    <Card className="bg-white rounded-[40px] border-none shadow-sm p-10">
-                                        <div className="flex items-start gap-4 mb-8">
-                                            <div className="w-10 h-10 bg-[#e0fcf4] rounded-xl flex items-center justify-center text-[#069e8e]">
-                                                <Layout size={24} />
+                                    <div className="text-to-sign-card" style={{ marginTop: '24px' }}>
+                                        <div className="text-to-sign-card-header">
+                                            <div className="text-to-sign-card-icon">
+                                                <Layout size={22} />
                                             </div>
-                                            <div className="flex-1">
-                                                <div className="flex items-center justify-between">
-                                                    <h3 className="text-xl font-extrabold text-[#1e293b] uppercase tracking-wide">Step 2: Check our work</h3>
-                                                    <div className="flex items-center gap-6">
-                                                        <div className="flex items-center gap-2">
-                                                            <div className="w-3 h-3 rounded-full bg-[#00ffca]"></div>
-                                                            <span className="text-[10px] font-bold text-[#1e293b] uppercase">Correct</span>
+                                            <div className="text-to-sign-card-title-section">
+                                                <div className="text-to-sign-card-title-row">
+                                                    <h3 className="text-to-sign-card-title">Step 2: Check our work</h3>
+                                                    <div className="text-to-sign-legend">
+                                                        <div className="text-to-sign-legend-item">
+                                                            <div className="text-to-sign-legend-dot text-to-sign-legend-dot--correct"></div>
+                                                            <span className="text-to-sign-legend-text">Correct</span>
                                                         </div>
-                                                        <div className="flex items-center gap-2">
-                                                            <div className="w-3 h-3 rounded-full bg-[#ffb86c]"></div>
-                                                            <span className="text-[10px] font-bold text-[#1e293b] uppercase">Needs Help</span>
+                                                        <div className="text-to-sign-legend-item">
+                                                            <div className="text-to-sign-legend-dot text-to-sign-legend-dot--help"></div>
+                                                            <span className="text-to-sign-legend-text">Needs Help</span>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <p className="text-[#64748b] font-medium mt-1">We've highlighted words from our Dictionary and those where the Helper is active.</p>
+                                                <p className="text-to-sign-card-subtitle">We've highlighted words from our Dictionary and those where the Helper is active.</p>
                                             </div>
                                         </div>
 
-                                        <div className="border-2 border-dashed border-[#f1f5f9] rounded-[32px] p-8 space-y-4">
-                                            <div className="flex flex-wrap gap-3">
+                                        <div className="text-to-sign-words-container">
+                                            <div className="text-to-sign-words-row">
                                                 {['Please', 'wear', 'your', 'safety'].map((word) => (
-                                                    <div key={word} className="px-5 py-2.5 rounded-2xl bg-white border border-[#e2e8f0] text-[#069e8e] font-extrabold shadow-sm">
-                                                        {word}
-                                                    </div>
+                                                    <div key={word} className="text-to-sign-word-tag">{word}</div>
                                                 ))}
                                             </div>
-                                            <div className="flex flex-wrap gap-3">
+                                            <div className="text-to-sign-words-row">
                                                 {['helmet', 'in', 'the', 'logistics'].map((word) => (
-                                                    <div key={word} className="px-5 py-2.5 rounded-2xl bg-white border border-[#e2e8f0] text-[#069e8e] font-extrabold shadow-sm">
-                                                        {word}
-                                                    </div>
+                                                    <div key={word} className="text-to-sign-word-tag">{word}</div>
                                                 ))}
                                             </div>
-                                            <div className="flex flex-wrap gap-3">
+                                            <div className="text-to-sign-words-row">
                                                 {['warehouse', 'zone'].map((word) => (
-                                                    <div key={word} className="px-5 py-2.5 rounded-2xl bg-white border border-[#e2e8f0] text-[#069e8e] font-extrabold shadow-sm">
-                                                        {word}
-                                                    </div>
+                                                    <div key={word} className="text-to-sign-word-tag">{word}</div>
                                                 ))}
                                             </div>
                                         </div>
 
-                                        <div className="mt-8 flex gap-4 p-6 border-l-4 border-[#ffb86c] bg-[#fffaf5] rounded-r-3xl">
-                                            <div className="text-[#ffb86c]">
-                                                <HelpCircle size={24} />
+                                        <div className="text-to-sign-helper-alert">
+                                            <div className="text-to-sign-helper-icon">
+                                                <Lightbulb size={24} />
                                             </div>
                                             <div>
-                                                <h4 className="font-extrabold text-[#1e293b] uppercase text-sm tracking-wide">New Sign Helper is working</h4>
-                                                <p className="text-[#64748b] text-sm mt-1 font-medium">
+                                                <h4 className="text-to-sign-helper-title">New Sign Helper is working</h4>
+                                                <p className="text-to-sign-helper-text">
                                                     "Helmet" and "Logistics" aren't in our standard dictionary yet. Our helper is creating them for you now using visual context models.
                                                 </p>
                                             </div>
                                         </div>
-                                    </Card>
+                                    </div>
                                 </div>
 
-                                <div className="lg:col-span-5">
-                                    {/* Step 3 */}
-                                    <Card className="bg-white rounded-[40px] border-none shadow-sm p-10 sticky top-8">
-                                        <div className="flex items-start gap-4 mb-8">
-                                            <div className="w-10 h-10 bg-[#e0fcf4] rounded-xl flex items-center justify-center text-[#069e8e]">
-                                                <Video size={24} />
-                                            </div>
-                                            <div className="flex-1">
-                                                <div className="flex items-center justify-between">
-                                                    <h3 className="text-xl font-extrabold text-[#1e293b] uppercase tracking-wide">Step 3: Preview Signs</h3>
-                                                    <div className="flex items-center gap-1.5 text-[#069e8e]">
-                                                        <Activity size={16} />
-                                                        <span className="text-[10px] font-black uppercase tracking-widest">Live Preview</span>
-                                                    </div>
-                                                </div>
-                                                <p className="text-[#64748b] font-medium mt-1">Watch the generated sign language video below.</p>
-                                            </div>
+                                {/* Right Column - Preview */}
+                                <div className="text-to-sign-preview-card">
+                                    <div className="text-to-sign-card-header">
+                                        <div className="text-to-sign-card-icon">
+                                            <Video size={22} />
                                         </div>
-
-                                        <div className="relative rounded-[32px] overflow-hidden aspect-[4/3] bg-[#f8fafc] mb-8 shadow-inner group">
-                                            <img 
-                                                src="https://images.unsplash.com/photo-1544717297-fa95b3ee51f3?auto=format&fit=crop&q=80&w=800" 
-                                                className="w-full h-full object-cover opacity-50 grayscale" 
-                                                alt="Avatar Preview" 
-                                            />
-                                            <div className="absolute inset-0 flex items-center justify-center">
-                                                <button className="w-20 h-20 bg-[#00ffca] rounded-full flex items-center justify-center text-[#1e3a8a] shadow-xl transform transition-transform hover:scale-110">
-                                                    <ArrowRight className="ml-1" size={32} />
-                                                </button>
+                                        <div className="text-to-sign-card-title-section">
+                                            <div className="text-to-sign-card-title-row">
+                                                <h3 className="text-to-sign-card-title">Step 3: Preview Signs</h3>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#069e8e' }}>
+                                                    <Activity size={14} />
+                                                    <span style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Live Preview</span>
+                                                </div>
                                             </div>
+                                            <p className="text-to-sign-card-subtitle">Watch the generated sign language video below.</p>
                                         </div>
+                                    </div>
 
-                                        <div className="space-y-4">
-                                            <div className="flex items-center gap-4 p-5 bg-[#f8fafc] rounded-3xl group cursor-pointer hover:bg-white transition-colors border border-transparent hover:border-[#e2e8f0]">
-                                                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-[#069e8e] shadow-sm">
-                                                    <Video size={20} />
-                                                </div>
-                                                <div className="flex-1">
-                                                    <h4 className="text-xs font-black text-[#94a3b8] uppercase tracking-widest">Avatar Look</h4>
-                                                    <p className="text-sm font-extrabold text-[#1e293b]">4K Photorealistic Avatar</p>
-                                                </div>
-                                                <Button variant="ghost" className="text-[10px] font-black uppercase tracking-widest text-[#069e8e]">Change</Button>
-                                            </div>
-
-                                            <div className="flex items-center gap-4 p-5 bg-[#f8fafc] rounded-3xl group cursor-pointer hover:bg-white transition-colors border border-transparent hover:border-[#e2e8f0]">
-                                                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-[#069e8e] shadow-sm">
-                                                    <MapPin size={20} />
-                                                </div>
-                                                <div className="flex-1">
-                                                    <h4 className="text-xs font-black text-[#94a3b8] uppercase tracking-widest">Location</h4>
-                                                    <p className="text-sm font-extrabold text-[#1e293b]">Neutral Workshop Studio</p>
-                                                </div>
-                                                <Button variant="ghost" className="text-[10px] font-black uppercase tracking-widest text-[#069e8e]">Change</Button>
-                                            </div>
+                                    <div className="text-to-sign-preview-video">
+                                        <img 
+                                            src="https://images.unsplash.com/photo-1544717297-fa95b3ee51f3?auto=format&fit=crop&q=80&w=800" 
+                                            className="text-to-sign-preview-bg" 
+                                            alt="Avatar Preview" 
+                                        />
+                                        <div className="text-to-sign-preview-overlay">
+                                            <button className="text-to-sign-preview-play">
+                                                <Play size={32} fill="currentColor" />
+                                            </button>
                                         </div>
-                                    </Card>
+                                    </div>
+
+                                    <div className="text-to-sign-preview-option">
+                                        <div className="text-to-sign-preview-option-icon">
+                                            <Video size={20} />
+                                        </div>
+                                        <div className="text-to-sign-preview-option-info">
+                                            <h4 className="text-to-sign-preview-option-label">Avatar Look</h4>
+                                            <p className="text-to-sign-preview-option-value">4K Photorealistic Avatar</p>
+                                        </div>
+                                        <span className="text-to-sign-preview-option-action">Change</span>
+                                    </div>
+
+                                    <div className="text-to-sign-preview-option">
+                                        <div className="text-to-sign-preview-option-icon">
+                                            <MapPin size={20} />
+                                        </div>
+                                        <div className="text-to-sign-preview-option-info">
+                                            <h4 className="text-to-sign-preview-option-label">Location</h4>
+                                            <p className="text-to-sign-preview-option-value">Neutral Workshop Studio</p>
+                                        </div>
+                                        <span className="text-to-sign-preview-option-action">Change</span>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="flex items-center justify-between pt-8 border-t border-[#e2e8f0]">
-                                <div className="flex items-center gap-4">
-                                    <div className="flex -space-x-3">
+                            {/* Footer */}
+                            <div className="text-to-sign-footer">
+                                <div className="text-to-sign-team-info">
+                                    <div className="text-to-sign-team-avatars">
                                         {[1, 2, 3].map((i) => (
-                                            <div key={i} className="w-10 h-10 rounded-full border-4 border-white overflow-hidden bg-slate-200">
-                                                <img src={`https://i.pravatar.cc/100?u=${i}`} alt="user" />
-                                            </div>
+                                            <img 
+                                                key={i} 
+                                                src={`https://i.pravatar.cc/100?u=${i}`} 
+                                                alt="user" 
+                                                className="text-to-sign-team-avatar"
+                                            />
                                         ))}
-                                        <div className="w-10 h-10 rounded-full border-4 border-white bg-[#069e8e] flex items-center justify-center text-[10px] font-bold text-white">
+                                        <div style={{ 
+                                            width: '32px', 
+                                            height: '32px', 
+                                            borderRadius: '50%', 
+                                            border: '2px solid white',
+                                            backgroundColor: '#069e8e',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            fontSize: '10px',
+                                            fontWeight: 700,
+                                            color: 'white',
+                                            marginLeft: '-8px'
+                                        }}>
                                             +3
                                         </div>
                                     </div>
-                                    <div>
-                                        <h5 className="text-[10px] font-black text-[#94a3b8] uppercase tracking-widest">Shared With</h5>
-                                        <p className="text-xs font-bold text-[#1e293b]">Signway Research Team</p>
-                                    </div>
+                                    <p className="text-to-sign-team-text">
+                                        Shared with <span>Signway Research Team</span>
+                                    </p>
                                 </div>
-                                <div className="flex gap-4">
-                                    <Button variant="outline" className="rounded-2xl border-[#e2e8f0] h-14 px-8 font-black uppercase tracking-widest text-[#64748b]">Save Draft</Button>
-                                    <Button className="rounded-2xl bg-[#00ffca] hover:bg-[#00e6b8] text-[#1e3a8a] h-14 px-10 font-black uppercase tracking-widest flex items-center gap-3">
-                                        <Share2 size={20} /> Share Finished Signs
-                                    </Button>
+                                <div className="text-to-sign-footer-actions">
+                                    <button className="text-to-sign-save-btn">Save Draft</button>
+                                    <button className="text-to-sign-share-btn">
+                                        <Share2 size={18} /> Share Finished Signs
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -815,162 +834,237 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
                     )}
 
                     {activeTab === 'pipeline' && (
-                        <>
-                            <section className="page-header">
-                                <div className="page-title">
-                                    <h1>Create 3D Sign</h1>
-                                    <p>Easily turn your sign language videos into 3D animations for students.</p>
+                        <div className="create-3d-page">
+                            {/* Header */}
+                            <div className="create-3d-header">
+                                <div className="create-3d-title-section">
+                                    <h1 className="create-3d-title">Create 3D Sign</h1>
+                                    <p className="create-3d-subtitle">Easily turn your sign language videos into 3D animations for students.</p>
                                 </div>
-                                <div className="header-buttons">
-                                    <button className="btn-help">
+                                <div className="create-3d-header-actions">
+                                    <button className="create-3d-btn-help">
                                         <HelpCircle size={18} />
                                         Help
                                     </button>
-                                    <button className="btn-guidelines">
+                                    <button className="create-3d-btn-guidelines">
                                         <Database size={18} />
                                         View Guidelines
                                     </button>
                                 </div>
-                            </section>
+                            </div>
 
-                            {/* Upload Section */}
-                            <section className="upload-card">
-                                <div className="upload-icon-container">
-                                    <UploadCloud size={48} />
-                                </div>
-                                <h2 className="text-2xl font-bold">Click or Drag Videos Here</h2>
-                                <p>Upload MP4 or MOV files.</p>
-                                <label className="btn-select-files">
-                                    <Plus size={20} />
-                                    {pipelineForm.file ? pipelineForm.file.name : 'Select Files'}
-                                    <input type="file" hidden accept="video/*" onChange={handleFileChange} />
-                                </label>
-                                <div className="max-size-hint">MAXIMUM FILE SIZE: 500MB</div>
-                            </section>
+                            {/* Main Layout */}
+                            <div className="create-3d-layout">
+                                {/* Left Column - Upload Studio */}
+                                <div className="create-3d-upload-card">
+                                    <div className="create-3d-upload-header">
+                                        <div className="create-3d-upload-icon">
+                                            <UploadCloud size={24} />
+                                        </div>
+                                        <div>
+                                            <h3 className="create-3d-upload-title">Upload Studio</h3>
+                                            <p className="create-3d-upload-subtitle">Provide details and upload your reference file.</p>
+                                        </div>
+                                    </div>
 
-                            {/* Sign Details Section */}
-                            <section className="details-card">
-                                <div className="details-card-header">
-                                    <List size={20} color="#00ffca" strokeWidth={3} />
-                                    <h3>Sign Details</h3>
+                                    <div className="create-3d-upload-grid">
+                                        {/* Drop Zone */}
+                                        <div className="create-3d-dropzone">
+                                            <div className="create-3d-dropzone-icon">
+                                                <UploadCloud size={28} />
+                                            </div>
+                                            <h4 className="create-3d-dropzone-title">Drop video here</h4>
+                                            <p className="create-3d-dropzone-hint">
+                                                MP4, MOV or WEBM up to <span>500MB</span>
+                                            </p>
+                                            <label className="create-3d-select-file-btn">
+                                                {pipelineForm.file ? pipelineForm.file.name : 'Select File'}
+                                                <input type="file" hidden accept="video/*" onChange={handleFileChange} />
+                                            </label>
+                                        </div>
+
+                                        {/* Form Fields */}
+                                        <div className="create-3d-form">
+                                            <div className="create-3d-form-group">
+                                                <label className="create-3d-form-label">What is this sign called?</label>
+                                                <input 
+                                                    type="text" 
+                                                    className="create-3d-form-input"
+                                                    placeholder="e.g. 'Ocean Wave' or 'Thank You'"
+                                                    value={pipelineForm.name}
+                                                    onChange={(e) => setPipelineForm({...pipelineForm, name: e.target.value})}
+                                                />
+                                            </div>
+                                            <div className="create-3d-form-group">
+                                                <label className="create-3d-form-label">Choose a category</label>
+                                                <div className="create-3d-form-select-wrapper">
+                                                    <select 
+                                                        className="create-3d-form-select"
+                                                        value={pipelineForm.category}
+                                                        onChange={(e) => setPipelineForm({...pipelineForm, category: e.target.value})}
+                                                    >
+                                                        <option value="">Select...</option>
+                                                        <option value="Greetings & Social">Greetings & Social</option>
+                                                        <option value="School">School</option>
+                                                        <option value="Actions">Actions</option>
+                                                        <option value="Daily Life">Daily Life</option>
+                                                    </select>
+                                                    <ChevronDown className="create-3d-form-select-icon" size={18} />
+                                                </div>
+                                            </div>
+                                            <div className="create-3d-form-group">
+                                                <label className="create-3d-form-label">Which region?</label>
+                                                <div className="create-3d-form-select-wrapper">
+                                                    <select 
+                                                        className="create-3d-form-select"
+                                                        value={pipelineForm.region}
+                                                        onChange={(e) => setPipelineForm({...pipelineForm, region: e.target.value})}
+                                                    >
+                                                        <option value="">Select...</option>
+                                                        <option value="North America (ASL)">North America (ASL)</option>
+                                                        <option value="North India">North India</option>
+                                                        <option value="South India">South India</option>
+                                                        <option value="East India">East India</option>
+                                                        <option value="West India">West India</option>
+                                                    </select>
+                                                    <Globe className="create-3d-form-select-globe" size={16} />
+                                                    <ChevronDown className="create-3d-form-select-icon" size={18} />
+                                                </div>
+                                            </div>
+                                            <button className="create-3d-process-btn" onClick={handleStartGenerating}>
+                                                <Sparkles size={18} /> Process 3D Sign
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="details-form">
-                                    <div className="form-group">
-                                        <label>SIGN NAME</label>
-                                        <div className="form-input-container">
-                                            <input 
-                                                type="text" 
-                                                placeholder="e.g. Good Morning" 
-                                                value={pipelineForm.name}
-                                                onChange={(e) => setPipelineForm({...pipelineForm, name: e.target.value})}
-                                            />
+
+                                {/* Right Sidebar */}
+                                <div className="create-3d-sidebar">
+                                    {/* Best Practices */}
+                                    <div className="create-3d-practices-card">
+                                        <div className="create-3d-practices-header">
+                                            <Lightbulb size={20} />
+                                            <h4 className="create-3d-practices-title">Best Practices</h4>
                                         </div>
+                                        <ul className="create-3d-practices-list">
+                                            <li className="create-3d-practices-item">
+                                                <span className="create-3d-practices-bullet"></span>
+                                                Use a high-contrast background.
+                                            </li>
+                                            <li className="create-3d-practices-item">
+                                                <span className="create-3d-practices-bullet"></span>
+                                                Keep movements steady and clear.
+                                            </li>
+                                            <li className="create-3d-practices-item">
+                                                <span className="create-3d-practices-bullet"></span>
+                                                Ensure the face and upper body are visible.
+                                            </li>
+                                        </ul>
                                     </div>
-                                    <div className="form-group">
-                                        <label>CATEGORY</label>
-                                        <div className="form-input-container">
-                                            <select 
-                                                value={pipelineForm.category}
-                                                onChange={(e) => setPipelineForm({...pipelineForm, category: e.target.value})}
-                                            >
-                                                <option value="">Select...</option>
-                                                <option value="Greetings">Greetings</option>
-                                                <option value="School">School</option>
-                                                <option value="Actions">Actions</option>
-                                            </select>
-                                            <ChevronDown className="input-icon" size={18} />
-                                        </div>
-                                    </div>
-                                    <div className="form-group">
-                                        <label>REGION</label>
-                                        <div className="form-input-container">
-                                            <select 
-                                                value={pipelineForm.region}
-                                                onChange={(e) => setPipelineForm({...pipelineForm, region: e.target.value})}
-                                            >
-                                                <option value="">Select...</option>
-                                                <option value="North India">North India</option>
-                                                <option value="South India">South India</option>
-                                                <option value="East India">East India</option>
-                                                <option value="West India">West India</option>
-                                            </select>
-                                            <MapPin className="input-icon" size={18} />
+
+                                    {/* Library Quick Links */}
+                                    <div className="create-3d-links-card">
+                                        <h4 className="create-3d-links-title">Library Quick Links</h4>
+                                        <div className="create-3d-links-list">
+                                            <div className="create-3d-link-item">
+                                                <div className="create-3d-link-left">
+                                                    <FileArchive className="create-3d-link-icon" size={18} />
+                                                    <span className="create-3d-link-text">Bulk Upload (.zip)</span>
+                                                </div>
+                                                <ChevronRight className="create-3d-link-arrow" size={16} />
+                                            </div>
+                                            <div className="create-3d-link-item">
+                                                <div className="create-3d-link-left">
+                                                    <LayoutGrid className="create-3d-link-icon" size={18} />
+                                                    <span className="create-3d-link-text">Manage Categories</span>
+                                                </div>
+                                                <ChevronRight className="create-3d-link-arrow" size={16} />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <button className="btn-start-generating" onClick={handleStartGenerating}>
-                                    Start Generating
-                                </button>
-                            </section>
+                            </div>
 
                             {/* Processing Queue Section */}
-                            <section className="queue-section">
-                                <div className="queue-section-header">
-                                    <h2>Processing Queue</h2>
-                                    <span className="status-badge badge-processing">
-                                        ● {jobs.filter(j => j.status === 'processing').length} PROCESSING
-                                    </span>
-                                    <span className="status-badge badge-completed">
-                                        {jobs.filter(j => j.status === 'ready').length} COMPLETED TODAY
+                            <div className="create-3d-queue-section">
+                                <div className="create-3d-queue-header">
+                                    <h2 className="create-3d-queue-title">Processing Queue</h2>
+                                    <span className="create-3d-queue-badge">
+                                        {jobs.filter(j => j.status === 'processing').length} Active Jobs
                                     </span>
                                 </div>
 
-                                <div className="queue-table-card">
-                                    <table className="queue-table">
-                                        <thead>
-                                            <tr>
-                                                <th>VIDEO ASSET</th>
-                                                <th>BODY OUTLINE VIEW</th>
-                                                <th>STATUS</th>
-                                                <th>PROGRESS</th>
-                                                <th>ACTIONS</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {jobs.map(job => (
+                                <table className="create-3d-queue-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Sign Name</th>
+                                            <th>Type / Region</th>
+                                            <th>Submission Date</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {jobs.map((job, index) => {
+                                            const colors = ['#22d3ee', '#fdba74', '#a78bfa'];
+                                            const avatarColor = colors[index % colors.length];
+                                            return (
                                                 <tr key={job.id}>
                                                     <td>
-                                                        <div className="asset-info">
-                                                            <h4>{job.filename}</h4>
-                                                            <p>{job.checkStatus}</p>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div className={`outline-view-icon ${job.status === 'queued' ? 'queued' : ''}`}>
-                                                            {job.status === 'queued' ? <Clock size={20} /> : <Accessibility size={24} />}
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div className={`status-indicator ${job.status}`}>
-                                                            {job.status === 'processing' && <CircleDashed size={14} className="animate-spin" />}
-                                                            {job.status === 'ready' && <CheckCircle2 size={14} color="#22c55e" />}
-                                                            {job.status === 'queued' && <Clock size={14} />}
-                                                            <span className="ml-1">{job.status}</span>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div className="progress-container">
-                                                            <div className="progress-bar-outer">
-                                                                <div 
-                                                                    className={`progress-bar-inner ${job.status === 'ready' ? 'ready' : ''}`}
-                                                                    style={{ width: `${job.progress}%` }}
-                                                                ></div>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                                            <div 
+                                                                className="create-3d-queue-avatar"
+                                                                style={{ backgroundColor: avatarColor }}
+                                                            >
+                                                                {job.filename.charAt(0).toUpperCase()}
                                                             </div>
-                                                            <span className="progress-text">{job.progress}%</span>
+                                                            <div>
+                                                                <h4 className="create-3d-queue-name">{job.filename}</h4>
+                                                            </div>
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        <div className="action-icon">
-                                                            <Eye size={18} />
+                                                        <p className="create-3d-queue-name">{job.category || 'Greeting'}</p>
+                                                        <p className="create-3d-queue-meta">{job.region || 'ASL'}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p className="create-3d-queue-meta">Oct 24, 2023 · 14:30</p>
+                                                    </td>
+                                                    <td>
+                                                        <div className="create-3d-queue-status">
+                                                            {job.status === 'processing' && (
+                                                                <div className="create-3d-queue-progress">
+                                                                    <div className="create-3d-queue-progress-bar">
+                                                                        <div 
+                                                                            className="create-3d-queue-progress-fill"
+                                                                            style={{ width: `${job.progress}%` }}
+                                                                        ></div>
+                                                                    </div>
+                                                                    <span className="create-3d-queue-progress-text">{job.progress}% Rendering</span>
+                                                                </div>
+                                                            )}
+                                                            {job.status === 'queued' && (
+                                                                <span className="create-3d-queue-status-badge create-3d-queue-status-badge--queued">
+                                                                    <Clock size={12} /> Queued
+                                                                </span>
+                                                            )}
+                                                            {job.status === 'ready' && (
+                                                                <span className="create-3d-queue-status-badge create-3d-queue-status-badge--scanning">
+                                                                    <CheckCircle2 size={12} /> Ready
+                                                                </span>
+                                                            )}
                                                         </div>
+                                                    </td>
+                                                    <td>
+                                                        <MoreHorizontal className="create-3d-queue-actions" size={20} />
                                                     </td>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </section>
-                        </>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     )}
 
                     {activeTab === 'users' && (

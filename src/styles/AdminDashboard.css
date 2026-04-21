@@ -27,6 +27,9 @@
   padding: 2rem 0;
   gap: 2rem;
   z-index: 50;
+  position: sticky;
+  top: 0;
+  height: 100vh;
 }
 
 .sidebar-icon-container {
