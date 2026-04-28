@@ -11,15 +11,15 @@ holistic = mp.solutions.holistic.Holistic(
 def extract_keypoints(frame_bgr) -> dict:
     rgb = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB)
     res = holistic.process(rgb)
-    def lm_to_array(lm_list):
+    def lm_to_array(lm_list, expected_len):
         if lm_list is None:
-            return np.zeros((len(lm_list.landmark), 3)) if lm_list else None
+            return np.zeros((expected_len, 3))
         return np.array([[l.x, l.y, l.z] for l in lm_list.landmark])
     return {
-        'pose':       lm_to_array(res.pose_landmarks),
-        'left_hand':  lm_to_array(res.left_hand_landmarks),
-        'right_hand': lm_to_array(res.right_hand_landmarks),
-        'face':       lm_to_array(res.face_landmarks),
+        'pose':       lm_to_array(res.pose_landmarks, 33),
+        'left_hand':  lm_to_array(res.left_hand_landmarks, 21),
+        'right_hand': lm_to_array(res.right_hand_landmarks, 21),
+        'face':       lm_to_array(res.face_landmarks, 468),
     }
  
 def process_video(video_path: str) -> list[dict]:
