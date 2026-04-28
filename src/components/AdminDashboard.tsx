@@ -212,13 +212,13 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
                             }
                         }
 
-                        return prev.map(j => j.id === jobId ? {
-                            ...j,
-                            progress: nextProgress,
-                            status: nextStatus,
-                            checkStatus: nextCheck,
-                            resultGlbUrl: nextStatus === 'ready' ? 'https://modelviewer.dev/shared-assets/models/Astronaut.glb' : undefined
-                        } : j);
+                         return prev.map(j => j.id === jobId ? {
+                             ...j,
+                             progress: nextProgress,
+                             status: nextStatus,
+                             checkStatus: nextCheck,
+                             resultGlbUrl: nextStatus === 'ready' ? '/hand_animation.glb' : undefined
+                         } : j);
                     }
                     return prev;
                 });
@@ -727,20 +727,21 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
                                                     {currentJob?.status === 'ready' ? (
                                                         <div className="sign-converter-3d-view">
                                                             {/* Real 3D Model Viewer */}
-                                                            <model-viewer
-                                                                src={currentJob.resultGlbUrl}
-                                                                alt="3D Sign Model"
-                                                                auto-rotate
-                                                                camera-controls
-                                                                shadow-intensity="1"
-                                                                environment-image="neutral"
-                                                                style={{ width: '100%', height: '100%', backgroundColor: '#f0f4f8' }}
-                                                            >
-                                                                <div slot="poster" className="sign-converter-3d-placeholder">
-                                                                    <Sparkles size={48} className="animate-pulse" />
-                                                                    <p>Loading 3D Model...</p>
-                                                                </div>
-                                                            </model-viewer>
+                                                 <model-viewer
+                                                                 src={currentJob.resultGlbUrl}
+                                                                 alt="3D Sign Model"
+                                                                 camera-controls
+                                                                 shadow-intensity="1"
+                                                                 environment-image="neutral"
+                                                                 style={{ width: '100%', height: '100%', backgroundColor: '#f0f4f8' }}
+                                                                 autoplay
+                                                                 loop
+                                                             >
+                                                                 <div slot="poster" className="sign-converter-3d-placeholder">
+                                                                     <Sparkles size={48} className="animate-pulse" />
+                                                                     <p>Loading 3D Model...</p>
+                                                                 </div>
+                                                             </model-viewer>
                                                         </div>
                                                     ) : (
                                                         <div className="sign-converter-3d-processing">
@@ -1077,8 +1078,8 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        <p className="create-3d-queue-name">{job.category || 'Greeting'}</p>
-                                                        <p className="create-3d-queue-meta">{job.region || 'ASL'}</p>
+                                                        <p className="create-3d-queue-name">{job.category || 'School'}</p>
+                                                        <p className="create-3d-queue-meta">{job.region || 'ISL'}</p>
                                                     </td>
                                                     <td>
                                                         <p className="create-3d-queue-meta">Oct 24, 2023 · 14:30</p>
