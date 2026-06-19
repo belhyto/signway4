@@ -5,6 +5,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
 import logoImage from 'figma:asset/logo.png';
+import { signIn, signUp } from '../utils/supabase/auth';
 
 interface AuthPageProps {
   onAuthSuccess: () => void;
@@ -19,12 +20,33 @@ export function AuthPage({ onAuthSuccess, onAdminLogin }: AuthPageProps) {
     email: '',
     password: ''
   });
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // For now, just authenticate immediately
-    // In production, this would call Supabase auth
-    onAuthSuccess();
+    setErrorMessage(null);
+    setLoading(true);
+
+    try {
+      if (isLogin) {
+        const { error } = await signIn(formData.email, formData.password);
+        if (error) {
+          setErrorMessage(error.message);
+          return;
+        }
+      } else {
+        const { error } = await signUp(formData.email, formData.password, formData.name);
+        if (error) {
+          setErrorMessage(error.message);
+          return;
+        }
+      }
+
+      onAuthSuccess();
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -183,10 +205,17 @@ export function AuthPage({ onAuthSuccess, onAdminLogin }: AuthPageProps) {
                 </div>
               )}
 
+              {errorMessage && (
+                <div className="rounded-2xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                  {errorMessage}
+                </div>
+              )}
+
               <Button
                 type="submit"
                 className="w-full h-12 rounded-xl text-lg shadow-lg hover:shadow-xl transition-all bg-gradient-to-r from-primary to-secondary"
                 size="lg"
+                disabled={loading}
               >
                 {isLogin ? 'Sign In' : 'Create Account'}
               </Button>

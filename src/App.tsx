@@ -6,6 +6,7 @@ import { WelcomeScreen } from './components/WelcomeScreen';
 import { AuthPage } from './components/AuthPage';
 import { AppContent } from './components/AppContent';
 import { AdminDashboard } from './components/AdminDashboard';
+import { getCurrentUser, onAuthStateChange, signOut } from './utils/supabase/auth';
 import type { Language } from './components/LanguageProvider';
 
 export default function App() {
@@ -16,29 +17,50 @@ export default function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<Language>('en');
   const [userEnvironment, setUserEnvironment] = useState<'school' | 'work' | 'home' | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user has completed onboarding
-    const hasCompletedOnboarding = localStorage.getItem('signway_onboarding_completed');
-    const savedAuth = localStorage.getItem('signway_authenticated');
-    const savedLanguage = localStorage.getItem('preferred-language') as Language;
-    const savedEnvironment = localStorage.getItem('signway_environment') as 'school' | 'work' | 'home';
+    const initializeAuth = async () => {
+      const savedLanguage = localStorage.getItem('preferred-language') as Language | null;
+      const savedEnvironment = localStorage.getItem('signway_environment') as 'school' | 'work' | 'home' | null;
+      const hasCompletedOnboarding = localStorage.getItem('signway_onboarding_completed');
 
-    if (hasCompletedOnboarding === 'true') {
-      // User has completed onboarding before
-      if (savedAuth === 'true') {
-        setIsAuthenticated(true);
-        if (savedLanguage) setSelectedLanguage(savedLanguage);
-        if (savedEnvironment) setUserEnvironment(savedEnvironment);
+      if (savedLanguage) setSelectedLanguage(savedLanguage);
+      if (savedEnvironment) setUserEnvironment(savedEnvironment);
+
+      const { data } = await getCurrentUser();
+      const signedIn = Boolean(data?.user);
+
+      if (hasCompletedOnboarding === 'true') {
+        if (signedIn) {
+          setIsAuthenticated(true);
+        } else {
+          setShowAuth(true);
+        }
       } else {
-        // Show auth page directly for returning users
-        setShowAuth(true);
-        if (savedLanguage) setSelectedLanguage(savedLanguage);
+        setShowWelcome(true);
       }
-    } else {
-      // First-time user - show welcome after splash
-      setShowWelcome(true);
-    }
+
+      setAuthLoading(false);
+    };
+
+    initializeAuth();
+  }, []);
+
+  useEffect(() => {
+    const { data: authListener } = onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
+        setIsAuthenticated(true);
+        setShowAuth(false);
+      }
+
+      if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
+        setIsAuthenticated(false);
+        setShowAuth(true);
+      }
+    });
+
+    return () => authListener?.subscription?.unsubscribe?.();
   }, []);
 
   const handleWelcomeComplete = (language: Language, environment?: 'school' | 'work' | 'home') => {
@@ -59,7 +81,6 @@ export default function App() {
   };
 
   const handleAuthSuccess = () => {
-    localStorage.setItem('signway_authenticated', 'true');
     setIsAuthenticated(true);
     setShowAuth(false);
   };
@@ -79,8 +100,8 @@ export default function App() {
     setShowAuth(true);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('signway_authenticated');
+  const handleLogout = async () => {
+    await signOut();
     setIsAuthenticated(false);
     setShowAuth(true);
   };
