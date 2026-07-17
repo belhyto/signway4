@@ -49,12 +49,15 @@ export default function App() {
 
   useEffect(() => {
     const { data: authListener } = onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
+      const hasSession = Boolean(session?.user);
+
+      if (hasSession || event === 'SIGNED_IN' || event === 'USER_UPDATED' || event === 'TOKEN_REFRESHED') {
         setIsAuthenticated(true);
         setShowAuth(false);
+        return;
       }
 
-      if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
+      if (event === 'SIGNED_OUT' || event === 'USER_DELETED' || event === 'INITIAL_SESSION') {
         setIsAuthenticated(false);
         setShowAuth(true);
       }

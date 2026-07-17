@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { ChevronLeft, ChevronRight, CheckCircle2, X, Calendar as CalendarIcon } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CheckCircle2, Calendar as CalendarIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
-import { Badge } from './ui/badge';
 import { useLanguage } from './LanguageProvider';
+import { getCurrentUser } from '../utils/supabase/auth';
+import { getActiveMissions, getUserMissions } from '../utils/supabase/missions';
 
 interface ChallengeCalendarProps {
   className?: string;
@@ -18,23 +19,45 @@ export function ChallengeCalendar({ className = '' }: ChallengeCalendarProps) {
   const [longestStreak, setLongestStreak] = useState(0);
 
   useEffect(() => {
-    loadCompletionHistory();
+    const loadCompletionHistory = async () => {
+      try {
+        const { data: userData } = await getCurrentUser();
+        if (!userData?.user) {
+          return;
+        }
+
+        const [missionsRes, userMissionsRes] = await Promise.all([
+          getActiveMissions(),
+          getUserMissions(userData.user.id),
+        ]);
+
+        const history: { [key: string]: boolean } = {};
+
+        if (!missionsRes.error && missionsRes.data) {
+          missionsRes.data.forEach((mission) => {
+            const dateKey = new Date(mission.expires_at).toISOString().split('T')[0];
+            history[dateKey] = true;
+          });
+        }
+
+        if (!userMissionsRes.error && userMissionsRes.data) {
+          userMissionsRes.data.forEach((mission) => {
+            if (mission.joined_at) {
+              const dateKey = new Date(mission.joined_at).toISOString().split('T')[0];
+              history[dateKey] = true;
+            }
+          });
+        }
+
+        setCompletionHistory(history);
+        calculateStreaks(history);
+      } catch (error) {
+        console.error('ChallengeCalendar: failed to load mission history', error);
+      }
+    };
+
+    void loadCompletionHistory();
   }, []);
-
-  const loadCompletionHistory = () => {
-    const history = localStorage.getItem('challengeCompletionHistory');
-    if (history) {
-      const data = JSON.parse(history);
-      setCompletionHistory(data);
-      calculateStreaks(data);
-    }
-
-    const streakData = localStorage.getItem('challengeStreak');
-    if (streakData) {
-      const data = JSON.parse(streakData);
-      setCurrentStreak(data.streak || 0);
-    }
-  };
 
   const calculateStreaks = (history: { [key: string]: boolean }) => {
     const dates = Object.keys(history)

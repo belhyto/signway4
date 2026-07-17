@@ -1,54 +1,60 @@
-import { useState } from 'react';
-import { motion } from 'motion/react';
+import { useState, useEffect } from 'react';
 import {
   Edit2,
   Camera,
-  Mail,
-  Calendar as CalendarIcon,
   Award,
   Users,
   TrendingUp,
   Star,
-  Trophy,
   Target,
   Flame,
   CheckCircle2,
   UserPlus,
   Search,
-  LogOut
+  Loader,
+  LogOut,
 } from 'lucide-react';
 import { Card, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { Badge } from './ui/badge';
 import { Progress } from './ui/progress';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from './ui/dialog';
-import { ChallengeCalendar } from './ChallengeCalendar';
-import { useLanguage } from './LanguageProvider';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from './ui/dialog';
+import { getCurrentUser } from '../utils/supabase/auth';
+import {
+  updateProfile,
+  getUserFullStats,
+  type Profile,
+} from '../utils/supabase/profiles';
+import {
+  getAcceptedFriends,
+  getPendingFriendRequests,
+  searchProfiles,
+  sendFriendRequest,
+  type FriendProfile,
+} from '../utils/supabase/social';
+import { createProfile } from '../utils/supabase/profiles';
 
-interface UserProfile {
-  id: string;
-  name: string;
-  email: string;
-  avatar: string;
-  avatarBgColor: string;
-  joinDate: string;
-  totalXP: number;
-  streak: number;
-  lessonsCompleted: number;
-  signsLearned: number;
-}
-
-interface Friend {
-  id: string;
-  name: string;
-  avatar: string;
-  avatarBgColor: string;
-  totalXP: number;
-  status: 'online' | 'offline';
+interface UserStats {
+  profile: Profile;
+  learner_stats: {
+    total_lessons_attempted: number;
+    total_lessons_completed: number;
+    total_attempts: number;
+    average_precision_score: number;
+    total_xp_earned: number;
+  };
+  mission_stats: {
+    total_missions: number;
+    total_mission_xp: number;
+  };
 }
 
 interface BadgeItem {
@@ -87,101 +93,187 @@ interface ProfilePageProps {
 }
 
 export function ProfilePage({ onLogout }: ProfilePageProps) {
-  const { t } = useLanguage();
-  const [editMode, setEditMode] = useState(false);
   const [showAvatarEditor, setShowAvatarEditor] = useState(false);
   const [friendSearch, setFriendSearch] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const [userProfile, setUserProfile] = useState<UserProfile>({
-    id: '1',
-    name: 'Rohan Kumar',
-    email: 'rohan.kumar@example.com',
-    avatar: '👤',
-    avatarBgColor: 'bg-blue-500',
-    joinDate: '2024-10-15',
-    totalXP: 2450,
-    streak: 12,
-    lessonsCompleted: 18,
-    signsLearned: 156,
-  });
+  const [userId, setUserId] = useState<string>('');
+  const [authUser, setAuthUser] = useState<{
+    id?: string;
+    email?: string | null;
+    user_metadata?: Record<string, any>;
+  } | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [stats, setStats] = useState<UserStats | null>(null);
+  const [friends, setFriends] = useState<FriendProfile[]>([]);
+  const [friendResults, setFriendResults] = useState<FriendProfile[]>([]);
 
-  const [friends, setFriends] = useState<Friend[]>([
-    {
-      id: '2',
-      name: 'Priya Sharma',
-      avatar: '👩',
-      avatarBgColor: 'bg-pink-500',
-      totalXP: 3200,
-      status: 'online',
-    },
-    {
-      id: '3',
-      name: 'Amit Patel',
-      avatar: '👨',
-      avatarBgColor: 'bg-green-500',
-      totalXP: 1800,
-      status: 'offline',
-    },
-    {
-      id: '4',
-      name: 'Sneha Reddy',
-      avatar: '👧',
-      avatarBgColor: 'bg-purple-500',
-      totalXP: 2900,
-      status: 'online',
-    },
-  ]);
+  const [activeTab, setActiveTab] = useState<'overview' | 'edit' | 'social' | 'badges'>('overview');
+
+  const loadProfileData = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const { data: userData, error: userError } = await getCurrentUser();
+      if (userError || !userData?.user) {
+        console.error('ProfilePage: getCurrentUser failed', userError);
+        const message = userError?.message || 'Unable to load your session. Please try signing in again.';
+        setError(message);
+        return;
+      }
+
+      const uid = userData.user.id;
+      setUserId(uid);
+      setAuthUser(userData.user);
+
+      let statsData = null;
+      let statsError = null;
+
+      try {
+        const result = await getUserFullStats(uid);
+        statsData = result.data;
+        statsError = result.error;
+      } catch (err) {
+        console.error('ProfilePage: getUserFullStats threw', err);
+        statsError = err;
+      }
+
+      if ((statsError || !statsData) && statsError?.code === 'PGRST116') {
+        console.warn('ProfilePage: profile row missing for user, creating default profile', uid);
+        const metadata = (userData.user.user_metadata || {}) as Record<string, any>;
+        const displayName =
+          metadata.full_name || metadata.name || userData.user.email?.split('@')[0] || 'User';
+
+        const { data: created, error: createError } = await createProfile({
+          id: uid,
+          username: userData.user.email?.split('@')[0] || `user_${uid.slice(0, 8)}`,
+          display_name: displayName,
+          avatar_url: '',
+          current_pathway: 'school',
+          xp_points: 0,
+        });
+
+        if (createError || !created) {
+          console.error('ProfilePage: failed to create profile', createError);
+          setError(createError?.message || 'Failed to create profile');
+          setLoading(false);
+          return;
+        }
+
+        try {
+          const retry = await getUserFullStats(uid);
+          statsData = retry.data;
+          statsError = retry.error;
+        } catch (retryErr) {
+          console.error('ProfilePage: getUserFullStats retry threw', retryErr);
+          statsError = retryErr;
+        }
+      }
+
+      if (statsError || !statsData) {
+        console.error('ProfilePage: getUserFullStats failed', statsError);
+        setError(statsError?.message || 'Failed to load profile stats');
+        setLoading(false);
+        return;
+      }
+
+      setProfile(statsData.profile);
+      setStats(statsData);
+
+      let friendsData: FriendProfile[] | null = null;
+      let friendsError: any = null;
+      try {
+        const res = await getAcceptedFriends(uid);
+        friendsData = res.data;
+        friendsError = res.error;
+      } catch (err) {
+        console.error('ProfilePage: getAcceptedFriends threw', err);
+      }
+      if (!friendsError && friendsData) {
+        setFriends(friendsData);
+      }
+
+      try {
+        await getPendingFriendRequests(uid);
+      } catch (err) {
+        console.error('ProfilePage: getPendingFriendRequests threw', err);
+      }
+    } catch (err: any) {
+      console.error('ProfilePage: loadProfileData unexpected error', err);
+      setError(err?.message || 'Unexpected error loading profile');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadProfileData();
+  }, []);
 
   const badges: BadgeItem[] = [
     {
       id: '1',
-      name: t('badge.firstLesson'),
-      description: t('badge.firstLesson.desc'),
+      name: 'First Lesson',
+      description: 'Complete your first lesson',
       icon: '🎓',
-      earned: true,
-      earnedDate: '2024-10-16',
+      earned: stats ? stats.learner_stats.total_lessons_completed >= 1 : false,
     },
     {
       id: '2',
-      name: t('badge.weekStreak'),
-      description: t('badge.weekStreak.desc'),
-      icon: '🔥',
-      earned: true,
-      earnedDate: '2024-10-22',
-    },
-    {
-      id: '3',
-      name: t('badge.hundredSigns'),
-      description: t('badge.hundredSigns.desc'),
-      icon: '✋',
-      earned: true,
-      earnedDate: '2024-11-01',
-    },
-    {
-      id: '4',
-      name: t('badge.socialButterfly'),
-      description: t('badge.socialButterfly.desc'),
-      icon: '🦋',
-      earned: true,
-      earnedDate: '2024-10-25',
-    },
-    {
-      id: '5',
-      name: t('badge.perfectScore'),
-      description: t('badge.perfectScore.desc'),
-      icon: '⭐',
-      earned: false,
-      progress: 3,
+      name: 'Quick Learner',
+      description: 'Complete 5 lessons',
+      icon: '⚡',
+      earned: stats ? stats.learner_stats.total_lessons_completed >= 5 : false,
+      progress: stats?.learner_stats.total_lessons_completed || 0,
       target: 5,
     },
     {
-      id: '6',
-      name: t('badge.monthStreak'),
-      description: t('badge.monthStreak.desc'),
+      id: '3',
+      name: 'Master',
+      description: 'Complete 20 lessons',
       icon: '🏆',
-      earned: false,
-      progress: 12,
-      target: 30,
+      earned: stats ? stats.learner_stats.total_lessons_completed >= 20 : false,
+      progress: stats?.learner_stats.total_lessons_completed || 0,
+      target: 20,
+    },
+    {
+      id: '4',
+      name: 'Social Butterfly',
+      description: 'Add 5 friends',
+      icon: '🦋',
+      earned: friends.length >= 5,
+      progress: friends.length,
+      target: 5,
+    },
+    {
+      id: '5',
+      name: 'Perfect Score',
+      description: 'Achieve 95%+ precision',
+      icon: '⭐',
+      earned: stats
+        ? stats.learner_stats.average_precision_score >= 95
+        : false,
+    },
+    {
+      id: '6',
+      name: 'Mission Accomplished',
+      description: 'Complete 3 missions',
+      icon: '🚀',
+      earned: stats ? stats.mission_stats.total_missions >= 3 : false,
+      progress: stats?.mission_stats.total_missions || 0,
+      target: 3,
+    },
+    {
+      id: '7',
+      name: 'XP Hunter',
+      description: 'Earn 500 XP',
+      icon: '💎',
+      earned: stats ? stats.learner_stats.total_xp_earned >= 500 : false,
+      progress: stats?.learner_stats.total_xp_earned || 0,
+      target: 500,
     },
   ];
 
@@ -193,328 +285,427 @@ export function ProfilePage({ onLogout }: ProfilePageProps) {
     '🦁', '🐯', '🐸', '🐵', '🐔', '🐧', '🦉', '🦄',
   ];
 
-  const handleSaveProfile = () => {
-    setEditMode(false);
-    // Save to backend
+  const displayName = profile?.display_name || authUser?.user_metadata?.full_name || authUser?.user_metadata?.name || authUser?.email?.split('@')[0] || 'Unnamed User';
+  const emailAddress = authUser?.email || 'No email on file';
+  const usernameValue = profile?.username || authUser?.email?.split('@')[0] || 'user';
+
+  const handleSaveProfile = async () => {
+    if (!profile) return;
+
+    setSaving(true);
+    setError(null);
+
+    try {
+      const { error: updateError } = await updateProfile(userId, {
+        display_name: profile.display_name,
+        avatar_url: profile.avatar_url,
+        current_pathway: profile.current_pathway,
+      });
+
+      if (updateError) {
+        setError(updateError.message);
+        return;
+      }
+
+      setActiveTab('overview');
+      await loadProfileData();
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const handleAvatarChange = (emoji: string, color: string) => {
-    setUserProfile({ ...userProfile, avatar: emoji, avatarBgColor: color });
-    setShowAvatarEditor(false);
+  const handleSearchFriends = async () => {
+    if (!friendSearch.trim()) {
+      setFriendResults([]);
+      return;
+    }
+
+    try {
+      const { data, error: searchError } = await searchProfiles(friendSearch);
+      if (searchError) {
+        setError(searchError.message);
+        return;
+      }
+
+      setFriendResults(data || []);
+    } catch (err: any) {
+      setError(err.message);
+    }
   };
+
+  const handleSendFriendRequest = async (receiverId: string) => {
+    if (!userId) {
+      setError('Unable to determine current user');
+      return;
+    }
+
+    try {
+      const { error: requestError } = await sendFriendRequest(userId, receiverId);
+      if (requestError) {
+        setError(requestError.message);
+        return;
+      }
+
+      setFriendSearch('');
+      setFriendResults([]);
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <Loader className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!profile || !stats) {
+    return (
+      <div className="flex h-full flex-col items-center justify-center gap-4 p-6 text-center">
+        <p className="text-lg font-medium text-destructive">Failed to load profile</p>
+        <p className="text-sm text-muted-foreground">
+          {error || 'We couldn’t load your profile. Please try signing out and back in.'}
+        </p>
+        {onLogout && (
+          <Button variant="destructive" onClick={onLogout}>
+            <LogOut className="mr-2 h-4 w-4" />
+            Sign out
+          </Button>
+        )}
+      </div>
+    );
+  }
 
   return (
-    <div className="h-full overflow-auto pb-6">
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-6"
-      >
-        {/* Profile Header Card */}
-        <Card className="border-2">
-          <CardContent className="p-4 sm:p-6">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
-              {/* Avatar */}
-              <div className="relative shrink-0">
-                <div
-                  className={`h-20 w-20 sm:h-24 sm:w-24 rounded-full ${userProfile.avatarBgColor} flex items-center justify-center text-4xl sm:text-5xl shadow-lg`}
-                >
-                  {userProfile.avatar}
+    <div className="mx-auto max-w-4xl px-4 py-10">
+      <div className="space-y-6">
+        {error && (
+          <div className="rounded-lg border border-red-500/60 bg-red-500/10 p-3 text-sm text-red-600">
+            {error}
+          </div>
+        )}
+
+        <Card>
+          <CardContent className="grid gap-6 p-6 md:grid-cols-[160px_1fr]">
+            <div className="flex flex-col items-center gap-4 md:items-start">
+              <div className="relative">
+                <div className="h-24 w-24 overflow-hidden rounded-full bg-muted">
+                  {profile.avatar_url ? (
+                    <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" />
+                  ) : (
+                    <span className="flex h-full w-full items-center justify-center text-4xl">👤</span>
+                  )}
                 </div>
                 <Button
                   size="icon"
                   variant="secondary"
-                  className="absolute bottom-0 right-0 rounded-full h-8 w-8 shadow-lg"
+                  className="absolute -bottom-2 -right-2 h-8 w-8 rounded-full shadow-md"
                   onClick={() => setShowAvatarEditor(true)}
                 >
                   <Camera className="h-4 w-4" />
                 </Button>
               </div>
 
-              {/* Profile Info */}
-              <div className="flex-1 min-w-0 w-full">
-                {editMode ? (
-                  <div className="space-y-3">
-                    <div>
-                      <Label htmlFor="name" className="text-xs sm:text-sm">{t('profile.name')}</Label>
-                      <Input
-                        id="name"
-                        value={userProfile.name}
-                        onChange={(e) => setUserProfile({ ...userProfile, name: e.target.value })}
-                        className="mt-1"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="email" className="text-xs sm:text-sm">{t('profile.email')}</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={userProfile.email}
-                        onChange={(e) => setUserProfile({ ...userProfile, email: e.target.value })}
-                        className="mt-1"
-                      />
-                    </div>
-                  </div>
-                ) : (
-                  <div>
-                    <h2 className="text-xl sm:text-2xl mb-1 truncate">{userProfile.name}</h2>
-                    <p className="text-sm text-muted-foreground flex items-center gap-2 mb-2 truncate">
-                      <Mail className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
-                      <span className="truncate">{userProfile.email}</span>
-                    </p>
-                    <p className="text-sm text-muted-foreground flex items-center gap-2">
-                      <CalendarIcon className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
-                      {t('profile.memberSince')} {new Date(userProfile.joinDate).toLocaleDateString()}
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              {/* Edit/Logout Buttons */}
-              <div className="w-full sm:w-auto">
-                {editMode ? (
-                  <div className="flex gap-2">
-                    <Button onClick={handleSaveProfile} className="flex-1 sm:flex-initial">
-                      <CheckCircle2 className="h-4 w-4 mr-2" />
-                      {t('profile.save')}
-                    </Button>
-                    <Button variant="outline" onClick={() => setEditMode(false)} className="flex-1 sm:flex-initial">
-                      {t('profile.cancel')}
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="flex flex-col sm:flex-row gap-2">
-                    <Button variant="outline" onClick={() => setEditMode(true)} className="w-full sm:w-auto">
-                      <Edit2 className="h-4 w-4 mr-2" />
-                      {t('profile.editProfile')}
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      onClick={onLogout}
-                      className="w-full sm:w-auto bg-red-500 hover:bg-red-600 text-white"
-                    >
-                      <LogOut className="h-4 w-4 mr-2" />
-                      {t('profile.logout')}
-                    </Button>
-                  </div>
-                )}
+              <div className="space-y-1 text-center md:text-left">
+                <h2 className="text-xl font-bold tracking-tight">{displayName}</h2>
+                <p className="text-sm text-muted-foreground">@{usernameValue}</p>
+                <p className="text-sm text-muted-foreground">{emailAddress}</p>
               </div>
             </div>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-6">
-              <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl p-3 sm:p-4 text-center">
-                <div className="flex justify-center mb-2">
-                  <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+            <div className="grid gap-4">
+              {activeTab === 'edit' ? (
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="display-name">Display Name</Label>
+                    <Input
+                      id="display-name"
+                      value={profile.display_name || ''}
+                      onChange={(e) => setProfile({ ...profile, display_name: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="pathway">Pathway</Label>
+                    <select
+                      id="pathway"
+                      className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors"
+                      value={profile.current_pathway}
+                      onChange={(e) =>
+                        setProfile({
+                          ...profile,
+                          current_pathway: e.target.value as Profile['current_pathway'],
+                        })
+                      }
+                    >
+                      <option value="school">School</option>
+                      <option value="home">Home</option>
+                      <option value="work">Work</option>
+                    </select>
+                  </div>
                 </div>
-                <div className="text-xl sm:text-2xl mb-1">{userProfile.totalXP}</div>
-                <div className="text-xs text-muted-foreground">{t('profile.totalXP')}</div>
-              </div>
-              <div className="bg-gradient-to-br from-orange-500/10 to-orange-500/5 rounded-2xl p-3 sm:p-4 text-center">
-                <div className="flex justify-center mb-2">
-                  <Flame className="h-5 w-5 sm:h-6 sm:w-6 text-orange-500" />
+              ) : (
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Display Name</p>
+                    <p className="text-base font-semibold">{profile.display_name || 'Not set'}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Pathway</p>
+                    <p className="text-base font-semibold">{profile.current_pathway}</p>
+                  </div>
                 </div>
-                <div className="text-xl sm:text-2xl mb-1">{userProfile.streak}</div>
-                <div className="text-xs text-muted-foreground">{t('profile.dayStreak')}</div>
+              )}
+
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                <Card className="bg-gradient-to-br from-primary/10 to-primary/5">
+                  <CardContent className="p-4 text-center">
+                    <TrendingUp className="mx-auto mb-2 h-5 w-5 text-primary" />
+                    <p className="text-2xl font-bold">{stats.learner_stats.total_xp_earned}</p>
+                    <p className="text-xs text-muted-foreground">Total XP</p>
+                  </CardContent>
+                </Card>
+                <Card className="bg-gradient-to-br from-orange-500/10 to-orange-500/5">
+                  <CardContent className="p-4 text-center">
+                    <Flame className="mx-auto mb-2 h-5 w-5 text-orange-500" />
+                    <p className="text-2xl font-bold">-</p>
+                    <p className="text-xs text-muted-foreground">Streak</p>
+                  </CardContent>
+                </Card>
+                <Card className="bg-gradient-to-br from-green-500/10 to-green-500/5">
+                  <CardContent className="p-4 text-center">
+                    <Target className="mx-auto mb-2 h-5 w-5 text-green-500" />
+                    <p className="text-2xl font-bold">{stats.learner_stats.total_lessons_completed}</p>
+                    <p className="text-xs text-muted-foreground">Lessons</p>
+                  </CardContent>
+                </Card>
+                <Card className="bg-gradient-to-br from-purple-500/10 to-purple-500/5">
+                  <CardContent className="p-4 text-center">
+                    <Star className="mx-auto mb-2 h-5 w-5 text-purple-500" />
+                    <p className="text-2xl font-bold">{stats.learner_stats.average_precision_score.toFixed(1)}%</p>
+                    <p className="text-xs text-muted-foreground">Precision</p>
+                  </CardContent>
+                </Card>
               </div>
-              <div className="bg-gradient-to-br from-green-500/10 to-green-500/5 rounded-2xl p-3 sm:p-4 text-center">
-                <div className="flex justify-center mb-2">
-                  <Target className="h-5 w-5 sm:h-6 sm:w-6 text-green-500" />
+
+              {activeTab === 'edit' ? (
+                <div className="flex gap-2">
+                  <Button onClick={handleSaveProfile} disabled={saving}>
+                    <CheckCircle2 className="mr-2 h-4 w-4" />
+                    {saving ? 'Saving...' : 'Save Changes'}
+                  </Button>
+                  <Button variant="outline" onClick={() => setActiveTab('overview')}>
+                    Cancel
+                  </Button>
                 </div>
-                <div className="text-xl sm:text-2xl mb-1">{userProfile.lessonsCompleted}</div>
-                <div className="text-xs text-muted-foreground">{t('profile.lessons')}</div>
-              </div>
-              <div className="bg-gradient-to-br from-purple-500/10 to-purple-500/5 rounded-2xl p-3 sm:p-4 text-center">
-                <div className="flex justify-center mb-2">
-                  <Star className="h-5 w-5 sm:h-6 sm:w-6 text-purple-500" />
-                </div>
-                <div className="text-xl sm:text-2xl mb-1">{userProfile.signsLearned}</div>
-                <div className="text-xs text-muted-foreground">{t('profile.signs')}</div>
-              </div>
+              ) : (
+                <Button variant="outline" onClick={() => setActiveTab('edit')}>
+                  <Edit2 className="mr-2 h-4 w-4" />
+                  Edit Profile
+                </Button>
+              )}
             </div>
           </CardContent>
         </Card>
-      </motion.div>
 
-      {/* Tabs for Badges, Friends, and Challenges */}
-      <Tabs defaultValue="badges" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 mb-4">
-          <TabsTrigger value="badges" className="text-sm sm:text-base">
-            <Award className="h-4 w-4 mr-2" />
-            {t('profile.badges')}
-          </TabsTrigger>
-          <TabsTrigger value="friends" className="text-sm sm:text-base">
-            <Users className="h-4 w-4 mr-2" />
-            {t('profile.friends')}
-          </TabsTrigger>
-          <TabsTrigger value="challenges" className="text-sm sm:text-base">
-            <Trophy className="h-4 w-4 mr-2" />
-            {t('profile.challenges')}
-          </TabsTrigger>
-        </TabsList>
+        <Tabs value={activeTab} onValueChange={(value: string) => setActiveTab(value as 'overview' | 'edit' | 'social' | 'badges')}>
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="social">
+              <Users className="mr-2 h-4 w-4" />
+              Friends ({friends.length})
+            </TabsTrigger>
+            <TabsTrigger value="badges">
+              <Award className="mr-2 h-4 w-4" />
+              Badges
+            </TabsTrigger>
+          </TabsList>
 
-        {/* Badges Tab */}
-        <TabsContent value="badges" className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {badges.map((badge, index) => (
-              <motion.div
-                key={badge.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.05 }}
-              >
-                <Card className={`${badge.earned ? 'border-2 border-primary/20' : 'opacity-60'}`}>
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-4">
-                      <div className={`text-4xl shrink-0 ${!badge.earned && 'grayscale'}`}>
-                        {badge.icon}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-base sm:text-lg mb-1 truncate">{badge.name}</h3>
-                        <p className="text-sm text-muted-foreground line-clamp-2">{badge.description}</p>
-                        {badge.earned ? (
-                          <div className="flex items-center gap-2 mt-2">
-                            <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
-                            <span className="text-xs text-primary truncate">
-                              {t('profile.earnedOn')} {badge.earnedDate && new Date(badge.earnedDate).toLocaleDateString()}
-                            </span>
-                          </div>
-                        ) : badge.progress !== undefined && badge.target !== undefined ? (
-                          <div className="mt-2">
-                            <div className="flex justify-between text-xs mb-1">
-                              <span className="text-muted-foreground">{t('profile.progress')}</span>
-                              <span className="text-muted-foreground">{badge.progress}/{badge.target}</span>
-                            </div>
-                            <Progress value={(badge.progress / badge.target) * 100} className="h-2" />
-                          </div>
-                        ) : null}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </TabsContent>
-
-        {/* Friends Tab */}
-        <TabsContent value="friends" className="space-y-4">
-          {/* Add Friend Section */}
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex gap-2">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder={t('profile.searchFriends')}
-                    value={friendSearch}
-                    onChange={(e) => setFriendSearch(e.target.value)}
-                    className="pl-10"
-                  />
+          <TabsContent value="overview" className="space-y-4">
+            <Card>
+              <CardContent className="grid grid-cols-2 gap-4 p-6 md:grid-cols-4">
+                <div className="text-center">
+                  <p className="text-3xl font-bold">{stats.mission_stats.total_missions}</p>
+                  <p className="text-sm text-muted-foreground">Missions</p>
                 </div>
-                <Button className="shrink-0">
-                  <UserPlus className="h-4 w-4 sm:mr-2" />
-                  <span className="hidden sm:inline">{t('profile.addFriend')}</span>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+                <div className="text-center">
+                  <p className="text-3xl font-bold">{stats.mission_stats.total_mission_xp}</p>
+                  <p className="text-sm text-muted-foreground">Mission XP</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-3xl font-bold">{stats.learner_stats.total_lessons_attempted}</p>
+                  <p className="text-sm text-muted-foreground">Lessons Attempted</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-3xl font-bold">{stats.learner_stats.total_attempts}</p>
+                  <p className="text-sm text-muted-foreground">Total Attempts</p>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-          {/* Friends List */}
-          <div className="space-y-3">
-            {friends.map((friend, index) => (
-              <motion.div
-                key={friend.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.05 }}
-              >
-                <Card className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-3 sm:gap-4">
-                      <div className="relative shrink-0">
-                        <div className={`h-12 w-12 sm:h-14 sm:w-14 rounded-full ${friend.avatarBgColor} flex items-center justify-center text-2xl sm:text-3xl`}>
-                          {friend.avatar}
-                        </div>
-                        <div className={`absolute bottom-0 right-0 h-3 w-3 sm:h-4 sm:w-4 rounded-full border-2 border-card ${friend.status === 'online' ? 'bg-green-500' : 'bg-gray-400'
-                          }`} />
+          <TabsContent value="social" className="space-y-4">
+            <div className="flex gap-2">
+              <Input
+                placeholder="Search users..."
+                value={friendSearch}
+                onChange={(e) => setFriendSearch(e.target.value)}
+                className="rounded-xl"
+              />
+              <Button onClick={handleSearchFriends} variant="secondary">
+                <Search className="h-4 w-4" />
+              </Button>
+            </div>
+
+            {friendResults.length > 0 && (
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">Search Results:</p>
+                {friendResults.map((user) => (
+                  <div key={user.id} className="flex items-center justify-between rounded-lg bg-muted p-3">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-full bg-primary text-white flex items-center justify-center">
+                        {user.avatar_url ? (
+                          <img src={user.avatar_url} alt="" className="h-full w-full rounded-full object-cover" />
+                        ) : (
+                          '👤'
+                        )}
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-base sm:text-lg mb-1 truncate">{friend.name}</h3>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Trophy className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
-                          <span className="truncate">{friend.totalXP} XP</span>
-                        </div>
+                      <div>
+                        <p className="font-medium">{user.display_name || user.username}</p>
+                        <p className="text-xs text-muted-foreground">{user.xp_points} XP</p>
                       </div>
-                      <Button variant="outline" size="sm" className="shrink-0">
-                        {t('profile.viewProfile')}
-                      </Button>
                     </div>
+                    <Button size="sm" onClick={() => handleSendFriendRequest(user.id)}>
+                      <UserPlus className="mr-2 h-4 w-4" /> Add
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {friends.length === 0 ? (
+              <Card>
+                <CardContent className="flex flex-col items-center justify-center py-8 text-muted-foreground">
+                  <Users className="mb-2 h-8 w-8 opacity-50" />
+                  <p>No friends yet. Search to add some!</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid gap-2">
+                {friends.map((friend) => (
+                  <Card key={friend.id}>
+                    <CardContent className="flex items-center justify-between p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-full bg-secondary text-white flex items-center justify-center">
+                          {friend.avatar_url ? (
+                            <img src={friend.avatar_url} alt="" className="h-full w-full rounded-full object-cover" />
+                          ) : (
+                            '👤'
+                          )}
+                        </div>
+                        <div>
+                          <p className="font-medium">{friend.display_name || friend.username}</p>
+                          <p className="text-xs text-muted-foreground">{friend.xp_points} XP</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="badges" className="space-y-4">
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+              {badges.map((badge) => (
+                <Card key={badge.id} className={badge.earned ? 'border-primary/40' : 'opacity-60'}>
+                  <CardContent className="flex flex-col items-center p-4 text-center">
+                    <span className="mb-2 text-3xl">{badge.icon}</span>
+                    <p className="text-sm font-semibold">{badge.name}</p>
+                    <p className="text-xs text-muted-foreground">{badge.description}</p>
+                    {badge.progress !== undefined && badge.target !== undefined && (
+                      <div className="mt-2 w-full">
+                        <Progress value={(badge.progress / badge.target) * 100} className="h-1" />
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          {badge.progress} / {badge.target}
+                        </p>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
-              </motion.div>
-            ))}
-          </div>
-        </TabsContent>
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
 
-        {/* Challenges Tab */}
-        <TabsContent value="challenges">
-          <ChallengeCalendar />
-        </TabsContent>
-      </Tabs>
-
-      {/* Avatar Editor Dialog */}
       <Dialog open={showAvatarEditor} onOpenChange={setShowAvatarEditor}>
-        <DialogContent className="max-w-md">
+        <DialogContent>
           <DialogHeader>
-            <DialogTitle>{t('profile.chooseAvatar')}</DialogTitle>
-            <DialogDescription>
-              {t('profile.avatarDescription')}
-            </DialogDescription>
+            <DialogTitle>Choose Avatar</DialogTitle>
+            <DialogDescription>Select an emoji and background color for your profile.</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label className="text-sm mb-2 block">{t('profile.selectEmoji')}</Label>
-              <div className="grid grid-cols-8 gap-2 max-h-64 overflow-y-auto p-2 border rounded-lg">
+              <Label className="mb-2 block">Emoji</Label>
+              <div className="grid max-h-52 grid-cols-8 gap-2 overflow-y-auto rounded-lg border p-2">
                 {avatarEmojis.map((emoji, index) => (
                   <button
                     key={index}
-                    onClick={() => setUserProfile({ ...userProfile, avatar: emoji })}
-                    className={`h-10 w-10 text-2xl hover:scale-110 transition-transform rounded-lg ${userProfile.avatar === emoji ? 'bg-accent ring-2 ring-primary' : 'hover:bg-accent'
-                      }`}
+                    onClick={() => setProfile({ ...profile, avatar_url: emoji })}
+                    className={`flex h-10 w-10 items-center justify-center rounded-lg text-xl transition-transform hover:scale-110 ${
+                      profile.avatar_url === emoji ? 'bg-accent ring-2 ring-primary' : 'hover:bg-accent'
+                    }`}
                   >
                     {emoji}
                   </button>
                 ))}
               </div>
             </div>
+
             <div>
-              <Label className="text-sm mb-2 block">{t('profile.selectColor')}</Label>
+              <Label className="mb-2 block">Background</Label>
               <div className="grid grid-cols-9 gap-2">
                 {avatarColors.map((color, index) => (
                   <button
                     key={index}
-                    onClick={() => setUserProfile({ ...userProfile, avatarBgColor: color })}
-                    className={`h-10 w-10 rounded-full ${color} hover:scale-110 transition-transform ${userProfile.avatarBgColor === color ? 'ring-4 ring-primary ring-offset-2' : ''
-                      }`}
+                    onClick={() => setProfile({ ...profile, avatar_url: color })}
+                    className={`h-10 w-10 rounded-full transition-transform hover:scale-110 ${
+                      profile.avatar_url === color ? 'ring-4 ring-primary ring-offset-2' : ''
+                    } ${color}`}
                   />
                 ))}
               </div>
             </div>
-            <div className="flex justify-center pt-4">
-              <div className={`h-24 w-24 rounded-full ${userProfile.avatarBgColor} flex items-center justify-center text-5xl shadow-xl`}>
-                {userProfile.avatar}
+
+            <div className="flex justify-center pt-2">
+              <div
+                className={`flex h-24 w-24 items-center justify-center rounded-full text-5xl shadow-xl ${
+                  avatarColors.find((c) => c === profile.avatar_url) || 'bg-muted'
+                }`}
+              >
+                {(profile.avatar_url && avatarEmojis.includes(profile.avatar_url))
+                  ? profile.avatar_url
+                  : '👤'}
               </div>
             </div>
-            <Button
-              onClick={() => setShowAvatarEditor(false)}
-              className="w-full"
-            >
-              {t('profile.saveAvatar')}
+
+            <Button className="w-full" onClick={() => setShowAvatarEditor(false)}>
+              Done
             </Button>
           </div>
         </DialogContent>
       </Dialog>
+
+      <div className="mt-6 flex justify-end">
+        <Button variant="destructive" onClick={onLogout}>
+          <LogOut className="mr-2 h-4 w-4" />
+          Logout
+        </Button>
+      </div>
     </div>
   );
 }

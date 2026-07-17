@@ -1,8 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from './ui/button';
 import { Progress } from './ui/progress';
 import { CheckCircle2, XCircle, RefreshCcw, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { getCurrentUser } from '../utils/supabase/auth';
+import { getAllLessons, type SignLesson } from '../utils/supabase/lessons';
+import { recordLessonPractice } from '../utils/supabase/progress';
+import { addXp } from '../utils/supabase/profiles';
 
 // Import video assets
 import helloVideo from '../assets/s_hello_2.mp4';
@@ -83,15 +87,59 @@ export function PracticePage() {
   const [showResult, setShowResult] = useState(false);
   const [score, setScore] = useState(0);
   const [quizComplete, setQuizComplete] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [availableLessons, setAvailableLessons] = useState<SignLesson[]>([]);
+
+  useEffect(() => {
+    const loadPracticeContext = async () => {
+      try {
+        const { data: userData } = await getCurrentUser();
+        if (userData?.user) {
+          setUserId(userData.user.id);
+        }
+
+        const { data: lessons } = await getAllLessons();
+        if (lessons) {
+          setAvailableLessons(lessons);
+        }
+      } catch (error) {
+        console.error('PracticePage: failed to load practice context', error);
+      }
+    };
+
+    void loadPracticeContext();
+  }, []);
 
   const question = practiceQuestions[currentQuestion];
   const isCorrect = selectedAnswer === question.correctAnswer;
   const progress = ((currentQuestion + 1) / practiceQuestions.length) * 100;
 
+  const persistPracticeResult = async (finalScore: number) => {
+    if (!userId || availableLessons.length === 0) {
+      return;
+    }
+
+    try {
+      const lessonId = availableLessons[Math.min(currentQuestion, availableLessons.length - 1)].id;
+      const precisionScore = finalScore / practiceQuestions.length;
+      const isCompleted = finalScore >= Math.ceil(practiceQuestions.length * 0.7);
+
+      await recordLessonPractice(userId, lessonId, precisionScore, isCompleted);
+      if (finalScore > 0) {
+        await addXp(userId, finalScore * 10);
+      }
+    } catch (error) {
+      console.error('PracticePage: failed to sync progress', error);
+    }
+  };
+
   const handleSubmit = () => {
+    const nextScore = isCorrect ? score + 1 : score;
     setShowResult(true);
-    if (isCorrect) {
-      setScore(score + 1);
+    setScore(nextScore);
+
+    if (currentQuestion === practiceQuestions.length - 1) {
+      void persistPracticeResult(nextScore);
     }
   };
 

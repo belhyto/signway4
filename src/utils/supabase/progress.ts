@@ -35,6 +35,70 @@ export const getLessonProgress = async (userId: string, lessonId: string) => {
   return { data: data as LearnerProgress | null, error };
 };
 
+export const upsertLessonProgress = async (
+  userId: string,
+  lessonId: string,
+  updates: Partial<LearnerProgress>
+) => {
+  const { data: existing, error: fetchError } = await getLessonProgress(userId, lessonId);
+
+  if (fetchError && fetchError.code !== 'PGRST116') {
+    return { data: null, error: fetchError };
+  }
+
+  const payload = {
+    user_id: userId,
+    lesson_id: lessonId,
+    last_practiced_at: new Date().toISOString(),
+    ...updates,
+  };
+
+  if (existing) {
+    const { data, error } = await supabaseAny
+      .from('learner_progress')
+      .update(payload)
+      .eq('user_id', userId)
+      .eq('lesson_id', lessonId)
+      .select()
+      .single();
+
+    return { data: data as LearnerProgress | null, error };
+  }
+
+  const { data, error } = await supabaseAny
+    .from('learner_progress')
+    .insert([payload])
+    .select()
+    .single();
+
+  return { data: data as LearnerProgress | null, error };
+};
+
+export const recordLessonPractice = async (
+  userId: string,
+  lessonId: string,
+  precisionScore: number,
+  isCompleted: boolean = false
+) => {
+  const { data: existing, error: fetchError } = await getLessonProgress(userId, lessonId);
+
+  if (fetchError && fetchError.code !== 'PGRST116') {
+    return { data: null, error: fetchError };
+  }
+
+  const nextPrecision = existing?.max_precision_score
+    ? Math.max(existing.max_precision_score, precisionScore)
+    : precisionScore;
+
+  const nextAttempts = (existing?.attempts_count || 0) + 1;
+
+  return upsertLessonProgress(userId, lessonId, {
+    max_precision_score: nextPrecision,
+    attempts_count: nextAttempts,
+    is_completed: isCompleted || existing?.is_completed || false,
+  });
+};
+
 export const getCompletedLessons = async (userId: string) => {
   const { data, error } = await supabaseAny
     .from('learner_progress')

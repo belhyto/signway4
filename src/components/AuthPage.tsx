@@ -7,6 +7,24 @@ import { Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
 import logoImage from 'figma:asset/logo.png';
 import { signIn, signUp } from '../utils/supabase/auth';
 
+const getFriendlyAuthError = (error: { message?: string } | null | undefined) => {
+  const message = error?.message?.toLowerCase() || '';
+
+  if (message.includes('rate limit') || message.includes('429')) {
+    return 'Too many sign-in attempts. Please wait a few minutes before trying again.';
+  }
+
+  if (message.includes('invalid login credentials') || message.includes('invalid_grant')) {
+    return 'Email or password is incorrect. Please try again.';
+  }
+
+  if (message.includes('email not confirmed') || message.includes('confirm')) {
+    return 'Please confirm your email before signing in.';
+  }
+
+  return error?.message || 'Authentication failed. Please try again.';
+};
+
 interface AuthPageProps {
   onAuthSuccess: () => void;
   onAdminLogin?: () => void;
@@ -32,13 +50,18 @@ export function AuthPage({ onAuthSuccess, onAdminLogin }: AuthPageProps) {
       if (isLogin) {
         const { error } = await signIn(formData.email, formData.password);
         if (error) {
-          setErrorMessage(error.message);
+          setErrorMessage(getFriendlyAuthError(error));
           return;
         }
       } else {
-        const { error } = await signUp(formData.email, formData.password, formData.name);
+        const { error, needsConfirmation } = await signUp(formData.email, formData.password, formData.name);
         if (error) {
-          setErrorMessage(error.message);
+          setErrorMessage(getFriendlyAuthError(error));
+          return;
+        }
+
+        if (needsConfirmation) {
+          setErrorMessage('Account created. Please check your email and confirm it before signing in.');
           return;
         }
       }
