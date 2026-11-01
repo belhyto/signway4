@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { lazy, Suspense, useState, useRef, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -11,6 +11,10 @@ import {
   SelectValue,
 } from './ui/select';
 import { useLanguage } from './LanguageProvider';
+
+const AnimatedHandViewer = lazy(() =>
+  import('./AnimatedHandViewer').then((module) => ({ default: module.AnimatedHandViewer }))
+);
 
 // Import sign language videos
 import helloVideo from '../assets/s_hello_2.mp4';
@@ -162,14 +166,19 @@ export function ARLearningPage({ autoStart = false, onARStateChange, onExitAR }:
 
   // Control instructor video playback
   useEffect(() => {
-    if (instructorVideoRef.current) {
-      if (isPlaying) {
-        instructorVideoRef.current.play().catch(err => console.log('Video play error:', err));
-      } else {
-        instructorVideoRef.current.pause();
-      }
+    const video = instructorVideoRef.current;
+    if (!video) return;
+
+    if (isPlaying) {
+      video.play().catch((error: unknown) => {
+        if (!(error instanceof DOMException && error.name === 'AbortError')) {
+          console.warn('ARLearningPage: video playback failed', error);
+        }
+      });
+    } else {
+      video.pause();
     }
-  }, [isPlaying]);
+  }, [isPlaying, currentSignIndex]);
 
   const handleStartAR = (lessonId: number) => {
     setSelectedLesson(lessonId);
@@ -231,56 +240,100 @@ export function ARLearningPage({ autoStart = false, onARStateChange, onExitAR }:
           )}
 
           {/* Virtual Instructor Avatar with Video */}
-          {isCameraOn && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="absolute right-8 bottom-32 w-64 h-80"
-            >
-              <div className="bg-gradient-to-br from-primary/30 to-secondary/30 backdrop-blur-md rounded-3xl p-4 border-2 border-white/30 shadow-2xl h-full flex flex-col">
-                {/* Video Display */}
-                <div className="h-[20px] sm:h-[40px] md:h-[60px] relative rounded-2xl overflow-hidden bg-black/20 mb-3">
-
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="absolute"
+            style={{
+              bottom: '14rem',
+              height: 'min(42vh, 20rem)',
+              left: '1rem',
+              marginInline: 'auto',
+              maxWidth: 'calc(100vw - 2rem)',
+              right: '1rem',
+              width: '45rem',
+            }}
+          >
+              <div
+                className="rounded-3xl border-2 border-white/30 bg-gradient-to-br from-primary/30 to-secondary/30 p-3 shadow-2xl backdrop-blur-md"
+                style={{
+                  boxSizing: 'border-box',
+                  display: 'grid',
+                  gridTemplateRows: 'minmax(0, 1fr) auto',
+                  height: '100%',
+                  minHeight: 0,
+                  overflow: 'hidden',
+                }}
+              >
+                <div
+                  className="grid min-h-0 grid-cols-2 gap-3"
+                  style={{ gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', minHeight: 0 }}
+                >
                   {signVideos[currentLesson.signs[currentSignIndex]] ? (
-                    <video
-                      ref={instructorVideoRef}
-                      key={currentLesson.signs[currentSignIndex]}
-                      className="w-full h-full object-cover"
-                      autoPlay={isPlaying}
-                      loop
-                      muted={!isSoundOn}
-                      playsInline
-                    >
-                      <source src={signVideos[currentLesson.signs[currentSignIndex]]} type="video/mp4" />
-                    </video>
+                    <>
+                      <div
+                        className="flex min-h-0 flex-col gap-2"
+                        style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', minHeight: 0, minWidth: 0 }}
+                      >
+                        <p className="text-center text-xs text-white/80">{t('ar.virtualInstructor')}</p>
+                        <div className="min-h-0 flex-1 overflow-hidden rounded-xl bg-black/30">
+                          <video
+                            ref={instructorVideoRef}
+                            key={currentLesson.signs[currentSignIndex]}
+                            className="h-full w-full object-contain"
+                            loop
+                            muted={!isSoundOn}
+                            playsInline
+                          >
+                            <source src={signVideos[currentLesson.signs[currentSignIndex]]} type="video/mp4" />
+                          </video>
+                        </div>
+                      </div>
+                      <div
+                        className="flex min-h-0 flex-col gap-2"
+                        style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', minHeight: 0, minWidth: 0 }}
+                      >
+                        <p className="text-center text-xs text-white/80">3D sign motion</p>
+                        <Suspense
+                          fallback={
+                            <div
+                              className="min-h-0 w-full flex-1 rounded-xl bg-black/20"
+                              style={{ flex: '1 1 0%', minHeight: 0 }}
+                              role="status"
+                            />
+                          }
+                        >
+                          <AnimatedHandViewer
+                            key={currentLesson.signs[currentSignIndex]}
+                            videoRef={instructorVideoRef}
+                          />
+                        </Suspense>
+                      </div>
+                    </>
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center">
+                    <div className="col-span-2 flex min-h-0 flex-col items-center justify-center gap-3">
                       <motion.div
-                        animate={{
-                          rotate: isPlaying ? [0, 10, -10, 0] : 0,
-                        }}
-                        transition={{
-                          repeat: isPlaying ? Infinity : 0,
-                          duration: 2,
-                        }}
+                        animate={{ rotate: isPlaying ? [0, 10, -10, 0] : 0 }}
+                        transition={{ repeat: isPlaying ? Infinity : 0, duration: 2 }}
                         className="text-6xl"
                       >
                         🤟
                       </motion.div>
+                      <Badge className="border-white/30 bg-white/20 text-white">
+                        {currentLesson.signs[currentSignIndex]}
+                      </Badge>
                     </div>
                   )}
                 </div>
-
-                {/* Instructor Info */}
-                <div className="text-center">
-                  <p className="text-white text-sm mb-2">{t('ar.virtualInstructor')}</p>
-                  <Badge className="bg-white/20 text-white border-white/30">
-                    {currentLesson.signs[currentSignIndex]}
-                  </Badge>
-                </div>
+                {signVideos[currentLesson.signs[currentSignIndex]] && (
+                  <div className="pt-2 text-center">
+                    <Badge className="border-white/30 bg-white/20 text-white">
+                      {currentLesson.signs[currentSignIndex]}
+                    </Badge>
+                  </div>
+                )}
               </div>
-            </motion.div>
-          )}
+          </motion.div>
 
           {/* Top Controls */}
           <div className="absolute top-4 left-4 right-4 flex items-center justify-between gap-2">

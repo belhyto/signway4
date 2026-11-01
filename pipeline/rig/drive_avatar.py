@@ -18,7 +18,7 @@ BONE_MAP_L = {
 }
 
 BONE_MAP_R = {
-    'thumb':  ['thumb.R.001',   'thumb.R.002',   'thumb.R.003'],
+    'thumb':  ['thumb.R.001',   'thumb.R.002',   'thumb.L.003'],
     'index':  ['pointer.R.001', 'pointer.R.002', 'pointer.R.003'],
     'middle': ['middle.R.004',  'middle.R.005',  'middle.R.006'],
     'ring':   ['ring.R.007',    'ring.R.008',    'ring.R.009'],
